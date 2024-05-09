@@ -1,0 +1,16 @@
+{
+  "posts": [
+    {
+      "id": "1715182898078",
+      "title": "new post",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tristique magna sit amet purus gravida quis. Blandit cursus risus at ultrices mi.",
+      "image": "https://source.unsplash.com/random/new post"
+    },
+    {
+      "id": "1715182924064",
+      "title": "vferg",
+      "content": "regergerg",
+      "image": "https://source.unsplash.com/random/vferg"
+    }
+  ]
+}
