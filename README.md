@@ -1,8 +1,26 @@
-# React + Vite
+# React Blog
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a simple blog application built with React.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Add a new post
+- Edit a post
+- Delete a post
+- View posts list
+
+## Technologies
+
+- React
+- React Router
+- Context API
+- json-server
+- Axios
+- Tailwind CSS
+
+## Installation
+
+1. Clone the repository
+2. Install dependencies by running `npm install`
+3. Start the json-server by running `npm run server`
+4. Start the application by running `npm run dev`
