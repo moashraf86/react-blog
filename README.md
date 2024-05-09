@@ -14,7 +14,7 @@ This is a simple blog application built with React.
 - React
 - React Router
 - Context API
-- json-server
+- Json-Server
 - Axios
 - Tailwind CSS
 
