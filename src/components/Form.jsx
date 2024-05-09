@@ -17,6 +17,8 @@ export const Form = ({
         </h3>
         <form onSubmit={onsubmit} className="flex flex-col gap-4">
           <input
+            name="title"
+            id="title"
             className="p-2 border text-zinc-50 border-zinc-800 bg-zinc-900 rounded-md"
             value={title}
             type="text"
@@ -31,8 +33,15 @@ export const Form = ({
             onChange={(e) => setContent(e.target.value)}
           ></textarea>
           <label
+            tabIndex="0"
             htmlFor="image"
-            className="p-2 border border-dashed border-zinc-800 min-h-24 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 "
+            className="p-2 border border-dashed border-zinc-800 min-h-24 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                document.getElementById("image").click();
+              }
+            }}
           >
             click to upload image
             <input

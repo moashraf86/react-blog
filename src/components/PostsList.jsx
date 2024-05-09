@@ -78,7 +78,7 @@ export default function PostsList() {
   if (posts.length === 0) {
     return (
       <p className="text-xl text-zinc-300 text-center mt-[120px] p-6 border border-zinc-800 rounded-lg">
-        You haven't created any posts!
+        You haven&apos;t created any posts!
       </p>
     );
   }
@@ -110,7 +110,7 @@ export default function PostsList() {
       {showModal &&
         createPortal(
           <ConfirmModal
-            id="modal"
+            showModal={showModal}
             onCancel={() => setShowModal(false)}
             onConfirm={handleDeletePost}
           />,

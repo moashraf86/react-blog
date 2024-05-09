@@ -42,9 +42,9 @@ export const Post = ({ post, handleShowModal }) => {
         </div>
         <p className="text-zinc-300">{post.content}</p>
         <div className="modal relative flex justify-end gap-3">
-          <span
-            className="text-zinc-50 cursor-pointer"
-            onClick={() => setIsPopoverOpen(true)}
+          <button
+            className="text-zinc-50 cursor-pointer p-1"
+            onClick={() => setIsPopoverOpen(!isPopoverOpen)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -55,24 +55,28 @@ export const Post = ({ post, handleShowModal }) => {
             >
               <path d="M12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3ZM12 17C10.9 17 10 17.9 10 19C10 20.1 10.9 21 12 21C13.1 21 14 20.1 14 19C14 17.9 13.1 17 12 17ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"></path>
             </svg>
-          </span>
+          </button>
           {isPopoverOpen && (
-            <div
-              className="min-w-[120px] flex flex-col items-start absolute top-5  right-0 p-4 bg-zinc-900 border border-zinc-800 rounded-md"
+            <ul
+              className="min-w-[120px] flex flex-col items-start absolute top-7  right-0 p-4 bg-zinc-900 border border-zinc-800 rounded-md"
               onClick={() => setIsPopoverOpen(false)}
             >
-              <Link to={`/edit/${post.id}`} className="w-full">
-                <button className="py-1 font-medium w-full text-start  text-zinc-50 bg-zinc-900">
-                  Edit
+              <li>
+                <Link to={`/edit/${post.id}`} className="w-full">
+                  <span className="inline-block py-1 text-zinc-50 font-medium text-start">
+                    Edit
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleShowModal(post)}
+                  className="py-1 font-medium w-full text-start text-red-500"
+                >
+                  Delete
                 </button>
-              </Link>
-              <button
-                onClick={() => handleShowModal(post)}
-                className="py-1 font-medium w-full text-start text-red-500"
-              >
-                Delete
-              </button>
-            </div>
+              </li>
+            </ul>
           )}
         </div>
       </div>

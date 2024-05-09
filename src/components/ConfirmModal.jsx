@@ -1,6 +1,14 @@
 /* eslint-disable react/prop-types */
 
-export const ConfirmModal = ({ onCancel, onConfirm }) => {
+import { useEffect, useRef } from "react";
+
+export const ConfirmModal = ({ onCancel, onConfirm, showModal }) => {
+  const cancelButtonRef = useRef(null);
+  useEffect(() => {
+    if (showModal) {
+      cancelButtonRef.current.focus();
+    }
+  }, [showModal]);
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4">
       <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-lg w-full max-w-[500px]">
@@ -11,20 +19,25 @@ export const ConfirmModal = ({ onCancel, onConfirm }) => {
           This action cannot be undone. This will permanently delete your
           account and remove your data from our servers.
         </p>
-        <div className="flex justify-end gap-3 mt-4">
-          <button
-            onClick={onCancel}
-            className="py-2 px-4 bg-zinc-900 border border-zinc-700 text-zinc-50 rounded-md"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"
-          >
-            Confirm
-          </button>
-        </div>
+        <ul className="flex justify-end gap-3 mt-4">
+          <li>
+            <button
+              ref={cancelButtonRef}
+              onClick={onCancel}
+              className="py-2 px-4 bg-zinc-900 border border-zinc-700 text-zinc-50 rounded-md"
+            >
+              Cancel
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={onConfirm}
+              className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"
+            >
+              Confirm
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   );
