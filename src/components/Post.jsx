@@ -31,7 +31,7 @@ export const Post = ({ post, handleShowModal }) => {
             <img
               src={post.image}
               alt={post.title}
-              className="max-h-[120px] w-full object-cover rounded-md"
+              className="h-full w-full object-cover rounded-md"
             />
           )}
         </div>

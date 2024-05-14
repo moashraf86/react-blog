@@ -9,6 +9,7 @@ export default function CreatePost() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState(null);
+  const [validated, setValidated] = useState(false);
   let navigate = useNavigate();
 
   // Handle Image Change
@@ -27,9 +28,8 @@ export default function CreatePost() {
    */
   const handleCreatePost = (e) => {
     e.preventDefault();
-    // Validate the title and content fields
+    setValidated(true);
     if (!title || !content) {
-      e.preventDefault();
       return;
     }
 
@@ -52,8 +52,6 @@ export default function CreatePost() {
       });*/
     };
     createPost();
-    setTitle("");
-    setContent("");
     setImage(null);
     setTimeout(() => {
       navigate("/");
@@ -70,6 +68,8 @@ export default function CreatePost() {
       onsubmit={handleCreatePost}
       handleImageChange={handleImageChange}
       imageName={imageName}
+      image={image}
+      validated={validated}
     />
   );
 }

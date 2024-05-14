@@ -17,6 +17,11 @@ export default function EditPost() {
   const [image, setImage] = useState(null);
   let navigate = useNavigate();
 
+  // load image if post exists
+  if (post && !image) {
+    setImage(post.image);
+  }
+
   /**
    * Handle Image Change
    */
@@ -46,9 +51,6 @@ export default function EditPost() {
       });
     };
     editPost();
-    setTitle("");
-    setContent("");
-    setImage(null);
     setTimeout(() => {
       navigate("/");
     }, 300);
@@ -63,6 +65,7 @@ export default function EditPost() {
       onsubmit={handleEditPost}
       handleImageChange={handleImageChange}
       imageName={post && post.image}
+      image={image}
     />
   );
 }

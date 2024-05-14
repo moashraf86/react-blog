@@ -7,7 +7,8 @@ export const Form = ({
   content,
   setContent,
   handleImageChange,
-  imageName,
+  image,
+  validated,
 }) => {
   return (
     <div className="flex justify-center items-center max-w-[400px] mx-auto translate-y-[50%] -mt-20 ">
@@ -16,44 +17,66 @@ export const Form = ({
           {heading}
         </h3>
         <form onSubmit={onsubmit} className="flex flex-col gap-4">
-          <input
-            name="title"
-            id="title"
-            className="p-2 border text-zinc-50 border-zinc-800 bg-zinc-900 rounded-md"
-            value={title}
-            type="text"
-            placeholder="title"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <textarea
-            rows={5}
-            className="p-2 text-zinc-50 border border-zinc-800 bg-zinc-900 rounded-md"
-            placeholder="write something here..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
-          <label
-            tabIndex="0"
-            htmlFor="image"
-            className="p-2 border border-dashed border-zinc-800 min-h-24 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                document.getElementById("image").click();
-              }
-            }}
-          >
-            click to upload image
+          <div className="flex flex-col gap-1">
             <input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              hidden
+              name="title"
+              id="title"
+              className={`w-full p-2 border text-zinc-50 border-zinc-800 bg-zinc-900 rounded-md ${
+                validated && !title && "border-red-600 "
+              }`}
+              value={title}
+              type="text"
+              placeholder="Add title"
+              onChange={(e) => setTitle(e.target.value)}
             />
-          </label>
-          <p>
-            {imageName && (
+            <p className="text-sm text-red-600">
+              {validated && !title && "title is required"}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <textarea
+              rows={5}
+              className={`w-full p-2 text-zinc-50 border border-zinc-800 bg-zinc-900 rounded-md ${
+                validated && !content && "border-red-600"
+              }`}
+              placeholder="write something here..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            ></textarea>
+            <p className="text-sm text-red-600">
+              {validated && !content && "content is required"}
+            </p>
+          </div>
+          {!image && (
+            <label
+              tabIndex="0"
+              htmlFor="image"
+              className="p-2 border border-dashed border-zinc-800 min-h-24 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  document.getElementById("image").click();
+                }
+              }}
+            >
+              click to upload image
+              <input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                hidden
+              />
+            </label>
+          )}
+          <div>
+            <img
+              className="w-full max-h-[120px] object-cover rounded-md"
+              src={image}
+              alt=""
+            />
+            {/* {image && (
               <span className="flex gap-2 items-center text-green-800 ">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -66,8 +89,8 @@ export const Form = ({
                 </svg>
                 image uploaded sucssesfully
               </span>
-            )}
-          </p>
+            )} */}
+          </div>
           <button
             type="submit"
             className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"
