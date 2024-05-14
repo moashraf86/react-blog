@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
 import { useContext, useEffect } from "react";
 import { PostsContext } from "../context/PostsContext";
 import { PostsDispatchContext } from "../context/PostsDispatchContext";
@@ -10,6 +9,8 @@ import { ConfirmModal } from "./ConfirmModal";
 import { Loader } from "./Loader";
 import { Error } from "./Error";
 import { Post } from "./Post";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function PostsList() {
   const posts = useContext(PostsContext);
@@ -17,25 +18,27 @@ export default function PostsList() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   /**
-   * Fetch posts from the server After the component mounts
+   * Fetch posts from the Firebase store After the component mounts
    */
 
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const postsCollection = collection(db, "posts");
+      const postsSnapshot = await getDocs(postsCollection);
+      const postsData = postsSnapshot.docs.map((doc) => doc.data());
+      if (!postsData) throw new Error("Error fetching posts");
+      dispatch({ type: "FETCH_POSTS", payload: postsData });
+      setLoading(false);
+      setError(null);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const { data } = await axios.get("http://localhost:3000/posts");
-        if (!data) throw new Error("Error fetching posts");
-        dispatch({ type: "FETCH_POSTS", payload: data });
-        setLoading(false);
-        setError(null);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPosts();
   }, []);
 
@@ -62,9 +65,12 @@ export default function PostsList() {
   /**
    * Handle Delete Post
    */
+
   const handleDeletePost = () => {
     const deletePost = async () => {
-      await axios.delete(`http://localhost:3000/posts/${postToDelete.id}`);
+      // delete document from firestore
+      const postRef = doc(db, "posts", postToDelete.id);
+      await deleteDoc(postRef);
       dispatch({
         type: "DELETE_POST",
         payload: { id: postToDelete.id },

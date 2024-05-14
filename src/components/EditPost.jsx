@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
-import axios from "axios";
 import { PostsDispatchContext } from "../context/PostsDispatchContext";
 import { useParams } from "react-router-dom";
 import { PostsContext } from "../context/PostsContext";
 import { useNavigate } from "react-router-dom";
 import { Form } from "./Form";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function EditPost() {
   const posts = useContext(PostsContext);
@@ -15,8 +16,10 @@ export default function EditPost() {
   const [content, setContent] = useState(id ? post.content : "");
   const [image, setImage] = useState(null);
   let navigate = useNavigate();
-  // Handle Image Change
 
+  /**
+   * Handle Image Change
+   */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -31,7 +34,8 @@ export default function EditPost() {
   const handleEditPost = (e) => {
     e.preventDefault();
     const editPost = async () => {
-      await axios.patch(`http://localhost:3000/posts/${id}`, {
+      // Update the post on firebase
+      await updateDoc(doc(db, "posts", id), {
         title,
         content,
         image: image || post.image,

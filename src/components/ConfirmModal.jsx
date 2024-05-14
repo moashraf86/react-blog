@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-
 import { useEffect, useRef } from "react";
 
 export const ConfirmModal = ({ onCancel, onConfirm, showModal }) => {

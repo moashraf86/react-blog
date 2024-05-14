@@ -1,15 +1,14 @@
-import { useState, useContext } from "react";
-import axios from "axios";
-import { PostsDispatchContext } from "../context/PostsDispatchContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form } from "./Form";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState(null);
-  const dispatch = useContext(PostsDispatchContext);
   let navigate = useNavigate();
 
   // Handle Image Change
@@ -36,17 +35,21 @@ export default function CreatePost() {
 
     // Write posts to the server
     const createPost = async () => {
-      const { data } = await axios.post("http://localhost:3000/posts", {
-        id: Date.now().toString(),
+      // Add a new document with a generated id fireebase collection
+      const docRef = doc(collection(db, "posts"));
+      const data = {
+        id: docRef.id,
         title,
         content,
-        image: image || `https://source.unsplash.com/random/${title}`,
-      });
-      // Dispatch the action to create post to the reducer
+        image: image || `https://source.unsplash.com/random/${docRef.id}`,
+      };
+      await setDoc(docRef, data);
+      /**
+       * we don't need to dispatch the action here anymore
       dispatch({
         type: "CREATE_POST",
         payload: data,
-      });
+      });*/
     };
     createPost();
     setTitle("");
