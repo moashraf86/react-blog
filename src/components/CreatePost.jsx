@@ -8,7 +8,6 @@ export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-  const [imageName, setImageName] = useState(null);
   const [validated, setValidated] = useState(false);
   let navigate = useNavigate();
 
@@ -17,11 +16,15 @@ export default function CreatePost() {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
-
     reader.onloadend = () => {
       setImage(reader.result);
-      setImageName(file.name);
     };
+  };
+  /**
+   * Hnadle Remove Image
+   */
+  const handleRemoveImage = () => {
+    setImage(null);
   };
   /**
    * Handle Create Post
@@ -67,7 +70,7 @@ export default function CreatePost() {
       setContent={setContent}
       onsubmit={handleCreatePost}
       handleImageChange={handleImageChange}
-      imageName={imageName}
+      handleRemoveImage={handleRemoveImage}
       image={image}
       validated={validated}
     />

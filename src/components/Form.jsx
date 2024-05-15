@@ -7,9 +7,12 @@ export const Form = ({
   content,
   setContent,
   handleImageChange,
+  handleRemoveImage,
   image,
   validated,
 }) => {
+  const inValidTitle = validated && !title;
+  const inValidContent = validated && !content;
   return (
     <div className="flex justify-center items-center max-w-[400px] mx-auto translate-y-[50%] -mt-20 ">
       <div className="flex flex-col w-full bg-zinc-900 border border-zinc-800 rounded-md p-6 gap-4">
@@ -21,8 +24,8 @@ export const Form = ({
             <input
               name="title"
               id="title"
-              className={`w-full p-2 border text-zinc-50 border-zinc-800 bg-zinc-900 rounded-md ${
-                validated && !title && "border-red-600 "
+              className={`w-full p-2 border text-zinc-50 bg-zinc-900 rounded-md ${
+                inValidTitle ? "border-red-600" : "border-zinc-800"
               }`}
               value={title}
               type="text"
@@ -30,22 +33,22 @@ export const Form = ({
               onChange={(e) => setTitle(e.target.value)}
             />
             <p className="text-sm text-red-600">
-              {validated && !title && "title is required"}
+              {inValidTitle && "title is required"}
             </p>
           </div>
 
           <div className="flex flex-col gap-1">
             <textarea
               rows={5}
-              className={`w-full p-2 text-zinc-50 border border-zinc-800 bg-zinc-900 rounded-md ${
-                validated && !content && "border-red-600"
+              className={`w-full p-2 text-zinc-50 border bg-zinc-900 rounded-md ${
+                inValidContent ? "border-red-600" : "border-zinc-800"
               }`}
               placeholder="write something here..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
             ></textarea>
             <p className="text-sm text-red-600">
-              {validated && !content && "content is required"}
+              {inValidContent && "content is required"}
             </p>
           </div>
           {!image && (
@@ -70,27 +73,45 @@ export const Form = ({
               />
             </label>
           )}
-          <div>
-            <img
-              className="w-full max-h-[120px] object-cover rounded-md"
-              src={image}
-              alt=""
-            />
-            {/* {image && (
-              <span className="flex gap-2 items-center text-green-800 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
+          {image && (
+            <div className="relative rounded-md overflow-clip">
+              <div className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center gap-4 bg-zinc-800/60">
+                <label
+                  tabIndex="0"
+                  htmlFor="image"
+                  className="w-12 h-12 cursor-pointer flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-zinc-50 rounded-md"
+                  title="Edit image"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      document.getElementById("image").click();
+                    }
+                  }}
                 >
-                  <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11.0026 16L6.75999 11.7574L8.17421 10.3431L11.0026 13.1716L16.6595 7.51472L18.0737 8.92893L11.0026 16Z"></path>
-                </svg>
-                image uploaded sucssesfully
-              </span>
-            )} */}
-          </div>
+                  <i className="ri-edit-box-line text-white text-3xl"></i>
+                  <input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    hidden
+                  />
+                </label>
+                <button
+                  onClick={handleRemoveImage}
+                  className="w-12 h-12 focus:outline-none focus:ring-2 focus:ring-zinc-50 rounded-md"
+                  title="Delete Image"
+                >
+                  <i className="ri-delete-bin-line text-zinc-50 text-3xl"></i>
+                </button>
+              </div>
+              <img
+                className="w-full max-h-[120px] object-cover"
+                src={image}
+                alt=""
+              />
+            </div>
+          )}
           <button
             type="submit"
             className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"

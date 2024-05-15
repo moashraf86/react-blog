@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreatePost from "./components/CreatePost.jsx";
 import EditPost from "./components/EditPost.jsx";
 import PostsList from "./components/PostsList.jsx";
+import "remixicon/fonts/remixicon.css";
 import "./index.css";
 
 const router = createBrowserRouter([
