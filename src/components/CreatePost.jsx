@@ -8,6 +8,7 @@ export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
+  const [tag, setTag] = useState("");
   const [validated, setValidated] = useState(false);
   let navigate = useNavigate();
 
@@ -26,13 +27,14 @@ export default function CreatePost() {
   const handleRemoveImage = () => {
     setImage(null);
   };
+
   /**
    * Handle Create Post
    */
   const handleCreatePost = (e) => {
     e.preventDefault();
     setValidated(true);
-    if (!title || !content) {
+    if (!title || !content || !tag) {
       return;
     }
 
@@ -44,7 +46,8 @@ export default function CreatePost() {
         id: docRef.id,
         title,
         content,
-        image: image || `https://source.unsplash.com/random/${docRef.id}`,
+        image: image || `https://source.unsplash.com/1600x900/?${tag}`,
+        tag,
       };
       await setDoc(docRef, data);
       /**
@@ -68,6 +71,8 @@ export default function CreatePost() {
       setTitle={setTitle}
       content={content}
       setContent={setContent}
+      tag={tag}
+      setTag={setTag}
       onsubmit={handleCreatePost}
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}

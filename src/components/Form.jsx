@@ -6,6 +6,8 @@ export const Form = ({
   setTitle,
   content,
   setContent,
+  setTag,
+  tag,
   handleImageChange,
   handleRemoveImage,
   image,
@@ -13,6 +15,7 @@ export const Form = ({
 }) => {
   const inValidTitle = validated && !title;
   const inValidContent = validated && !content;
+  const inValidTag = validated && !tag;
   return (
     <div className="flex justify-center items-center max-w-[400px] mx-auto translate-y-[50%] -mt-20 ">
       <div className="flex flex-col w-full bg-zinc-900 border border-zinc-800 rounded-md p-6 gap-4">
@@ -112,6 +115,59 @@ export const Form = ({
               />
             </div>
           )}
+          <div className="flex gap-3 items-center">
+            <label
+              htmlFor="tech"
+              className={`text-zinc-50 py-1 px-4 border rounded-full cursor-pointer has-[:checked]:bg-zinc-600 ${
+                inValidTag ? "border-red-600" : "border-zinc-800"
+              }`}
+            >
+              <input
+                type="radio"
+                id="tech"
+                value="tech"
+                name="postTag"
+                className="text-zinc-50"
+                hidden
+                onChange={(e) => setTag(e.target.value)}
+              />
+              Tech
+            </label>
+            <label
+              htmlFor="culture"
+              className={`text-zinc-50 py-1 px-4 border rounded-full cursor-pointer has-[:checked]:bg-zinc-600 ${
+                inValidTag ? "border-red-600" : "border-zinc-800"
+              }`}
+            >
+              <input
+                type="radio"
+                id="culture"
+                value="culture"
+                name="postTag"
+                className="text-zinc-50"
+                hidden
+                onChange={(e) => setTag(e.target.value)}
+              />
+              Culture
+            </label>
+            <label
+              htmlFor="science"
+              className={`text-zinc-50 py-1 px-4 border rounded-full cursor-pointer has-[:checked]:bg-zinc-600 ${
+                inValidTag ? "border-red-600" : "border-zinc-800"
+              }`}
+            >
+              <input
+                type="radio"
+                id="science"
+                value="science"
+                name="postTag"
+                className="text-zinc-50"
+                hidden
+                onChange={(e) => setTag(e.target.value)}
+              />
+              Science
+            </label>
+          </div>
           <button
             type="submit"
             className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"
