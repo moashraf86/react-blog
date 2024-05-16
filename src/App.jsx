@@ -18,6 +18,8 @@ export default function App() {
         );
       case "FETCH_POSTS":
         return action.payload;
+      case "FETCH_POST":
+        return action.payload;
       case "DELETE_POST":
         return [...posts.filter((post) => post.id !== action.payload.id)];
       default:

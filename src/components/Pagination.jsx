@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 /* eslint-disable react/prop-types */
-export const Pagination = ({ postsPerPage, posts, paginate, currentPage }) => {
-  let pagesNumber = Math.ceil(posts.length / postsPerPage); // 10 / 9 = 2
-  let pages = Array.from({ length: pagesNumber }, (_, i) => i + 1);
+export const Pagination = ({ paginate, currentPage, totalPosts }) => {
+  let pagesNumber = Math.ceil(totalPosts / 2); // 2
+  let pages = Array.from({ length: pagesNumber }, (_, i) => i + 1); // [1, 2]
 
   return (
     <nav>
@@ -16,7 +18,7 @@ export const Pagination = ({ postsPerPage, posts, paginate, currentPage }) => {
                   : "bg-zinc-900 hover:bg-zin-800 border-zinc-700 text-zinc-50"
               }  border border-slate-200 rounded-md font-medium`}
             >
-              {page}
+              <Link to={`/pages/${page}`}>{page}</Link>
             </button>
           </li>
         ))}

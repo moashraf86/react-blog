@@ -10,7 +10,7 @@ export default function Header() {
           <ul className="flex gap-4 items-center">
             <li>
               <Link
-                to="/"
+                to="/pages/1"
                 className="text-zinc-50 font-semibold text-sm md:text-base"
               >
                 All Posts

@@ -8,8 +8,17 @@ import { createPortal } from "react-dom";
 import { ConfirmModal } from "./ConfirmModal";
 import { Loader } from "./Loader";
 import { Error } from "./Error";
-import { Post } from "./Post";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { PostItem } from "./PostItem";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  limit,
+  startAfter,
+  endBefore,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 export default function PostsList() {
@@ -17,6 +26,14 @@ export default function PostsList() {
   const dispatch = useContext(PostsDispatchContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+  // const [firstDocs, setFirstDocs] = useState([]);
+  const [firstPost, setFirstPost] = useState(null);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [totalPosts, setTotalPosts] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
   /**
    * Fetch posts from the Firebase store After the component mounts
    */
@@ -25,12 +42,16 @@ export default function PostsList() {
     try {
       setLoading(true);
       setError(null);
-      const postsCollection = collection(db, "posts");
-      const postsSnapshot = await getDocs(postsCollection);
+      const totalPosts = collection(db, "posts");
+      const postsQuery = query(collection(db, "posts"), limit(2));
+      const postsSnapshot = await getDocs(postsQuery);
+      const totalPostsSnapshot = await getDocs(totalPosts);
+      setFirstPost(postsSnapshot.docs[0]);
+      setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
+      setTotalPosts(totalPostsSnapshot.docs.length);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
       if (!postsData) throw new Error("Error fetching posts");
       dispatch({ type: "FETCH_POSTS", payload: postsData });
-      setLoading(false);
       setError(null);
     } catch (error) {
       setError(error.message);
@@ -45,14 +66,39 @@ export default function PostsList() {
   /**
    * Handle pagination
    */
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(9);
-  const indexOfLastPost = currentPage * postsPerPage; // 1 * 9 = 9
-  const indexOfFirstPost = indexOfLastPost - postsPerPage; // 9 - 9 = 0
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost); // [0, 9] => [0, 1, 2, 3, 4, 5, 6, 7, 8]
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const [showModal, setShowModal] = useState(false);
-  const [postToDelete, setPostToDelete] = useState(null);
+
+  const handlePaginate = async (pageNumber) => {
+    if (pageNumber === currentPage) return;
+    try {
+      setLoading(true);
+      let postsQuery;
+      if (pageNumber > currentPage) {
+        postsQuery = query(
+          collection(db, "posts"),
+          startAfter(lastVisible), // startAfter
+          limit(2)
+        );
+      } else {
+        postsQuery = query(
+          collection(db, "posts"),
+          endBefore(firstPost), // endBefore
+          limit(2)
+        );
+      }
+      const postsSnapshot = await getDocs(postsQuery);
+      setFirstPost(postsSnapshot.docs[0]);
+      setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
+      setCurrentPage(pageNumber);
+      const postsData = postsSnapshot.docs.map((doc) => doc.data());
+      if (!postsData) throw new Error("Error fetching posts");
+      dispatch({ type: "FETCH_POSTS", payload: postsData });
+      setError(null);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /**
    * Handle Show Modal
@@ -95,11 +141,14 @@ export default function PostsList() {
         All Posts
       </h2>
       <ul className="flex justify-start flex-wrap">
-        {loading && currentPosts.map((post) => <Loader key={post.id} />)}
+        {loading &&
+          posts.map((post) => (
+            <Loader key={post.id} style={"sm:w-1/2 xl:w-1/3"} />
+          ))}
         {!loading &&
           !error &&
-          currentPosts.map((post) => (
-            <Post
+          posts.map((post) => (
+            <PostItem
               key={post.id}
               post={post}
               handleShowModal={() => handleShowModal(post)}
@@ -108,9 +157,8 @@ export default function PostsList() {
         {error && <Error errMsg={error} />}
       </ul>
       <Pagination
-        posts={posts}
-        postsPerPage={postsPerPage}
-        paginate={paginate}
+        totalPosts={totalPosts}
+        paginate={handlePaginate}
         currentPage={currentPage}
       />
       {showModal &&
