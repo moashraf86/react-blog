@@ -7,7 +7,7 @@ import { Form } from "./Form";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
-export default function EditPost() {
+export const EditPost = () => {
   const posts = useContext(PostsContext);
   const dispatch = useContext(PostsDispatchContext);
   const id = useParams().id;
@@ -68,4 +68,4 @@ export default function EditPost() {
       image={image}
     />
   );
-}
+};

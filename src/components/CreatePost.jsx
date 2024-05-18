@@ -4,7 +4,7 @@ import { Form } from "./Form";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
-export default function CreatePost() {
+export const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
@@ -80,4 +80,4 @@ export default function CreatePost() {
       validated={validated}
     />
   );
-}
+};

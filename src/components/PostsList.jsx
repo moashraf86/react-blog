@@ -22,7 +22,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 
-export default function PostsList() {
+export const PostsList = () => {
   const posts = useContext(PostsContext);
   const dispatch = useContext(PostsDispatchContext);
   const [loading, setLoading] = useState(false);
@@ -51,6 +51,7 @@ export default function PostsList() {
       setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
       setTotalPosts(totalPostsSnapshot.docs.length);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
+      console.log(postsData);
       if (!postsData) throw new Error("Error fetching posts");
       dispatch({ type: "FETCH_POSTS", payload: postsData });
       setError(null);
@@ -295,4 +296,4 @@ export default function PostsList() {
         )}
     </div>
   );
-}
+};
