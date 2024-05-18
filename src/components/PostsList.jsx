@@ -18,6 +18,7 @@ import {
   limit,
   startAfter,
   endBefore,
+  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -28,12 +29,12 @@ export default function PostsList() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
-  // const [firstDocs, setFirstDocs] = useState([]);
-  const [firstPost, setFirstPost] = useState(null);
+  const [firstVisible, setFirstVisible] = useState(null);
   const [lastVisible, setLastVisible] = useState(null);
   const [totalPosts, setTotalPosts] = useState(0);
+  const [filterKey, setFilterKey] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-
+  const postsPerPage = 2;
   /**
    * Fetch posts from the Firebase store After the component mounts
    */
@@ -43,10 +44,10 @@ export default function PostsList() {
       setLoading(true);
       setError(null);
       const totalPosts = collection(db, "posts");
-      const postsQuery = query(collection(db, "posts"), limit(2));
+      const postsQuery = query(collection(db, "posts"), limit(postsPerPage));
       const postsSnapshot = await getDocs(postsQuery);
       const totalPostsSnapshot = await getDocs(totalPosts);
-      setFirstPost(postsSnapshot.docs[0]);
+      setFirstVisible(postsSnapshot.docs[0]);
       setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
       setTotalPosts(totalPostsSnapshot.docs.length);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
@@ -66,27 +67,45 @@ export default function PostsList() {
   /**
    * Handle pagination
    */
-
   const handlePaginate = async (pageNumber) => {
     if (pageNumber === currentPage) return;
     try {
       setLoading(true);
+      history.pushState({}, "", `?pages=${pageNumber}`);
       let postsQuery;
       if (pageNumber > currentPage) {
-        postsQuery = query(
-          collection(db, "posts"),
-          startAfter(lastVisible), // startAfter
-          limit(2)
-        );
+        if (filterKey === "all") {
+          postsQuery = query(
+            collection(db, "posts"),
+            startAfter(lastVisible), // startAfter
+            limit(postsPerPage)
+          );
+        } else {
+          postsQuery = query(
+            collection(db, "posts"),
+            startAfter(lastVisible), // startAfter
+            where("tag", "==", `${filterKey}`),
+            limit(postsPerPage)
+          );
+        }
       } else {
-        postsQuery = query(
-          collection(db, "posts"),
-          endBefore(firstPost), // endBefore
-          limit(2)
-        );
+        if (filterKey === "all") {
+          postsQuery = query(
+            collection(db, "posts"),
+            endBefore(firstVisible), // endBefore
+            limit(postsPerPage)
+          );
+        } else {
+          postsQuery = query(
+            collection(db, "posts"),
+            endBefore(firstVisible), // endBefore
+            where("tag", "==", `${filterKey}`),
+            limit(postsPerPage)
+          );
+        }
       }
       const postsSnapshot = await getDocs(postsQuery);
-      setFirstPost(postsSnapshot.docs[0]);
+      setFirstVisible(postsSnapshot.docs[0]);
       setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
       setCurrentPage(pageNumber);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
@@ -100,6 +119,49 @@ export default function PostsList() {
     }
   };
 
+  /**
+   * Filter posts based on category
+   */
+  const handleFilter = (key) => {
+    const createFilter = async (key) => {
+      switch (key) {
+        case "all":
+          fetchPosts();
+          break;
+        default:
+          try {
+            setLoading(true);
+            setError(null);
+            const postsCollection = query(
+              collection(db, "posts"),
+              where("tag", "==", `${key}`)
+            );
+            const postsQuery = query(
+              collection(db, "posts"),
+              where("tag", "==", `${key}`),
+              limit(postsPerPage)
+            );
+            const postsSnapshot = await getDocs(postsQuery);
+            const totalPostsSnapshot = await getDocs(postsCollection);
+            setFirstVisible(postsSnapshot.docs[0]);
+            setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
+            setTotalPosts(totalPostsSnapshot.docs.length);
+            const postsData = postsSnapshot.docs.map((doc) => doc.data());
+            if (!postsData) throw new Error("Error fetching posts");
+            dispatch({ type: "FETCH_POSTS", payload: postsData });
+            setError(null);
+          } catch (error) {
+            setError(error.message);
+          } finally {
+            setLoading(false);
+          }
+          break;
+      }
+    };
+    createFilter(key);
+    setFilterKey(key);
+    setCurrentPage(1);
+  };
   /**
    * Handle Show Modal
    */
@@ -137,9 +199,69 @@ export default function PostsList() {
 
   return (
     <div className="flex flex-col gap-6 mt-12">
-      <h2 className="px-4 text-2xl md:text-4xl font-bold mb-4 text-zinc-50">
-        All Posts
-      </h2>
+      <div className="flex flex-wrap items-center justify-between">
+        <h2 className="px-4 text-2xl md:text-4xl font-bold mb-4 text-zinc-50">
+          All Posts
+        </h2>
+        <div className="flex items-center gap-3 px-4 text-zinc-400">
+          <label
+            htmlFor="all"
+            className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+          >
+            <input
+              type="radio"
+              name="filter"
+              id="all"
+              className="hidden"
+              value="all"
+              onChange={(e) => handleFilter(e.target.value)}
+            />
+            All
+          </label>
+          <label
+            htmlFor="tech"
+            className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+          >
+            <input
+              type="radio"
+              name="filter"
+              id="tech"
+              className="hidden"
+              value="tech"
+              onChange={(e) => handleFilter(e.target.value)}
+            />
+            Tech
+          </label>
+          <label
+            htmlFor="science"
+            className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+          >
+            <input
+              type="radio"
+              name="filter"
+              id="science"
+              className="hidden"
+              value="science"
+              onChange={(e) => handleFilter(e.target.value)}
+            />
+            Science
+          </label>
+          <label
+            htmlFor="culture"
+            className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+          >
+            <input
+              type="radio"
+              name="filter"
+              id="culture"
+              className="hidden"
+              value="culture"
+              onChange={(e) => handleFilter(e.target.value)}
+            />
+            Culture
+          </label>
+        </div>
+      </div>
       <ul className="flex justify-start flex-wrap">
         {loading &&
           posts.map((post) => (
@@ -160,6 +282,7 @@ export default function PostsList() {
         totalPosts={totalPosts}
         paginate={handlePaginate}
         currentPage={currentPage}
+        postsPerPage={postsPerPage}
       />
       {showModal &&
         createPortal(

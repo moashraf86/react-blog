@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
-
 /* eslint-disable react/prop-types */
-export const Pagination = ({ paginate, currentPage, totalPosts }) => {
-  let pagesNumber = Math.ceil(totalPosts / 2); // 2
+export const Pagination = ({
+  paginate,
+  currentPage,
+  totalPosts,
+  postsPerPage,
+}) => {
+  let pagesNumber = Math.ceil(totalPosts / postsPerPage);
   let pages = Array.from({ length: pagesNumber }, (_, i) => i + 1); // [1, 2]
-
+  console.log(postsPerPage);
   return (
     <nav>
       <ul className="flex justify-center gap-3 mb-4">
@@ -18,7 +21,7 @@ export const Pagination = ({ paginate, currentPage, totalPosts }) => {
                   : "bg-zinc-900 hover:bg-zin-800 border-zinc-700 text-zinc-50"
               }  border border-slate-200 rounded-md font-medium`}
             >
-              <Link to={`/pages/${page}`}>{page}</Link>
+              {page}
             </button>
           </li>
         ))}
