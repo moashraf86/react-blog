@@ -6,9 +6,7 @@ import { useState } from "react";
 import { Pagination } from "./Pagination";
 import { createPortal } from "react-dom";
 import { ConfirmModal } from "./ConfirmModal";
-import { Loader } from "./Loader";
 import { Error } from "./Error";
-import { PostItem } from "./PostItem";
 import {
   collection,
   getDocs,
@@ -194,23 +192,16 @@ export const Posts = () => {
   };
 
   return (
-    <PostsList title="All posts" handleFilter={handleFilter}>
-      <ul className="flex justify-start flex-wrap">
-        {loading &&
-          posts.map((post) => (
-            <Loader key={post.id} style={"sm:w-1/2 xl:w-1/3"} />
-          ))}
-        {!loading &&
-          !error &&
-          posts.map((post) => (
-            <PostItem
-              key={post.id}
-              post={post}
-              handleShowModal={() => handleShowModal(post)}
-            />
-          ))}
-        {error && <Error errMsg={error} />}
-      </ul>
+    <>
+      <PostsList
+        title="All posts"
+        items={posts}
+        loading={loading}
+        error={error}
+        handleFilter={handleFilter}
+        handleShowModal={handleShowModal}
+        fetchPosts={fetchPosts}
+      />
       <Pagination
         totalPosts={totalPosts}
         paginate={handlePaginate}
@@ -226,6 +217,6 @@ export const Posts = () => {
           />,
           document.body
         )}
-    </PostsList>
+    </>
   );
 };

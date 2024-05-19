@@ -1,5 +1,16 @@
+import { PostItem } from "./PostItem";
+import { Loader } from "./Loader";
+import { Error } from "./Error";
 /* eslint-disable react/prop-types */
-export const PostsList = ({ title, children, handleFilter }) => {
+export const PostsList = ({
+  title,
+  items,
+  loading,
+  error,
+  handleFilter,
+  handleShowModal,
+  fetchPosts,
+}) => {
   return (
     <div className="flex flex-col gap-6 mt-12">
       <div className="flex flex-wrap items-center justify-between">
@@ -65,7 +76,23 @@ export const PostsList = ({ title, children, handleFilter }) => {
           </label>
         </div>
       </div>
-      {children}
+      <ul className="flex justify-start flex-wrap">
+        {loading &&
+          items.map((post) => (
+            <Loader key={post.id} style={"sm:w-1/2 xl:w-1/3"} />
+          ))}
+        {!loading &&
+          !error &&
+          items.map((post) => (
+            <PostItem
+              key={post.id}
+              post={post}
+              handleShowModal={() => handleShowModal(post)}
+              fetchPosts={fetchPosts}
+            />
+          ))}
+        {error && <Error errMsg={error} />}
+      </ul>
     </div>
   );
 };
