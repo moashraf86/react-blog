@@ -10,7 +10,7 @@ export const Pagination = ({
   console.log(postsPerPage);
   return (
     <nav>
-      <ul className="flex justify-center gap-3 mb-4">
+      <ul className="flex justify-center gap-3 py-4">
         {pagesNumber > 1 &&
           pages.map((page) => (
             <li key={page}>

@@ -1,8 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { BookmarksContext } from "../context/BookmarksContext";
 import { BookmarksDispatchContext } from "../context/BookmarksDispatchContext";
-import { PostItem } from "./PostItem";
-import { Loader } from "./Loader";
 import { Error } from "./Error";
 import { Pagination } from "./Pagination";
 import { ConfirmModal } from "./ConfirmModal";
@@ -194,24 +192,16 @@ export const Bookmarks = () => {
   };
 
   return (
-    <PostsList title="Bookmarks" handleFilter={handleFilter}>
-      <ul className="flex justify-start flex-wrap">
-        {loading &&
-          bookmarks.map((post) => (
-            <Loader key={post.id} style={"sm:w-1/2 xl:w-1/3"} />
-          ))}
-        {!loading &&
-          !error &&
-          bookmarks.map((post) => (
-            <PostItem
-              key={post.id}
-              post={post}
-              handleShowModal={() => handleShowModal(post)}
-              fetchBookmarks={fetchBookmarks}
-            />
-          ))}
-        {error && <Error errMsg={error} />}
-      </ul>
+    <>
+      <PostsList
+        title="Bookmarks"
+        items={bookmarks}
+        loading={loading}
+        error={error}
+        handleFilter={handleFilter}
+        handleShowModal={handleShowModal}
+        fetchPosts={fetchBookmarks}
+      />
       <Pagination
         totalPosts={totalBookmarks}
         paginate={handlePaginate}
@@ -227,6 +217,6 @@ export const Bookmarks = () => {
           />,
           document.body
         )}
-    </PostsList>
+    </>
   );
 };
