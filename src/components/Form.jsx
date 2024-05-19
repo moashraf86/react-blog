@@ -6,68 +6,168 @@ export const Form = ({
   setTitle,
   content,
   setContent,
+  setTag,
+  tag,
   handleImageChange,
-  imageName,
+  handleRemoveImage,
+  image,
+  validated,
 }) => {
+  const inValidTitle = validated && !title;
+  const inValidContent = validated && !content;
+  const inValidTag = validated && !tag;
   return (
-    <div className="flex justify-center items-center max-w-[400px] mx-auto translate-y-[50%] -mt-20 ">
-      <div className="flex flex-col w-full bg-zinc-900 border border-zinc-800 rounded-md p-6 gap-4">
+    <div className="flex justify-center items-center max-w-[400px] mx-auto">
+      <div className="flex flex-col w-full bg-zinc-900 border border-zinc-800 rounded-md p-6 gap-4 mt-6">
         <h3 className="font-semibold text-xl md:text-3xl text-zinc-50 mb-2">
           {heading}
         </h3>
         <form onSubmit={onsubmit} className="flex flex-col gap-4">
-          <input
-            name="title"
-            id="title"
-            className="p-2 border text-zinc-50 border-zinc-800 bg-zinc-900 rounded-md"
-            value={title}
-            type="text"
-            placeholder="title"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <textarea
-            rows={5}
-            className="p-2 text-zinc-50 border border-zinc-800 bg-zinc-900 rounded-md"
-            placeholder="write something here..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
-          <label
-            tabIndex="0"
-            htmlFor="image"
-            className="p-2 border border-dashed border-zinc-800 min-h-24 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                document.getElementById("image").click();
-              }
-            }}
-          >
-            click to upload image
+          <div className="flex flex-col gap-1">
             <input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              hidden
+              name="title"
+              id="title"
+              className={`w-full p-2 border text-zinc-50 bg-zinc-900 rounded-md ${
+                inValidTitle ? "border-red-600" : "border-zinc-800"
+              }`}
+              value={title}
+              type="text"
+              placeholder="Add title"
+              onChange={(e) => setTitle(e.target.value)}
             />
-          </label>
-          <p>
-            {imageName && (
-              <span className="flex gap-2 items-center text-green-800 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
+            <p className="text-sm text-red-600">
+              {inValidTitle && "title is required"}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <textarea
+              rows={4}
+              className={`w-full p-2 text-zinc-50 border bg-zinc-900 rounded-md ${
+                inValidContent ? "border-red-600" : "border-zinc-800"
+              }`}
+              placeholder="write something here..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            ></textarea>
+            <p className="text-sm text-red-600">
+              {inValidContent && "content is required"}
+            </p>
+          </div>
+          {!image && (
+            <label
+              tabIndex="0"
+              htmlFor="image"
+              className="p-2 border border-dashed border-zinc-800 min-h-20 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  document.getElementById("image").click();
+                }
+              }}
+            >
+              click to upload image
+              <input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                hidden
+              />
+            </label>
+          )}
+          {image && (
+            <div className="relative rounded-md overflow-clip">
+              <div className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center gap-4 bg-zinc-800/60">
+                <label
+                  tabIndex="0"
+                  htmlFor="image"
+                  className="w-12 h-12 cursor-pointer flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-zinc-50 rounded-md"
+                  title="Edit image"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      document.getElementById("image").click();
+                    }
+                  }}
                 >
-                  <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11.0026 16L6.75999 11.7574L8.17421 10.3431L11.0026 13.1716L16.6595 7.51472L18.0737 8.92893L11.0026 16Z"></path>
-                </svg>
-                image uploaded sucssesfully
-              </span>
-            )}
-          </p>
+                  <i className="ri-edit-box-line text-white text-3xl"></i>
+                  <input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    hidden
+                  />
+                </label>
+                <button
+                  onClick={handleRemoveImage}
+                  className="w-12 h-12 focus:outline-none focus:ring-2 focus:ring-zinc-50 rounded-md"
+                  title="Delete Image"
+                >
+                  <i className="ri-delete-bin-line text-zinc-50 text-3xl"></i>
+                </button>
+              </div>
+              <img
+                className="w-full max-h-[120px] object-cover"
+                src={image}
+                alt=""
+              />
+            </div>
+          )}
+          <div className="flex gap-3 items-center">
+            <label
+              htmlFor="tech"
+              className={`text-zinc-50 py-1 px-4 border rounded-full cursor-pointer has-[:checked]:bg-zinc-600 ${
+                inValidTag ? "border-red-600" : "border-zinc-800"
+              }`}
+            >
+              <input
+                type="radio"
+                id="tech"
+                value="tech"
+                name="postTag"
+                className="text-zinc-50"
+                hidden
+                onChange={(e) => setTag(e.target.value)}
+              />
+              Tech
+            </label>
+            <label
+              htmlFor="culture"
+              className={`text-zinc-50 py-1 px-4 border rounded-full cursor-pointer has-[:checked]:bg-zinc-600 ${
+                inValidTag ? "border-red-600" : "border-zinc-800"
+              }`}
+            >
+              <input
+                type="radio"
+                id="culture"
+                value="culture"
+                name="postTag"
+                className="text-zinc-50"
+                hidden
+                onChange={(e) => setTag(e.target.value)}
+              />
+              Culture
+            </label>
+            <label
+              htmlFor="science"
+              className={`text-zinc-50 py-1 px-4 border rounded-full cursor-pointer has-[:checked]:bg-zinc-600 ${
+                inValidTag ? "border-red-600" : "border-zinc-800"
+              }`}
+            >
+              <input
+                type="radio"
+                id="science"
+                value="science"
+                name="postTag"
+                className="text-zinc-50"
+                hidden
+                onChange={(e) => setTag(e.target.value)}
+              />
+              Science
+            </label>
+          </div>
           <button
             type="submit"
             className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"

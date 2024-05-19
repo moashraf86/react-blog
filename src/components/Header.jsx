@@ -16,6 +16,14 @@ export default function Header() {
                 All Posts
               </Link>
             </li>
+            <li>
+              <Link
+                to="/bookmarks"
+                className="text-zinc-50 font-semibold text-sm md:text-base"
+              >
+                Bookmarks
+              </Link>
+            </li>
             <li className="flex">
               <Link
                 to="/create"

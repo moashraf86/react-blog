@@ -1,15 +1,15 @@
-import { useState, useContext } from "react";
-import axios from "axios";
-import { PostsDispatchContext } from "../context/PostsDispatchContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form } from "./Form";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
-export default function CreatePost() {
+export const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-  const [imageName, setImageName] = useState(null);
-  const dispatch = useContext(PostsDispatchContext);
+  const [tag, setTag] = useState("");
+  const [validated, setValidated] = useState(false);
   let navigate = useNavigate();
 
   // Handle Image Change
@@ -17,40 +17,48 @@ export default function CreatePost() {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
-
     reader.onloadend = () => {
       setImage(reader.result);
-      setImageName(file.name);
     };
   };
+  /**
+   * Hnadle Remove Image
+   */
+  const handleRemoveImage = () => {
+    setImage(null);
+  };
+
   /**
    * Handle Create Post
    */
   const handleCreatePost = (e) => {
     e.preventDefault();
-    // Validate the title and content fields
-    if (!title || !content) {
-      e.preventDefault();
+    setValidated(true);
+    if (!title || !content || !tag) {
       return;
     }
 
     // Write posts to the server
     const createPost = async () => {
-      const { data } = await axios.post("http://localhost:3000/posts", {
-        id: Date.now().toString(),
+      // Add a new document with a generated id fireebase collection
+      const docRef = doc(collection(db, "posts"));
+      const data = {
+        id: docRef.id,
         title,
         content,
-        image: image || `https://source.unsplash.com/random/${title}`,
-      });
-      // Dispatch the action to create post to the reducer
+        image: image || `https://source.unsplash.com/1600x900/?${tag}`,
+        tag,
+        bookmarked: false,
+      };
+      await setDoc(docRef, data);
+      /**
+       * we don't need to dispatch the action here anymore
       dispatch({
         type: "CREATE_POST",
         payload: data,
-      });
+      });*/
     };
     createPost();
-    setTitle("");
-    setContent("");
     setImage(null);
     setTimeout(() => {
       navigate("/");
@@ -64,9 +72,13 @@ export default function CreatePost() {
       setTitle={setTitle}
       content={content}
       setContent={setContent}
+      tag={tag}
+      setTag={setTag}
       onsubmit={handleCreatePost}
       handleImageChange={handleImageChange}
-      imageName={imageName}
+      handleRemoveImage={handleRemoveImage}
+      image={image}
+      validated={validated}
     />
   );
-}
+};
