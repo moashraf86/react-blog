@@ -9,6 +9,7 @@ import { Post } from "./components/Post.jsx";
 import { Bookmarks } from "./components/Bookmarks.jsx";
 import "remixicon/fonts/remixicon.css";
 import "./index.css";
+import { Posts } from "./components/posts.jsx";
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <div>Not Found</div>,
     children: [
-      { path: "/", element: <PostsList /> },
+      { path: "/", element: <Posts /> },
       { path: "/post/:id", element: <Post /> },
       { path: "/create", element: <CreatePost /> },
       { path: "/edit/:id", element: <EditPost /> },

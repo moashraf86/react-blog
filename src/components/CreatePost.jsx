@@ -48,6 +48,7 @@ export const CreatePost = () => {
         content,
         image: image || `https://source.unsplash.com/1600x900/?${tag}`,
         tag,
+        bookmarked: false,
       };
       await setDoc(docRef, data);
       /**

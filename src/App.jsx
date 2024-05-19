@@ -35,7 +35,7 @@ export default function App() {
         return action.payload;
       case "ADD_BOOKMARK":
         return [...bookmarks, action.payload];
-      case "REMOVE_BOOKMARK":
+      case "DELETE_BOOKMARK":
         return [
           ...bookmarks.filter((bookmark) => bookmark.id !== action.payload.id),
         ];
