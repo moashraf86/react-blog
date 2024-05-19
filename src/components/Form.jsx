@@ -17,8 +17,8 @@ export const Form = ({
   const inValidContent = validated && !content;
   const inValidTag = validated && !tag;
   return (
-    <div className="flex justify-center items-center max-w-[400px] mx-auto translate-y-[50%] -mt-20 ">
-      <div className="flex flex-col w-full bg-zinc-900 border border-zinc-800 rounded-md p-6 gap-4">
+    <div className="flex justify-center items-center max-w-[400px] mx-auto">
+      <div className="flex flex-col w-full bg-zinc-900 border border-zinc-800 rounded-md p-6 gap-4 mt-6">
         <h3 className="font-semibold text-xl md:text-3xl text-zinc-50 mb-2">
           {heading}
         </h3>
@@ -42,7 +42,7 @@ export const Form = ({
 
           <div className="flex flex-col gap-1">
             <textarea
-              rows={5}
+              rows={4}
               className={`w-full p-2 text-zinc-50 border bg-zinc-900 rounded-md ${
                 inValidContent ? "border-red-600" : "border-zinc-800"
               }`}
@@ -58,7 +58,7 @@ export const Form = ({
             <label
               tabIndex="0"
               htmlFor="image"
-              className="p-2 border border-dashed border-zinc-800 min-h-24 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
+              className="p-2 border border-dashed border-zinc-800 min-h-20 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
