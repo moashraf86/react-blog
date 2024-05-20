@@ -1,15 +1,13 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { BookmarksDispatchContext } from "../context/BookmarksDispatchContext";
 import { PostsDispatchContext } from "../context/PostsDispatchContext";
 
 export const PostItem = ({ post, handleShowModal }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const dispatch = useContext(PostsDispatchContext);
-  const bookmarkDispatch = useContext(BookmarksDispatchContext);
   const [loading, setLoading] = useState(false);
   /**
    * Hide the popover when clicked outside
@@ -34,22 +32,16 @@ export const PostItem = ({ post, handleShowModal }) => {
     const addBookmark = async (post) => {
       try {
         setLoading(true);
-        const bookmarkRef = doc(db, "bookmarks", post.id);
-        await setDoc(bookmarkRef, { ...post, bookmarked: true });
+        const postRef = doc(db, "posts", post.id);
+        await updateDoc(postRef, { ...post, bookmarked: true });
+        dispatch({ type: "EDIT_POST", payload: { ...post, bookmarked: true } });
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
     };
-    // add bookmarked field to posts collection in firestore
-    const updatePostBookmarked = async (post) => {
-      const postRef = doc(db, "posts", post.id);
-      await updateDoc(postRef, { ...post, bookmarked: true });
-      dispatch({ type: "EDIT_POST", payload: { ...post, bookmarked: true } });
-    };
     addBookmark(post);
-    updatePostBookmarked(post);
   };
 
   /**
@@ -59,32 +51,21 @@ export const PostItem = ({ post, handleShowModal }) => {
     const removeBookmark = async (post) => {
       try {
         setLoading(true);
-        const bookmarkRef = doc(db, "bookmarks", post.id);
-        await deleteDoc(bookmarkRef);
-        bookmarkDispatch({
-          type: "DELETE_BOOKMARK",
-          payload: { id: post.id },
+        const postRef = doc(db, "posts", post.id);
+        await updateDoc(postRef, { ...post, bookmarked: false });
+        dispatch({
+          type: "EDIT_POST",
+          payload: { ...post, bookmarked: false },
         });
+        // update the bookmark component
+        // dispatch({ type: "DELETE_BOOKMARK", payload: post });
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
     };
-
-    const updateBookmarked = async (post) => {
-      const postRef = doc(db, "posts", post.id);
-      // update the bookmarked field to false
-      await updateDoc(postRef, {
-        bookmarked: false,
-      });
-      dispatch({
-        type: "EDIT_POST",
-        payload: { ...post, bookmarked: false },
-      });
-    };
     removeBookmark(post);
-    updateBookmarked(post);
   };
 
   return (

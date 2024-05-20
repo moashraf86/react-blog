@@ -7,7 +7,6 @@ export const Pagination = ({
 }) => {
   let pagesNumber = Math.ceil(totalPosts / postsPerPage);
   let pages = Array.from({ length: pagesNumber }, (_, i) => i + 1); // [1, 2]
-  console.log(postsPerPage);
   return (
     <nav>
       <ul className="flex justify-center gap-3 py-4">

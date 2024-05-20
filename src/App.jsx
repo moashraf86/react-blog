@@ -23,6 +23,8 @@ export default function App() {
         return action.payload;
       case "DELETE_POST":
         return [...posts.filter((post) => post.id !== action.payload.id)];
+      case "DELETE_BOOKMARK":
+        return [...posts.filter((post) => post.id !== action.payload.id)];
       default:
         return posts;
     }
