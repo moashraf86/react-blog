@@ -15,13 +15,13 @@ export const EditPost = () => {
   const [title, setTitle] = useState(id ? post.title : "");
   const [content, setContent] = useState(id ? post.content : "");
   const [image, setImage] = useState(null);
+  const [tag, setTag] = useState("");
   let navigate = useNavigate();
 
   // load image if post exists
   if (post && !image) {
     setImage(post.image);
   }
-
   /**
    * Handle Image Change
    */
@@ -40,14 +40,16 @@ export const EditPost = () => {
     e.preventDefault();
     const editPost = async () => {
       // Update the post on firebase
-      await updateDoc(doc(db, "posts", id), {
+      const postRef = doc(db, "posts", id);
+      await updateDoc(postRef, {
         title,
         content,
+        tag,
         image: image || post.image,
       });
       dispatch({
         type: "EDIT_POST",
-        payload: { id, title, content, image: image || post.image },
+        payload: { id, title, content, tag, image: image || post.image },
       });
     };
     editPost();
@@ -66,6 +68,8 @@ export const EditPost = () => {
       handleImageChange={handleImageChange}
       imageName={post && post.image}
       image={image}
+      tag={tag}
+      setTag={setTag}
     />
   );
 };

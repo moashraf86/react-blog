@@ -100,6 +100,7 @@ export const PostsList = ({ title, postsQuery }) => {
     if (pageNumber === currentPage) return;
     try {
       setLoading(true);
+      setError(null);
       history.pushState({}, "", `?pages=${pageNumber}`);
       let snapShot;
       if (pageNumber > currentPage) {
@@ -114,8 +115,8 @@ export const PostsList = ({ title, postsQuery }) => {
           snapShot = query(
             postsQuery.collection,
             orderBy("title", "asc"),
-            startAfter(lastVisible),
             where("tag", "==", `${filterKey}`),
+            startAfter(lastVisible),
             limit(postsPerPage)
           );
         }
@@ -131,14 +132,13 @@ export const PostsList = ({ title, postsQuery }) => {
           snapShot = query(
             postsQuery.collection,
             orderBy("title", "asc"),
-            endBefore(firstVisible),
             where("tag", "==", `${filterKey}`),
+            endBefore(firstVisible),
             limitToLast(postsPerPage)
           );
         }
       }
       const postsSnapshot = await getDocs(snapShot);
-      console.log(postsSnapshot.docs[0]);
       setFirstVisible(postsSnapshot.docs[0]);
       setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
       setCurrentPage(pageNumber);
