@@ -6,6 +6,7 @@ import { db } from "../firebase";
 
 export const CreatePost = () => {
   const [image, setImage] = useState(null);
+  const [isImageRequried, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -40,7 +41,7 @@ export const CreatePost = () => {
     if (!content) {
       return "Content is required";
     } else if (!regExp.test(content)) {
-      return "Content must be between 10 and 1000 characters";
+      return "Content must be between 100 and 500 characters";
     }
     return true;
   };
@@ -54,9 +55,9 @@ export const CreatePost = () => {
 
   const validateImage = (image) => {
     // max size 1mb and file type jpg, jpeg, png
-    if (!image) {
+    if (!image && isImageRequried) {
       return "Image is required";
-    } else if (image.size > 1000000) {
+    } else if (image?.size > 1000000) {
       return "Image must be less than 1mb";
     }
     return true;
@@ -132,7 +133,7 @@ export const CreatePost = () => {
         content,
         tag,
         image:
-          image || `https://source.unsplash.com/1600x900/?${tag}/${docRef.id}`,
+          image || `https://source.unsplash.com/1024x1024/?${tag}/${docRef.id}`,
         bookmarked: false,
       };
       await setDoc(docRef, data);
@@ -155,6 +156,8 @@ export const CreatePost = () => {
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
       handleChange={handleChange}
+      handleSelectRandomImage={() => setIsImageRequired(!isImageRequried)}
+      isImageRequired={isImageRequried}
       errors={errors}
     />
   );

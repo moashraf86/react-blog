@@ -9,6 +9,8 @@ export const Form = ({
   handleImageChange,
   handleRemoveImage,
   handleChange,
+  handleSelectRandomImage,
+  isImageRequired,
   errors,
 }) => {
   return (
@@ -34,7 +36,6 @@ export const Form = ({
               <p className="text-sm text-red-600">{errors.title}</p>
             )}
           </div>
-
           <div className="flex flex-col gap-1">
             <textarea
               rows={4}
@@ -50,7 +51,7 @@ export const Form = ({
               <p className="text-sm text-red-600">{errors.content}</p>
             )}
           </div>
-          {!image && (
+          {!image && isImageRequired && (
             <>
               <label
                 tabIndex="0"
@@ -114,6 +115,26 @@ export const Form = ({
                 src={image}
                 alt=""
               />
+            </div>
+          )}
+          {!image && isImageRequired && (
+            <p className="text-sm uppercase text-center text-zinc-400">or</p>
+          )}
+          {/* Select Random image */}
+          {!image && (
+            <div className="flex gap-2 items-center ">
+              <input
+                type="checkbox"
+                id="checkbox"
+                className="cursor-pointer appearance-none w-5 h-5 bg-zinc-900 border border-zinc-800 rounded-md checked:bg-[url('src/assets/check.svg')] checked:bg-indigo-500"
+                onChange={handleSelectRandomImage}
+              />
+              <label
+                htmlFor="checkbox"
+                className="text-sm text-zinc-50 cursor-pointer"
+              >
+                Select radnom image instead
+              </label>
             </div>
           )}
           <div className="flex flex-wrap gap-3 items-center">
