@@ -5,9 +5,14 @@ import { PostsContext } from "./context/PostsContext";
 import { PostsDispatchContext } from "./context/PostsDispatchContext";
 import { BookmarksContext } from "./context/BookmarksContext";
 import { BookmarksDispatchContext } from "./context/BookmarksDispatchContext";
+import { AuthContext } from "./context/AuthContext";
 
 export default function App() {
   const initialPosts = [];
+  const initialAuth = {
+    signedIn: false,
+    user: null,
+  };
   // postsReducer function
   const postsReducer = (posts, action) => {
     switch (action.type) {
@@ -45,24 +50,44 @@ export default function App() {
         return bookmarks;
     }
   };
-
+  // auth reducer
+  const authReducer = (state, action) => {
+    switch (action.type) {
+      case "LOGIN":
+        return {
+          ...state,
+          signedIn: true,
+          user: action.payload,
+        };
+      case "LOGOUT":
+        return {
+          ...state,
+          signedIn: false,
+          user: null,
+        };
+      default:
+        return state;
+    }
+  };
   const [posts, dispatch] = useReducer(postsReducer, initialPosts);
   const [bookmarks, bookmarksDispatch] = useReducer(
     bookmarksReducer,
     initialPosts
   );
-
+  const [authentication, authDispatch] = useReducer(authReducer, initialAuth);
   return (
     <PostsContext.Provider value={posts}>
       <PostsDispatchContext.Provider value={dispatch}>
-        <div className="container h-full mx-auto px-4">
-          <Header />
-          <BookmarksContext.Provider value={bookmarks}>
-            <BookmarksDispatchContext.Provider value={bookmarksDispatch}>
-              <Outlet />
-            </BookmarksDispatchContext.Provider>
-          </BookmarksContext.Provider>
-        </div>
+        <AuthContext.Provider value={{ authentication, authDispatch }}>
+          <div className="container h-full mx-auto px-4">
+            <Header />
+            <BookmarksContext.Provider value={bookmarks}>
+              <BookmarksDispatchContext.Provider value={bookmarksDispatch}>
+                <Outlet />
+              </BookmarksDispatchContext.Provider>
+            </BookmarksContext.Provider>
+          </div>
+        </AuthContext.Provider>
       </PostsDispatchContext.Provider>
     </PostsContext.Provider>
   );

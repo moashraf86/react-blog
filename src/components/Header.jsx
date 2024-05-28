@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { AuthBtn } from "./AuthBtn";
 export default function Header() {
   return (
     <header className="sticky w-full top-0 z-40 backdrop-blur border-b bg-zinc-900/ border-zinc-800 ">
@@ -8,6 +9,9 @@ export default function Header() {
         </Link>
         <nav>
           <ul className="flex gap-4 items-center">
+            <li>
+              <AuthBtn />
+            </li>
             <li>
               <Link
                 to="/"
