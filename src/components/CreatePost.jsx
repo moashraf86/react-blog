@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form } from "./Form";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import { AuthContext } from "../context/AuthContext";
 
 export const CreatePost = () => {
+  const { authentication } = useContext(AuthContext);
+  const autherId = authentication.user?.userId || "";
+  const autherName = authentication.user?.name || "";
   const [image, setImage] = useState(null);
   const [isImageRequried, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
@@ -135,6 +139,9 @@ export const CreatePost = () => {
         image:
           image || `https://source.unsplash.com/1024x1024/?${tag}/${docRef.id}`,
         bookmarked: false,
+        autherId: autherId,
+        autherName: autherName,
+        createdAt: new Date().toISOString(),
       };
       await setDoc(docRef, data);
     };

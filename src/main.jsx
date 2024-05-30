@@ -10,6 +10,7 @@ import { Bookmarks } from "./components/Bookmarks.jsx";
 import "remixicon/fonts/remixicon.css";
 import "./index.css";
 import { Posts } from "./components/posts.jsx";
+import { MyPosts } from "./components/MyPosts.jsx";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: "/create", element: <CreatePost /> },
       { path: "/edit/:id", element: <EditPost /> },
       { path: "/bookmarks", element: <Bookmarks /> },
+      { path: "/my-posts", element: <MyPosts /> },
     ],
   },
 ]);

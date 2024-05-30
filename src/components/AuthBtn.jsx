@@ -16,12 +16,14 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { useNavigate } from "react-router-dom";
 export const AuthBtn = () => {
   const { authDispatch, authentication } = useContext(AuthContext);
   let isSignedIn = authentication.signedIn;
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
   const { docId } = authentication.user || {};
+  let navigate = useNavigate();
 
   //get user from firebase once loaded if signed in and update current state accordinly
   const fetchUser = async () => {
@@ -90,10 +92,15 @@ export const AuthBtn = () => {
         type: "LOGOUT",
         payload: null,
       });
+      redirectToHome();
     } catch (err) {
       console.log(err);
     }
   };
+
+  function redirectToHome() {
+    // navigate("/");
+  }
 
   return (
     <div>

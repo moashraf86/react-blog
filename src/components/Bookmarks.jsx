@@ -8,21 +8,6 @@ export const Bookmarks = () => {
    */
   const bookmarks = {
     collection: query(collection(db, "posts"), where("bookmarked", "==", true)),
-    // query: {
-    //   all: query(
-    //     collection(db, "posts"),
-    //     where("bookmarked", "==", true),
-    //     limit(postsPerPage)
-    //   ),
-    //   filtered: {
-    //     all: query(collection(db, "posts"), where("tag", "==", `${filterKey}`)),
-    //     limited: query(
-    //       collection(db, "posts"),
-    //       where("tag", "==", `${filterKey}`),
-    //       limit(postsPerPage)
-    //     ),
-    //   },
-    // },
   };
 
   return (
