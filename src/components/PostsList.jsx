@@ -13,19 +13,21 @@ import {
   startAfter,
   endBefore,
   limitToLast,
+  startAt,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { PostItem } from "./PostItem";
 import { Loader } from "./Loader";
-import { Error } from "./Error";
+import { Alert } from "./Alert";
 import { ConfirmModal } from "./ConfirmModal";
 import { Pagination } from "./Pagination";
 /* eslint-disable react/prop-types */
-export const PostsList = ({ title, postsQuery }) => {
+export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const posts = useContext(PostsContext);
   const dispatch = useContext(PostsDispatchContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [warn, setWarn] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
   const [totalPosts, setTotalPosts] = useState(0);
@@ -42,6 +44,7 @@ export const PostsList = ({ title, postsQuery }) => {
     try {
       setLoading(true);
       setError(null);
+      setWarn(null);
       const postsSnapshot = await getDocs(
         query(
           postsQuery.collection,
@@ -56,7 +59,6 @@ export const PostsList = ({ title, postsQuery }) => {
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
       if (!postsData) throw new Error("Error fetching posts");
       dispatch({ type: "FETCH_POSTS", payload: postsData });
-      setError(null);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -94,6 +96,17 @@ export const PostsList = ({ title, postsQuery }) => {
   };
 
   /**
+   *  Get Target snapShot for pagination based on page number
+   */
+  const getTargetSnapShot = async (i) => {
+    const targetDoc = await getDocs(
+      query(postsQuery.collection, orderBy("title", "asc"))
+    );
+    let targetSnapShot = targetDoc.docs[(i - 1) * postsPerPage];
+    return targetSnapShot;
+  };
+
+  /**
    * Handle pagination
    */
   const handlePaginate = async (pageNumber) => {
@@ -102,13 +115,15 @@ export const PostsList = ({ title, postsQuery }) => {
       setLoading(true);
       setError(null);
       history.pushState({}, "", `?pages=${pageNumber}`);
+      await getTargetSnapShot(pageNumber);
+      let target = await getTargetSnapShot(pageNumber);
       let snapShot;
       if (pageNumber > currentPage) {
         if (filterKey === "all") {
           snapShot = query(
             postsQuery.collection,
             orderBy("title", "asc"),
-            startAfter(lastVisible),
+            startAt(target),
             limit(postsPerPage)
           );
         } else {
@@ -116,7 +131,7 @@ export const PostsList = ({ title, postsQuery }) => {
             postsQuery.collection,
             orderBy("title", "asc"),
             where("tag", "==", `${filterKey}`),
-            startAfter(lastVisible),
+            startAt(target),
             limit(postsPerPage)
           );
         }
@@ -125,22 +140,22 @@ export const PostsList = ({ title, postsQuery }) => {
           snapShot = query(
             postsQuery.collection,
             orderBy("title", "asc"),
-            endBefore(firstVisible),
-            limitToLast(postsPerPage)
+            startAt(target),
+            limit(postsPerPage)
           );
         } else {
           snapShot = query(
             postsQuery.collection,
             orderBy("title", "asc"),
             where("tag", "==", `${filterKey}`),
-            endBefore(firstVisible),
-            limitToLast(postsPerPage)
+            startAt(target),
+            limit(postsPerPage)
           );
         }
       }
       const postsSnapshot = await getDocs(snapShot);
-      setFirstVisible(postsSnapshot.docs[0]);
-      setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
+      // setFirstVisible(postsSnapshot.docs[0]);
+      // setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
       setCurrentPage(pageNumber);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
       if (!postsData) throw new Error("Error fetching posts");
@@ -194,6 +209,11 @@ export const PostsList = ({ title, postsQuery }) => {
     setFilterKey(key);
     setCurrentPage(1);
   };
+
+  // if there are no posts
+  if (!posts.length && !loading) {
+    return <Alert type="default" msg={alertMsg} />;
+  }
 
   return (
     <div className="flex flex-col gap-6 mt-12">
@@ -276,7 +296,7 @@ export const PostsList = ({ title, postsQuery }) => {
               fetchPosts={fetchPosts}
             />
           ))}
-        {error && <Error errMsg={error} />}
+        {error && <Alert type="error" msg={error} />}
       </ul>
       <Pagination
         totalPosts={totalPosts}
