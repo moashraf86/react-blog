@@ -4,7 +4,6 @@ import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { CreatePost } from "./components/CreatePost.jsx";
 import { EditPost } from "./components/EditPost.jsx";
-import { PostsList } from "./components/PostsList.jsx";
 import { Post } from "./components/Post.jsx";
 import { Bookmarks } from "./components/Bookmarks.jsx";
 import "remixicon/fonts/remixicon.css";

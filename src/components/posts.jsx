@@ -13,7 +13,11 @@ export const Posts = () => {
 
   return (
     <>
-      <PostsList title="All posts" postsQuery={posts} />
+      <PostsList
+        title="All posts"
+        postsQuery={posts}
+        alertMsg="No Posts Added yet."
+      />
     </>
   );
 };

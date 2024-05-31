@@ -12,7 +12,11 @@ export const Bookmarks = () => {
 
   return (
     <>
-      <PostsList title="Bookmarks" postsQuery={bookmarks} />
+      <PostsList
+        title="Bookmarks"
+        postsQuery={bookmarks}
+        alertMsg="No Added Bookmarks"
+      />
     </>
   );
 };
