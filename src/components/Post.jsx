@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Loader } from "./Loader";
+import { PostItem } from "./PostItem";
 
 export const Post = () => {
   const posts = useContext(PostsContext);
@@ -38,27 +39,31 @@ export const Post = () => {
   }, []);
 
   return (
-    <>
-      {loading && <Loader />}
-      {!loading && (
-        <div className="flex flex-col gap-2 p-4 border-zinc-800 w-full rounded-md">
-          <div className="h-[120px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-md">
-            {post.image && (
-              <img
-                src={post.image}
-                alt={post.title}
-                className="h-full w-full object-cover rounded-md"
-              />
-            )}
-          </div>
-          <div>
-            <h2 className="text-xl md:text-2xl text-zinc-50 font-medium capitalize">
-              {post.title}
-            </h2>
-          </div>
-          <p className="text-zinc-300">{post.content}</p>
-        </div>
-      )}
-    </>
+    // <>
+    //   {loading && <Loader />}
+    //   {!loading && (
+    //     <div className="flex flex-col gap-2 p-4 border-zinc-800 w-full rounded-md">
+    //       <div className="h-[120px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-md">
+    //         {post.image && (
+    //           <img
+    //             src={post.image}
+    //             alt={post.title}
+    //             className="h-full w-full object-cover rounded-md"
+    //           />
+    //         )}
+    //       </div>
+    //       <div>
+    //         <h2 className="text-xl md:text-2xl text-zinc-50 font-medium capitalize">
+    //           {post.title}
+    //         </h2>
+    //       </div>
+    //       <p className="text-zinc-300">{post.content}</p>
+    //       <p className="text-zinc-500 mt-2">
+    //         {post.autherName && `By ${post.autherName}`}
+    //       </p>
+    //     </div>
+    //   )}
+    // </>
+    <PostItem post={post} loading={loading} error={error} className={"h-56"} />
   );
 };

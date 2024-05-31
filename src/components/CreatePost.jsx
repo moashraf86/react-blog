@@ -1,28 +1,120 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form } from "./Form";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import { AuthContext } from "../context/AuthContext";
 
 export const CreatePost = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const { authentication } = useContext(AuthContext);
+  const autherId = authentication.user?.userId || "";
+  const autherName = authentication.user?.name || "";
   const [image, setImage] = useState(null);
-  const [tag, setTag] = useState("");
-  const [validated, setValidated] = useState(false);
+  const [isImageRequried, setIsImageRequired] = useState(true);
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    tag: "",
+  });
+  const { title, content, tag } = formData;
+  const [errors, setErrors] = useState({
+    title: "",
+    content: "",
+    tag: "",
+    image: "",
+  });
   let navigate = useNavigate();
 
-  // Handle Image Change
+  /**
+   * Validate Form Inputs
+   */
+  const validateTitle = (title) => {
+    // min 3 chars, max 60 chars al
+    const regExp = /^.{10,60}$/;
+    if (!title) {
+      return "Title is required";
+    } else if (!regExp.test(title)) {
+      return "Title must be between 10 and 60 characters";
+    }
+    return true;
+  };
+
+  const validateContent = (content) => {
+    // min 100 chars  max limit 1000 chars
+    const regExp = /^.{100,500}$/;
+    if (!content) {
+      return "Content is required";
+    } else if (!regExp.test(content)) {
+      return "Content must be between 100 and 500 characters";
+    }
+    return true;
+  };
+
+  const validateTag = (tag) => {
+    if (!tag) {
+      return "Tag is required";
+    }
+    return true;
+  };
+
+  const validateImage = (image) => {
+    // max size 1mb and file type jpg, jpeg, png
+    if (!image && isImageRequried) {
+      return "Image is required";
+    } else if (image?.size > 1000000) {
+      return "Image must be less than 1mb";
+    }
+    return true;
+  };
+
+  const validateForm = () => {
+    let validationErrors = {};
+    validationErrors.title = validateTitle(title);
+    validationErrors.content = validateContent(content);
+    validationErrors.tag = validateTag(tag);
+    validationErrors.image = validateImage(image);
+    setErrors(validationErrors);
+    return Object.values(validationErrors).every((err) => err === true); // True || False
+  };
+
+  /**
+   * Handle Inputs Change
+   */
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let validationErrors = errors;
+    if (e.target.name === "title")
+      validationErrors.title = validateTitle(e.target.value);
+    if (e.target.name === "content")
+      validationErrors.content = validateContent(e.target.value);
+    if (e.target.name === "tag")
+      validationErrors.tag = validateTag(e.target.value);
+    setErrors(validationErrors);
+  };
+
+  /**
+   * Handle Image Change
+   */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImage(reader.result);
+    reader.onloadstart = () => {
+      // check if the image is valid
+      let validationErrors = {};
+      validationErrors.image = validateImage(file); //
+      setErrors(validationErrors);
     };
+
+    if (file && file.size < 1000000) {
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+    }
   };
+
   /**
-   * Hnadle Remove Image
+   * Handle Remove Image
    */
   const handleRemoveImage = () => {
     setImage(null);
@@ -33,11 +125,8 @@ export const CreatePost = () => {
    */
   const handleCreatePost = (e) => {
     e.preventDefault();
-    setValidated(true);
-    if (!title || !content || !tag) {
-      return;
-    }
-
+    // check if there are any errors
+    if (!validateForm()) return;
     // Write posts to the server
     const createPost = async () => {
       // Add a new document with a generated id fireebase collection
@@ -48,16 +137,13 @@ export const CreatePost = () => {
         content,
         tag,
         image:
-          image || `https://source.unsplash.com/1600x900/?${tag}/${docRef.id}`,
+          image || `https://source.unsplash.com/1024x1024/?${tag}/${docRef.id}`,
         bookmarked: false,
+        autherId: autherId,
+        autherName: autherName,
+        createdAt: new Date().toISOString(),
       };
       await setDoc(docRef, data);
-      /**
-       * we don't need to dispatch the action here anymore
-      dispatch({
-        type: "CREATE_POST",
-        payload: data,
-      });*/
     };
     createPost();
     setImage(null);
@@ -70,16 +156,16 @@ export const CreatePost = () => {
     <Form
       heading="Add Post"
       title={title}
-      setTitle={setTitle}
       content={content}
-      setContent={setContent}
       tag={tag}
-      setTag={setTag}
+      image={image}
       onsubmit={handleCreatePost}
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
-      image={image}
-      validated={validated}
+      handleChange={handleChange}
+      handleSelectRandomImage={() => setIsImageRequired(!isImageRequried)}
+      isImageRequired={isImageRequried}
+      errors={errors}
     />
   );
 };
