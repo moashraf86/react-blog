@@ -18,7 +18,7 @@ export const MyPosts = () => {
   };
   // If user is not logged in, show a message to login
   if (!currentUser) {
-    return <Alert alertMsg="Please login to see your posts." />;
+    return <Alert type="default" msg="Please login to see your posts." />;
   }
 
   return (

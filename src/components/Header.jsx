@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { useContext } from "react";
+import { User } from "./user";
 export default function Header() {
-  const { currentUser, signIn, signOut } = useContext(AuthContext);
-  const isSignedIn = currentUser ? true : false;
   return (
     <header className="sticky w-full top-0 z-40 backdrop-blur border-b bg-zinc-900/ border-zinc-800 ">
       <div className="container mx-auto flex justify-between items-center py-4 px-4">
@@ -12,52 +9,9 @@ export default function Header() {
         </Link>
         <nav>
           <ul className="flex gap-4 items-center">
-            {isSignedIn && (
-              <li>
-                <button
-                  onClick={signOut}
-                  className="text-zinc-50 font-semibold text-sm md:text-base"
-                >
-                  Sign Out
-                </button>
-              </li>
-            )}
-            {!isSignedIn && (
-              <li>
-                <button
-                  onClick={signIn}
-                  className="text-zinc-50 font-semibold text-sm md:text-base"
-                >
-                  Sign In
-                </button>
-              </li>
-            )}
             <li>
-              <Link
-                to="/"
-                className="text-zinc-50 font-semibold text-sm md:text-base"
-              >
-                All Posts
-              </Link>
+              <User />
             </li>
-            <li>
-              <Link
-                to="/bookmarks"
-                className="text-zinc-50 font-semibold text-sm md:text-base"
-              >
-                Bookmarks
-              </Link>
-            </li>
-            {isSignedIn && (
-              <li>
-                <Link
-                  to="/my-posts"
-                  className="text-zinc-50 font-semibold text-sm md:text-base"
-                >
-                  My Posts
-                </Link>
-              </li>
-            )}
             <li className="flex">
               <Link
                 to="/create"
