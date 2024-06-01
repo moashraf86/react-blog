@@ -1,7 +1,6 @@
 import { useEffect, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { PostsContext } from "../context/PostsContext";
-import { PostsDispatchContext } from "../context/PostsDispatchContext";
 import {
   getDocs,
   doc,
@@ -10,9 +9,6 @@ import {
   where,
   limit,
   orderBy,
-  startAfter,
-  endBefore,
-  limitToLast,
   startAt,
 } from "firebase/firestore";
 import { db } from "../firebase";
@@ -23,11 +19,9 @@ import { ConfirmModal } from "./ConfirmModal";
 import { Pagination } from "./Pagination";
 /* eslint-disable react/prop-types */
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
-  const posts = useContext(PostsContext);
-  const dispatch = useContext(PostsDispatchContext);
+  const { posts, dispatch } = useContext(PostsContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [warn, setWarn] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
   const [totalPosts, setTotalPosts] = useState(0);
@@ -44,7 +38,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     try {
       setLoading(true);
       setError(null);
-      setWarn(null);
       const postsSnapshot = await getDocs(
         query(
           postsQuery.collection,

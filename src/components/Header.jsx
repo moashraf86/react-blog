@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
-import { AuthBtn } from "./AuthBtn";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 export default function Header() {
-  const { authentication } = useContext(AuthContext);
-  const isSignedIn = authentication.user ? true : false;
-
+  const { currentUser, signIn, signOut } = useContext(AuthContext);
+  const isSignedIn = currentUser ? true : false;
   return (
     <header className="sticky w-full top-0 z-40 backdrop-blur border-b bg-zinc-900/ border-zinc-800 ">
       <div className="container mx-auto flex justify-between items-center py-4 px-4">
@@ -14,9 +12,26 @@ export default function Header() {
         </Link>
         <nav>
           <ul className="flex gap-4 items-center">
-            <li>
-              <AuthBtn />
-            </li>
+            {isSignedIn && (
+              <li>
+                <button
+                  onClick={signOut}
+                  className="text-zinc-50 font-semibold text-sm md:text-base"
+                >
+                  Sign Out
+                </button>
+              </li>
+            )}
+            {!isSignedIn && (
+              <li>
+                <button
+                  onClick={signIn}
+                  className="text-zinc-50 font-semibold text-sm md:text-base"
+                >
+                  Sign In
+                </button>
+              </li>
+            )}
             <li>
               <Link
                 to="/"

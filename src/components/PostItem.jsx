@@ -3,16 +3,15 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { PostsDispatchContext } from "../context/PostsDispatchContext";
 import { AuthContext } from "../context/AuthContext";
+import { PostsContext } from "../context/PostsContext";
 export const PostItem = ({ post, handleShowModal, className }) => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const dispatch = useContext(PostsDispatchContext);
-  const [loading, setLoading] = useState(false);
-  const { authentication } = useContext(AuthContext);
-  const userId = authentication.user?.userId;
+  const { dispatch } = useContext(PostsContext);
+  const { currentUser } = useContext(AuthContext);
   const autherId = post.autherId;
-  const isOwner = userId === autherId;
+  const isOwner = currentUser?.uid === autherId;
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   /**
    * Hide the popover when clicked outside
    */
@@ -73,10 +72,7 @@ export const PostItem = ({ post, handleShowModal, className }) => {
   };
 
   return (
-    <li
-      key={post.id}
-      className={`flex w-full sm:px-2 mb-6 sm:mb-4 ${className}`}
-    >
+    <li className={`flex w-full sm:px-2 mb-6 sm:mb-4 ${className}`}>
       <div className="relative flex flex-col gap-4 p-4 border-zinc-800 w-full rounded-md">
         {/* Image */}
         <div className="h-[180px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-md">

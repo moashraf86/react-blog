@@ -1,24 +1,24 @@
 import { PostsList } from "./PostsList";
 import { collection, query, where } from "firebase/firestore";
 import { db } from "../firebase";
-import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
+import { Alert } from "./Alert";
 
 export const MyPosts = () => {
-  const { authentication } = useContext(AuthContext);
-  const autherId = authentication.user?.userId || "";
+  const { currentUser } = useContext(AuthContext);
   /**
    * Query Variables
    */
   const posts = {
     collection: query(
       collection(db, "posts"),
-      where("autherId", "==", autherId)
+      where("autherId", "==", `${currentUser?.uid}`)
     ),
   };
   // If user is not logged in, show a message to login
-  if (!autherId) {
-    return <PostsList alertMsg="Please login to see your posts." />;
+  if (!currentUser) {
+    return <Alert alertMsg="Please login to see your posts." />;
   }
 
   return (

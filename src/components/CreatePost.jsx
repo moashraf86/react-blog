@@ -6,9 +6,9 @@ import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 
 export const CreatePost = () => {
-  const { authentication } = useContext(AuthContext);
-  const autherId = authentication.user?.userId || "";
-  const autherName = authentication.user?.name || "";
+  const { currentUser } = useContext(AuthContext);
+  const autherId = currentUser?.uid;
+  const autherName = currentUser?.displayName;
   const [image, setImage] = useState(null);
   const [isImageRequried, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
