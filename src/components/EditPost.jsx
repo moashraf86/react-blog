@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import { PostsDispatchContext } from "../context/PostsDispatchContext";
 import { useParams } from "react-router-dom";
 import { PostsContext } from "../context/PostsContext";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +7,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 export const EditPost = () => {
-  const posts = useContext(PostsContext);
-  const dispatch = useContext(PostsDispatchContext);
+  const { posts, dispatch } = useContext(PostsContext);
   const id = useParams().id;
   let navigate = useNavigate();
   const post = posts.find((post) => post.id === id);
