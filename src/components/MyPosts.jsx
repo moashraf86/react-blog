@@ -13,9 +13,10 @@ export const MyPosts = () => {
   const posts = {
     collection: query(
       collection(db, "posts"),
-      where("autherId", "==", `${currentUser?.uid}`)
+      where("autherId", "==", `${currentUser?.id}`)
     ),
   };
+
   // If user is not logged in, show a message to login
   if (!currentUser) {
     return <Alert type="default" msg="Please login to see your posts." />;

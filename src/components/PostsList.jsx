@@ -29,7 +29,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const [lastVisible, setLastVisible] = useState(null);
   const [firstVisible, setFirstVisible] = useState(null);
   const [filterKey, setFilterKey] = useState("all");
-  const postsPerPage = 2;
+  const postsPerPage = 3;
 
   /**
    * Fetch posts from the Firebase store After the component mounts
@@ -38,6 +38,10 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     try {
       setLoading(true);
       setError(null);
+      if (!postsQuery || !postsQuery.collection) {
+        console.log("No posts query found yet.");
+        return;
+      }
       const postsSnapshot = await getDocs(
         query(
           postsQuery.collection,
