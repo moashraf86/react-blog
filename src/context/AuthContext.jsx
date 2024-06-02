@@ -52,7 +52,6 @@ export const AuthProvider = ({ children }) => {
           dispatch({ type: "SIGN_IN", payload: newUserSnap.data() });
         } else {
           await updateDoc(userRef, {
-            id: user.uid,
             lastLogin: serverTimestamp(),
             isActive: true,
           });
@@ -69,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       }
     });
     return () => unsubscribe();
-  }, [currentUser]);
+  }, []);
 
   /**
    * Sign in with Google
