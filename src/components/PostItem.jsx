@@ -137,29 +137,26 @@ export const PostItem = ({ post, handleShowModal, className }) => {
           </p>
         </div>
         {/* Footer */}
-        <div className="modal relative flex justify-end items-center gap-3">
+        <div className="modal relative flex justify-end items-center gap-1">
           <p className="text-zinc-500 me-auto">
             {post.autherName && `By ${post.autherName}`}
           </p>
           {isBookmarked && (
-            <>
-              <label
-                tabIndex="0"
-                htmlFor={post.id}
-                className="cursor-pointer p-1 text-zinc-50"
-              >
-                <input
-                  type="checkbox"
-                  name="bookmark"
-                  id={post.id}
-                  hidden
-                  onChange={() => handleRemoveBookmark(post)}
-                />
-                {loading && <i className="ri-loader-4-line"></i>}
-                {!loading && <i className="ri-bookmark-fill text-lg"></i>}
-              </label>
-              <p className="text-zinc-100">{post.bookmarksCount}</p>
-            </>
+            <label
+              tabIndex="0"
+              htmlFor={post.id}
+              className="cursor-pointer p-1 text-zinc-50"
+            >
+              <input
+                type="checkbox"
+                name="bookmark"
+                id={post.id}
+                hidden
+                onChange={() => handleRemoveBookmark(post)}
+              />
+              {loading && <i className="ri-loader-4-line"></i>}
+              {!loading && <i className="ri-bookmark-fill text-lg"></i>}
+            </label>
           )}
           {!isBookmarked && (
             <label
@@ -178,6 +175,10 @@ export const PostItem = ({ post, handleShowModal, className }) => {
               {!loading && <i className="ri-bookmark-line text-lg"></i>}
             </label>
           )}
+          {/* Bookmarks count */}
+          <p className="text-zinc-100">
+            {post.bookmarksCount > 0 && post.bookmarksCount}
+          </p>
           {/* PopOver Button */}
           {isOwner && (
             <button
