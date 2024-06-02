@@ -7,8 +7,8 @@ import { AuthContext } from "../context/AuthContext";
 
 export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
-  const autherId = currentUser?.uid;
-  const autherName = currentUser?.displayName;
+  const autherId = currentUser?.id;
+  const autherName = currentUser?.name;
   const [image, setImage] = useState(null);
   const [isImageRequried, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
@@ -138,7 +138,7 @@ export const CreatePost = () => {
         tag,
         image:
           image || `https://source.unsplash.com/1024x1024/?${tag}/${docRef.id}`,
-        bookmarked: false,
+        bookmarksCount: 0,
         autherId: autherId,
         autherName: autherName,
         createdAt: new Date().toISOString(),

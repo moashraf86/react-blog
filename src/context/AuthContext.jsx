@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import { auth, provider, db } from "../firebase";
 import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import {
@@ -15,7 +15,20 @@ export const AuthContext = createContext();
 
 // create a provider for the AuthContext
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  // create a reducer for the current user state
+  const currentUserReducer = (currentUser, action) => {
+    switch (action.type) {
+      case "SIGN_IN":
+        return action.payload;
+      case "SIGN_OUT":
+        return action.payload;
+      default:
+        return currentUser;
+    }
+  };
+
+  // use the reducer to create the current user state
+  const [currentUser, dispatch] = useReducer(currentUserReducer, null);
 
   useEffect(() => {
     // update the current user state when the user signs in or signs out
@@ -29,23 +42,29 @@ export const AuthProvider = ({ children }) => {
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
+            id: user.uid,
             lastLogin: serverTimestamp(),
             isActive: true,
+            bookmarks: [],
           });
+          // get the user data from the database
+          const newUserSnap = await getDoc(userRef);
+          dispatch({ type: "SIGN_IN", payload: newUserSnap.data() });
         } else {
           await updateDoc(userRef, {
+            id: user.uid,
             lastLogin: serverTimestamp(),
             isActive: true,
           });
+          dispatch({ type: "SIGN_IN", payload: userSnap.data() });
         }
-        setCurrentUser(user);
       } else {
         if (currentUser) {
-          const userRef = doc(db, "users", currentUser.uid);
+          const userRef = doc(db, "users", currentUser.id);
           await updateDoc(userRef, {
             isActive: false,
           });
-          setCurrentUser(null);
+          dispatch({ type: "SIGN_OUT", payload: null });
         }
       }
     });

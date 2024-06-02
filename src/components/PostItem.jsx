@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import { PostsContext } from "../context/PostsContext";
@@ -9,9 +9,12 @@ export const PostItem = ({ post, handleShowModal, className }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser } = useContext(AuthContext);
   const autherId = post.autherId;
-  const isOwner = currentUser?.uid === autherId;
+  const postId = post.id;
+  const isOwner = currentUser?.id === autherId;
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isBookmarked = currentUser?.bookmarks.includes(postId);
+
   /**
    * Hide the popover when clicked outside
    */
@@ -35,9 +38,30 @@ export const PostItem = ({ post, handleShowModal, className }) => {
     const addBookmark = async (post) => {
       try {
         setLoading(true);
+        // if the user is not signed in, return
+        if (!currentUser) {
+          alert("Please login to bookmark this post.");
+          return;
+        }
+        const userRef = doc(db, "users", currentUser.id);
+        const userSnap = await getDoc(userRef);
         const postRef = doc(db, "posts", post.id);
-        await updateDoc(postRef, { ...post, bookmarked: true });
-        dispatch({ type: "EDIT_POST", payload: { ...post, bookmarked: true } });
+        // update post count + 1
+        await updateDoc(postRef, {
+          ...post,
+          bookmarksCount: post.bookmarksCount + 1,
+        });
+        // update the bookmark component
+        await updateDoc(userRef, {
+          // check if the post is already bookmarked
+          bookmarks: userSnap.data().bookmarks.includes(post.id)
+            ? userSnap.data().bookmarks
+            : [...userSnap.data().bookmarks, post.id],
+        });
+        dispatch({
+          type: "EDIT_POST",
+          payload: { ...post, bookmarksCount: post.bookmarksCount + 1 },
+        });
       } catch (error) {
         console.log(error);
       } finally {
@@ -54,14 +78,20 @@ export const PostItem = ({ post, handleShowModal, className }) => {
     const removeBookmark = async (post) => {
       try {
         setLoading(true);
+        const userRef = doc(db, "users", currentUser.id);
+        const userSnap = await getDoc(userRef);
         const postRef = doc(db, "posts", post.id);
-        await updateDoc(postRef, { ...post, bookmarked: false });
+        await updateDoc(postRef, {
+          ...post,
+          bookmarksCount: post.bookmarksCount - 1,
+        });
+        await updateDoc(userRef, {
+          bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
+        });
         dispatch({
           type: "EDIT_POST",
-          payload: { ...post, bookmarked: false },
+          payload: { ...post, bookmarksCount: post.bookmarksCount - 1 },
         });
-        // update the bookmark component
-        // dispatch({ type: "DELETE_BOOKMARK", payload: post });
       } catch (error) {
         console.log(error);
       } finally {
@@ -111,24 +141,27 @@ export const PostItem = ({ post, handleShowModal, className }) => {
           <p className="text-zinc-500 me-auto">
             {post.autherName && `By ${post.autherName}`}
           </p>
-          {post.bookmarked && (
-            <label
-              tabIndex="0"
-              htmlFor={post.id}
-              className="cursor-pointer p-1 text-zinc-50"
-            >
-              <input
-                type="checkbox"
-                name="bookmark"
-                id={post.id}
-                hidden
-                onChange={() => handleRemoveBookmark(post)}
-              />
-              {loading && <i className="ri-loader-4-line"></i>}
-              {!loading && <i className="ri-bookmark-fill text-lg"></i>}
-            </label>
+          {isBookmarked && (
+            <>
+              <label
+                tabIndex="0"
+                htmlFor={post.id}
+                className="cursor-pointer p-1 text-zinc-50"
+              >
+                <input
+                  type="checkbox"
+                  name="bookmark"
+                  id={post.id}
+                  hidden
+                  onChange={() => handleRemoveBookmark(post)}
+                />
+                {loading && <i className="ri-loader-4-line"></i>}
+                {!loading && <i className="ri-bookmark-fill text-lg"></i>}
+              </label>
+              <p className="text-zinc-100">{post.bookmarksCount}</p>
+            </>
           )}
-          {!post.bookmarked && (
+          {!isBookmarked && (
             <label
               tabIndex="0"
               htmlFor={post.id}
