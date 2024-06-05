@@ -32,7 +32,7 @@ export const Bookmarks = () => {
 
   useEffect(() => {
     getBookmarksQuery();
-  }, [currentUser]);
+  }, []);
 
   if (!currentUser) {
     return <Alert type="default" msg="Please login to see your bookmarks." />;

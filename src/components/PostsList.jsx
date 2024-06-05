@@ -41,8 +41,7 @@ export const PostsList = ({ title, postsQuery }) => {
       setError(null);
       if (!postsQuery) {
         setLoading(false);
-        setError("No posts query found yet!!");
-        throw new Error("No posts query found yet!!");
+        throw new Error("No query provided");
       }
       const postsSnapshot = await getDocs(
         query(
@@ -68,7 +67,7 @@ export const PostsList = ({ title, postsQuery }) => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [postsQuery]);
 
   /**
    * Handle Show Modal
