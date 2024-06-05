@@ -91,6 +91,7 @@ export const AuthProvider = ({ children }) => {
   const signOut = async () => {
     try {
       await auth.signOut();
+      dispatch({ type: "SIGN_OUT", payload: null });
     } catch (error) {
       console.error(error);
     }
