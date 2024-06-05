@@ -7,7 +7,7 @@ import { Alert } from "./Alert";
 
 export const Bookmarks = () => {
   const { currentUser } = useContext(AuthContext);
-  const [bookmarksQuery, setBookmarksQuery] = useState(null);
+  const [bookmarksQuery, setBookmarksQuery] = useState();
 
   /**
    * Get Bookmarks
@@ -16,8 +16,8 @@ export const Bookmarks = () => {
     if (!currentUser) return;
     const userRef = doc(db, "users", currentUser.id);
     const userSnap = await getDoc(userRef);
-    const userBookmarks = userSnap.data()?.bookmarks;
-    if (userBookmarks.length === 0 || !userBookmarks) {
+    const userBookmarks = userSnap.data()?.bookmarks || [];
+    if (userBookmarks.length === 0) {
       setBookmarksQuery(null);
       return;
     }

@@ -11,7 +11,8 @@ export const EditPost = () => {
   const id = useParams().id;
   let navigate = useNavigate();
   const post = posts.find((post) => post.id === id);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(post.image);
+  const [isImageRequried, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
     title: id ? post.title : "",
     content: id ? post.content : "",
@@ -25,10 +26,6 @@ export const EditPost = () => {
     image: "",
   });
 
-  // load image if post exists
-  if (post && !image) {
-    setImage(post.image);
-  }
   /**
    * Validate Form Inputs
    */
@@ -63,9 +60,9 @@ export const EditPost = () => {
 
   const validateImage = (image) => {
     // max size 1mb and file type jpg, jpeg, png
-    if (!image) {
+    if (!image && isImageRequried) {
       return "Image is required";
-    } else if (image.size > 1000000) {
+    } else if (image?.size > 1000000) {
       return "Image must be less than 1mb";
     }
     return true;
@@ -99,9 +96,6 @@ export const EditPost = () => {
   /**
    * Handle Image Change
    */
-  /**
-   * Handle Image Change
-   */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -131,7 +125,10 @@ export const EditPost = () => {
    */
   const handleEditPost = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      console.log("ERRORS");
+      return;
+    }
     const editPost = async () => {
       // Update the post on firebase
       const postRef = doc(db, "posts", id);
@@ -139,7 +136,7 @@ export const EditPost = () => {
         title,
         content,
         tag,
-        image: image || post.image,
+        image: image || `https://source.unsplash.com/1024x1024/?${tag}/${id}`,
       });
       dispatch({
         type: "EDIT_POST",
@@ -163,6 +160,8 @@ export const EditPost = () => {
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
       handleChange={handleChange}
+      handleSelectRandomImage={() => setIsImageRequired(!isImageRequried)}
+      isImageRequired={isImageRequried}
       errors={errors}
     />
   );

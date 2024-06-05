@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import { PostsContext } from "../context/PostsContext";
 export const PostItem = ({ post, handleShowModal, className }) => {
   const { dispatch } = useContext(PostsContext);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, updateUser } = useContext(AuthContext);
   const autherId = post.autherId;
   const postId = post.id;
   const isOwner = currentUser?.id === autherId;
@@ -51,16 +51,23 @@ export const PostItem = ({ post, handleShowModal, className }) => {
           ...post,
           bookmarksCount: post.bookmarksCount + 1,
         });
-        // update the bookmark component
+        // update user doc bookmarks
         await updateDoc(userRef, {
           // check if the post is already bookmarked
           bookmarks: userSnap.data().bookmarks.includes(post.id)
             ? userSnap.data().bookmarks
             : [...userSnap.data().bookmarks, post.id],
         });
+        // update the post reducer
         dispatch({
           type: "EDIT_POST",
           payload: { ...post, bookmarksCount: post.bookmarksCount + 1 },
+        });
+        // update the curretnUser reducer
+        updateUser({
+          bookmarks: userSnap.data().bookmarks.includes(post.id)
+            ? userSnap.data().bookmarks
+            : [...userSnap.data().bookmarks, post.id],
         });
       } catch (error) {
         console.log(error);
@@ -81,16 +88,23 @@ export const PostItem = ({ post, handleShowModal, className }) => {
         const userRef = doc(db, "users", currentUser.id);
         const userSnap = await getDoc(userRef);
         const postRef = doc(db, "posts", post.id);
+        // update post count - 1
         await updateDoc(postRef, {
           ...post,
-          bookmarksCount: post.bookmarksCount - 1,
+          bookmarksCount: Math.max(post.bookmarksCount - 1, 0),
         });
+        // update user doc bookmarks
         await updateDoc(userRef, {
           bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
         });
+        // update post reducer
         dispatch({
           type: "EDIT_POST",
           payload: { ...post, bookmarksCount: post.bookmarksCount - 1 },
+        });
+        // update currentUser reducer
+        updateUser({
+          bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
         });
       } catch (error) {
         console.log(error);
@@ -137,29 +151,26 @@ export const PostItem = ({ post, handleShowModal, className }) => {
           </p>
         </div>
         {/* Footer */}
-        <div className="modal relative flex justify-end items-center gap-3">
+        <div className="modal relative flex justify-end items-center gap-1">
           <p className="text-zinc-500 me-auto">
             {post.autherName && `By ${post.autherName}`}
           </p>
           {isBookmarked && (
-            <>
-              <label
-                tabIndex="0"
-                htmlFor={post.id}
-                className="cursor-pointer p-1 text-zinc-50"
-              >
-                <input
-                  type="checkbox"
-                  name="bookmark"
-                  id={post.id}
-                  hidden
-                  onChange={() => handleRemoveBookmark(post)}
-                />
-                {loading && <i className="ri-loader-4-line"></i>}
-                {!loading && <i className="ri-bookmark-fill text-lg"></i>}
-              </label>
-              <p className="text-zinc-100">{post.bookmarksCount}</p>
-            </>
+            <label
+              tabIndex="0"
+              htmlFor={post.id}
+              className="cursor-pointer p-1 text-zinc-50"
+            >
+              <input
+                type="checkbox"
+                name="bookmark"
+                id={post.id}
+                hidden
+                onChange={() => handleRemoveBookmark(post)}
+              />
+              {loading && <i className="ri-loader-4-line"></i>}
+              {!loading && <i className="ri-bookmark-fill text-lg"></i>}
+            </label>
           )}
           {!isBookmarked && (
             <label
@@ -178,6 +189,10 @@ export const PostItem = ({ post, handleShowModal, className }) => {
               {!loading && <i className="ri-bookmark-line text-lg"></i>}
             </label>
           )}
+          {/* Bookmarks count */}
+          <p className="text-zinc-100">
+            {post.bookmarksCount > 0 && post.bookmarksCount}
+          </p>
           {/* PopOver Button */}
           {isOwner && (
             <button

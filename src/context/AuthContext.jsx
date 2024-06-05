@@ -22,6 +22,11 @@ export const AuthProvider = ({ children }) => {
         return action.payload;
       case "SIGN_OUT":
         return action.payload;
+      case "UPDATE_USER":
+        return {
+          ...currentUser,
+          ...action.payload,
+        };
       default:
         return currentUser;
     }
@@ -52,7 +57,6 @@ export const AuthProvider = ({ children }) => {
           dispatch({ type: "SIGN_IN", payload: newUserSnap.data() });
         } else {
           await updateDoc(userRef, {
-            id: user.uid,
             lastLogin: serverTimestamp(),
             isActive: true,
           });
@@ -69,7 +73,7 @@ export const AuthProvider = ({ children }) => {
       }
     });
     return () => unsubscribe();
-  }, [currentUser]);
+  }, []);
 
   /**
    * Sign in with Google
@@ -87,6 +91,7 @@ export const AuthProvider = ({ children }) => {
   const signOut = async () => {
     try {
       await auth.signOut();
+      dispatch({ type: "SIGN_OUT", payload: null });
     } catch (error) {
       console.error(error);
     }
@@ -98,6 +103,7 @@ export const AuthProvider = ({ children }) => {
         currentUser,
         signIn,
         signOut,
+        updateUser: (data) => dispatch({ type: "UPDATE_USER", payload: data }),
       }}
     >
       {children}

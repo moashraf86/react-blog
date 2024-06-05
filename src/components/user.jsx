@@ -5,7 +5,8 @@ export const User = () => {
   const { currentUser, signOut, signIn } = useContext(AuthContext);
   const isSignedIn = currentUser ? true : false;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const userImg = currentUser?.photoURL || "https://via.placeholder.com/150";
+  const userImg =
+    currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
   // toggle modal
   const handleToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -58,13 +59,12 @@ export const User = () => {
                 Profile
               </Link>
             </li>
-            {isSignedIn && (
-              <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-                <Link to="/my-posts" className="w-full text-left font-semibold">
-                  My Posts
-                </Link>
-              </li>
-            )}
+            <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
+              <Link to="/my-posts" className="w-full text-left font-semibold">
+                My Posts
+              </Link>
+            </li>
+
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
               <Link to="/bookmarks" className="w-full text-left font-semibold">
                 Bookmarks
