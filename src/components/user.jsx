@@ -2,8 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 export const User = () => {
-  const { currentUser, signOut, signIn } = useContext(AuthContext);
-  const isSignedIn = currentUser ? true : false;
+  const { currentUser, signOut } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const userImg =
     currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
@@ -70,24 +69,15 @@ export const User = () => {
                 Bookmarks
               </Link>
             </li>
-            {/* sparator */}
+            {/* separator */}
             <li className="border-t my-1 border-zinc-800 -ms-1 -me-1"></li>
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              {isSignedIn ? (
-                <button
-                  className="w-full text-left font-semibold"
-                  onClick={signOut}
-                >
-                  Sign Out
-                </button>
-              ) : (
-                <button
-                  className="w-full text-left font-semibold"
-                  onClick={signIn}
-                >
-                  Sign In
-                </button>
-              )}
+              <button
+                className="w-full text-left font-semibold"
+                onClick={signOut}
+              >
+                Sign Out
+              </button>
             </li>
           </ul>
         </div>
