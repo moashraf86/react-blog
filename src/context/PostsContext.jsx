@@ -25,6 +25,8 @@ export const PostsProvider = ({ children }) => {
         return [...posts.filter((post) => post.id !== action.payload.id)];
       case "DELETE_BOOKMARK":
         return [...posts.filter((post) => post.id !== action.payload.id)];
+      case "RESET_POSTS":
+        return initialPosts;
       default:
         return posts;
     }

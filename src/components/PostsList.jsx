@@ -19,7 +19,7 @@ import { Alert } from "./Alert";
 import { ConfirmModal } from "./ConfirmModal";
 import { Pagination } from "./Pagination";
 /* eslint-disable react/prop-types */
-export const PostsList = ({ title, postsQuery }) => {
+export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { posts, dispatch } = useContext(PostsContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -41,7 +41,7 @@ export const PostsList = ({ title, postsQuery }) => {
       setError(null);
       if (!postsQuery) {
         setLoading(false);
-        throw new Error("No query provided");
+        return;
       }
       const postsSnapshot = await getDocs(
         query(
@@ -67,6 +67,9 @@ export const PostsList = ({ title, postsQuery }) => {
 
   useEffect(() => {
     fetchPosts();
+    return () => {
+      dispatch({ type: "RESET_POSTS" });
+    }
   }, [postsQuery]);
 
   /**
@@ -275,6 +278,7 @@ export const PostsList = ({ title, postsQuery }) => {
         </div>
       </div>
       <ul className="flex justify-start flex-wrap">
+        {loading && !posts.length && <Loader style={"w-full"} />}
         {loading &&
           posts.map((post) => (
             <Loader key={post.id} style={"sm:w-1/2 xl:w-1/3"} />
@@ -292,7 +296,7 @@ export const PostsList = ({ title, postsQuery }) => {
           ))}
         {error && <Alert type="error" msg={error} />}
         {!posts.length && !loading && !error && (
-          <Alert type="default" msg="No posts found" />
+          <Alert type="default" msg={alertMsg} />
         )}
       </ul>
       <Pagination
