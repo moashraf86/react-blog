@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-export const Alert = ({ msg, type }) => {
+export const Alert = ({ msg, type = "default" }) => {
   const colorClass = {
     error: "text-red-800",
     success: "text-green-800",
@@ -19,7 +19,7 @@ export const Alert = ({ msg, type }) => {
 
   return (
     <div
-      className={`relative flex gap-2 justify-start items-center w-full border  p-6 rounded-md ${color} ${border} mt-16`}
+      className={`relative flex gap-2 justify-start items-center w-full border p-6 rounded-md ${color} ${border} mt-16`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
