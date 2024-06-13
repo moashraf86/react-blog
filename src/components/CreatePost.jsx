@@ -7,10 +7,10 @@ import { AuthContext } from "../context/AuthContext";
 
 export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
-  const autherId = currentUser?.id;
-  const autherName = currentUser?.name;
+  const authorId = currentUser?.id;
+  const authorName = currentUser?.name;
   const [image, setImage] = useState(null);
-  const [isImageRequried, setIsImageRequired] = useState(true);
+  const [isImageRequired, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -59,7 +59,7 @@ export const CreatePost = () => {
 
   const validateImage = (image) => {
     // max size 1mb and file type jpg, jpeg, png
-    if (!image && isImageRequried) {
+    if (!image && isImageRequired) {
       return "Image is required";
     } else if (image?.size > 1000000) {
       return "Image must be less than 1mb";
@@ -129,7 +129,7 @@ export const CreatePost = () => {
     if (!validateForm()) return;
     // Write posts to the server
     const createPost = async () => {
-      // Add a new document with a generated id fireebase collection
+      // Add a new document with a generated id firebase collection
       const docRef = doc(collection(db, "posts"));
       const data = {
         id: docRef.id,
@@ -139,8 +139,8 @@ export const CreatePost = () => {
         image:
           image || `https://picsum.photos/seed/${tag}/800/600`,
         bookmarksCount: 0,
-        autherId: autherId,
-        autherName: autherName,
+        authorId: authorId,
+        authorName: authorName,
         createdAt: new Date().toISOString(),
       };
       await setDoc(docRef, data);
@@ -163,8 +163,8 @@ export const CreatePost = () => {
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
       handleChange={handleChange}
-      handleSelectRandomImage={() => setIsImageRequired(!isImageRequried)}
-      isImageRequired={isImageRequried}
+      handleSelectRandomImage={() => setIsImageRequired(!isImageRequired)}
+      isImageRequired={isImageRequired}
       errors={errors}
     />
   );

@@ -31,7 +31,7 @@ export const ConfirmModal = ({ onCancel, onConfirm, showModal }) => {
           <li>
             <button
               onClick={onConfirm}
-              className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"
+              className="px-4 py-2 bg-zinc-50 text-zinc-900 font-semibold rounded-md text-sm md:text-base"
             >
               Confirm
             </button>

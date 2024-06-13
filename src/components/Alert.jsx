@@ -34,7 +34,7 @@ export const Alert = ({ msg, type }) => {
         {type == "error" && (
           <h3 className="text-2xl font-semibold text-inherit">Error</h3>
         )}
-        <p className="text-inhirit">{msg}</p>
+        <p className="text-inherit">{msg}</p>
       </div>
     </div>
   );

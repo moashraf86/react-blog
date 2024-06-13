@@ -133,7 +133,7 @@ export const Form = ({
                 htmlFor="checkbox"
                 className="text-sm text-zinc-50 cursor-pointer"
               >
-                Select radnom image instead
+                Select random image instead
               </label>
             </div>
           )}
@@ -190,7 +190,7 @@ export const Form = ({
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-zinc-50 text-zink-900 font-semibold rounded-md text-sm md:text-base"
+            className="px-4 py-2 bg-zinc-50 text-zinc-900 font-semibold rounded-md text-sm md:text-base"
           >
             {heading === "Add Post" ? "Create Post" : "Edit Post"}
           </button>

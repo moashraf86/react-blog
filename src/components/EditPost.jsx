@@ -12,7 +12,7 @@ export const EditPost = () => {
   let navigate = useNavigate();
   const post = posts.find((post) => post.id === id);
   const [image, setImage] = useState(post.image);
-  const [isImageRequried, setIsImageRequired] = useState(true);
+  const [isImageRequired, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
     title: id ? post.title : "",
     content: id ? post.content : "",
@@ -60,7 +60,7 @@ export const EditPost = () => {
 
   const validateImage = (image) => {
     // max size 1mb and file type jpg, jpeg, png
-    if (!image && isImageRequried) {
+    if (!image && isImageRequired) {
       return "Image is required";
     } else if (image?.size > 1000000) {
       return "Image must be less than 1mb";
@@ -136,7 +136,7 @@ export const EditPost = () => {
         title,
         content,
         tag,
-        image: image || `https://source.unsplash.com/1024x1024/?${tag}/${id}`,
+        image: image || `https://picsum.photos/seed/${tag}/800/600`,
       });
       dispatch({
         type: "EDIT_POST",
@@ -160,8 +160,8 @@ export const EditPost = () => {
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
       handleChange={handleChange}
-      handleSelectRandomImage={() => setIsImageRequired(!isImageRequried)}
-      isImageRequired={isImageRequried}
+      handleSelectRandomImage={() => setIsImageRequired(!isImageRequired)}
+      isImageRequired={isImageRequired}
       errors={errors}
     />
   );

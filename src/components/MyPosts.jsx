@@ -13,7 +13,7 @@ export const MyPosts = () => {
   const posts = {
     collection: query(
       collection(db, "posts"),
-      where("autherId", "==", `${currentUser?.id}`)
+      where("authorId", "==", `${currentUser?.id}`)
     ),
   };
 

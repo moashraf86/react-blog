@@ -10,7 +10,6 @@ import {
   limit,
   orderBy,
   startAt,
-  collection,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { PostItem } from "./PostItem";
@@ -27,8 +26,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const [postToDelete, setPostToDelete] = useState(null);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [lastVisible, setLastVisible] = useState(null);
-  const [firstVisible, setFirstVisible] = useState(null);
   const [filterKey, setFilterKey] = useState("all");
   const postsPerPage = 3;
 
@@ -51,8 +48,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         )
       );
       const totalPostsSnapshot = await getDocs(postsQuery.collection);
-      setFirstVisible(postsSnapshot.docs[0]);
-      setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
       setTotalPosts(totalPostsSnapshot.docs.length);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
       if (!postsData) throw new Error("Error fetching posts");
@@ -156,8 +151,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         }
       }
       const postsSnapshot = await getDocs(snapShot);
-      setFirstVisible(postsSnapshot.docs[0]);
-      setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
       setCurrentPage(pageNumber);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
       if (!postsData) throw new Error("Error fetching posts");
@@ -193,8 +186,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
             const totalPostsSnapshot = await getDocs(
               query(postsQuery.collection, where("tag", "==", key))
             );
-            setFirstVisible(postsSnapshot.docs[0]);
-            setLastVisible(postsSnapshot.docs[postsSnapshot.docs.length - 1]);
             setTotalPosts(totalPostsSnapshot.docs.length);
             const postsData = postsSnapshot.docs.map((doc) => doc.data());
             if (!postsData) throw new Error("Error fetching posts");

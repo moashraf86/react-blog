@@ -8,9 +8,9 @@ import { PostsContext } from "../context/PostsContext";
 export const PostItem = ({ post, handleShowModal, className }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
-  const autherId = post.autherId;
+  const authorId = post.authorId;
   const postId = post.id;
-  const isOwner = currentUser?.id === autherId;
+  const isOwner = currentUser?.id === authorId;
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const isBookmarked = currentUser?.bookmarks.includes(postId);
@@ -63,7 +63,7 @@ export const PostItem = ({ post, handleShowModal, className }) => {
           type: "EDIT_POST",
           payload: { ...post, bookmarksCount: post.bookmarksCount + 1 },
         });
-        // update the curretnUser reducer
+        // update the currentUser reducer
         updateUser({
           bookmarks: userSnap.data().bookmarks.includes(post.id)
             ? userSnap.data().bookmarks
@@ -153,7 +153,7 @@ export const PostItem = ({ post, handleShowModal, className }) => {
         {/* Footer */}
         <div className="modal relative flex justify-end items-center gap-1">
           <p className="text-zinc-500 me-auto">
-            {post.autherName && `By ${post.autherName}`}
+            {post.authorName && `By ${post.authorName}`}
           </p>
           {isBookmarked && (
             <label
