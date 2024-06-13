@@ -137,7 +137,7 @@ export const CreatePost = () => {
         content,
         tag,
         image:
-          image || `https://source.unsplash.com/1024x1024/?${tag}/${docRef.id}`,
+          image || `https://picsum.photos/seed/${tag}/800/600`,
         bookmarksCount: 0,
         autherId: autherId,
         autherName: autherName,
