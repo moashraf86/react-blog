@@ -1,6 +1,7 @@
 import { useEffect, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { PostsContext } from "../context/PostsContext";
+import { AuthContext } from "../context/AuthContext";
 import {
   getDocs,
   doc,
@@ -19,6 +20,8 @@ import { ConfirmModal } from "./ConfirmModal";
 import { Pagination } from "./Pagination";
 /* eslint-disable react/prop-types */
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
+  const { currentUser } = useContext(AuthContext);
+  const isGuest = currentUser?.isGuest;
   const { posts, dispatch } = useContext(PostsContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,13 +37,14 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
    */
   const fetchPosts = async () => {
     try {
+      let postsSnapshot;
       setLoading(true);
       setError(null);
       if (!postsQuery) {
         setLoading(false);
         return;
       }
-      const postsSnapshot = await getDocs(
+      postsSnapshot = await getDocs(
         query(
           postsQuery.collection,
           orderBy("title", "asc"),
@@ -64,7 +68,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     fetchPosts();
     return () => {
       dispatch({ type: "RESET_POSTS" });
-    }
+    };
   }, [postsQuery]);
 
   /**
@@ -168,6 +172,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
    */
   const handleFilter = (key) => {
     const createFilter = async (key) => {
+      let postsSnapshot;
       switch (key) {
         case "all":
           fetchPosts();
@@ -176,7 +181,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
           try {
             setLoading(true);
             setError(null);
-            const postsSnapshot = await getDocs(
+            postsSnapshot = await getDocs(
               query(
                 postsQuery.collection,
                 where("tag", "==", key),

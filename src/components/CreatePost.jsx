@@ -8,7 +8,7 @@ import { AuthContext } from "../context/AuthContext";
 export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
   const authorId = currentUser?.id;
-  const authorName = currentUser?.name;
+  const authorName = currentUser?.name || "Anonymous";
   const [image, setImage] = useState(null);
   const [isImageRequired, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
@@ -136,8 +136,7 @@ export const CreatePost = () => {
         title,
         content,
         tag,
-        image:
-          image || `https://picsum.photos/seed/${tag}/800/600`,
+        image: image || `https://picsum.photos/seed/${tag}/800/600`,
         bookmarksCount: 0,
         authorId: authorId,
         authorName: authorName,
@@ -145,6 +144,7 @@ export const CreatePost = () => {
       };
       await setDoc(docRef, data);
     };
+
     createPost();
     setImage(null);
     setTimeout(() => {
