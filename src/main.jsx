@@ -24,6 +24,7 @@ const router = createBrowserRouter([
       { path: "/edit/:id", element: <EditPost /> },
       { path: "/bookmarks", element: <Bookmarks /> },
       { path: "/my-posts", element: <MyPosts /> },
+      { path: "/drafts", element: <MyPosts /> },
       { path: "/users/:id", element: <UserProfile /> },
     ],
   },
