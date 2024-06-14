@@ -139,7 +139,7 @@ export const CreatePost = () => {
         image: image || `https://picsum.photos/seed/${tag}/800/600`,
         bookmarksCount: 0,
         authorId: authorId,
-        authorName: authorName,
+        authorName: authorName || "Anonymous",
         createdAt: new Date().toISOString(),
       };
       await setDoc(docRef, data);
