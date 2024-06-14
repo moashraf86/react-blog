@@ -8,12 +8,10 @@ import { PostsContext } from "../context/PostsContext";
 export const PostItem = ({ post, handleShowModal, className }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
-  const authorId = post.authorId;
-  const postId = post.id;
-  const isOwner = currentUser?.id === authorId;
+  const isOwner = currentUser?.id === post.authorId;
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isBookmarked = currentUser?.bookmarks.includes(postId);
+  const isBookmarked = currentUser?.bookmarks.includes(post.id);
 
   /**
    * Hide the popover when clicked outside
@@ -152,9 +150,11 @@ export const PostItem = ({ post, handleShowModal, className }) => {
         </div>
         {/* Footer */}
         <div className="modal relative flex justify-end items-center gap-1">
-          <p className="text-zinc-500 me-auto">
-            {post.authorName && `By ${post.authorName}`}
-          </p>
+          <Link to={`/users/${post.authorId}`} className="me-auto">
+            <p className="text-zinc-500">
+              {post.authorName && `By ${post.authorName}`}
+            </p>
+          </Link>
           {isBookmarked && (
             <label
               tabIndex="0"
