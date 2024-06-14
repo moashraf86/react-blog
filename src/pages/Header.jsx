@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { SignInModal } from "./SignInModal";
 import { createPortal } from "react-dom";
 import { User } from "./user";
+import { Button } from "../components/ui/button";
 export default function Header() {
   const { currentUser } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
@@ -19,12 +20,9 @@ export default function Header() {
             <ul className="flex gap-4 items-center">
               {currentUser && (
                 <li className="flex">
-                  <Link
-                    to="/create"
-                    className="px-6 py-2 bg-zinc-50 text-zinc-900 font-semibold rounded-md md:text-lg"
-                  >
-                    Create Post
-                  </Link>
+                  <Button variant="default" size="default" asChild={true}>
+                    <Link to="/create">Create Post</Link>
+                  </Button>
                 </li>
               )}
               {currentUser && <User />}
