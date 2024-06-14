@@ -9,6 +9,7 @@ export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
   const authorId = currentUser?.id;
   const authorName = currentUser?.name || "Anonymous";
+  const isGuest = currentUser?.isGuest;
   const [image, setImage] = useState(null);
   const [isImageRequired, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
@@ -127,24 +128,23 @@ export const CreatePost = () => {
     e.preventDefault();
     // check if there are any errors
     if (!validateForm()) return;
-    // Write posts to the server
+    // Add post to the posts collection
     const createPost = async () => {
-      // Add a new document with a generated id firebase collection
-      const docRef = doc(collection(db, "posts"));
+      const postsRef = doc(collection(db, "posts"));
       const data = {
-        id: docRef.id,
+        id: postsRef.id,
         title,
         content,
         tag,
         image: image || `https://picsum.photos/seed/${tag}/800/600`,
         bookmarksCount: 0,
         authorId: authorId,
-        authorName: authorName || "Anonymous",
+        authorName: authorName,
+        published: isGuest ? false : true,
         createdAt: new Date().toISOString(),
       };
-      await setDoc(docRef, data);
+      await setDoc(postsRef, data);
     };
-
     createPost();
     setImage(null);
     setTimeout(() => {
