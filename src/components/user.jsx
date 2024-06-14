@@ -74,11 +74,16 @@ export const User = () => {
               )}
             </li>
 
-            <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              <Link to="/bookmarks" className="w-full text-left font-semibold">
-                Bookmarks
-              </Link>
-            </li>
+            {!isGuest && (
+              <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
+                <Link
+                  to="/bookmarks"
+                  className="w-full text-left font-semibold"
+                >
+                  Bookmarks
+                </Link>
+              </li>
+            )}
             {/* separator */}
             <li className="border-t my-1 border-zinc-800 -ms-1 -me-1"></li>
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
