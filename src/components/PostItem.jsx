@@ -5,15 +5,14 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import { PostsContext } from "../context/PostsContext";
-export const PostItem = ({ post, handleShowModal, className }) => {
+export const PostItem = ({ post, handleShowModal, className, type }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
-  const authorId = post.authorId;
-  const postId = post.id;
-  const isOwner = currentUser?.id === authorId;
+  const isGuest = currentUser?.isGuest;
+  const isOwner = currentUser?.id === post.authorId;
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isBookmarked = currentUser?.bookmarks.includes(postId);
+  const isBookmarked = currentUser?.bookmarks.includes(post.id);
 
   /**
    * Hide the popover when clicked outside
@@ -39,7 +38,7 @@ export const PostItem = ({ post, handleShowModal, className }) => {
       try {
         setLoading(true);
         // if the user is not signed in, return
-        if (!currentUser) {
+        if (!currentUser || isGuest) {
           alert("Please login to bookmark this post.");
           return;
         }
@@ -128,7 +127,7 @@ export const PostItem = ({ post, handleShowModal, className }) => {
             />
           )}
         </div>
-        {/* Content */}
+        {/* Tag */}
         <div className="flex flex-col gap-2">
           {post.tag && (
             <div className="flex justify-between items-center">
@@ -137,24 +136,34 @@ export const PostItem = ({ post, handleShowModal, className }) => {
               </span>
             </div>
           )}
+          {/* Title */}
           <h2 className="text-xl md:text-2xl text-zinc-50 font-medium capitalize">
-            <Link to={`/post/${post.id}`}>
-              {post.title.length > 50
-                ? `${post.title.substring(0, 50)}...`
-                : post.title}
-            </Link>
+            {type === "item" ? (
+              <Link to={`/post/${post.id}`}>
+                {post.title.length > 50
+                  ? `${post.title.substring(0, 50)}...`
+                  : post.title}
+              </Link>
+            ) : (
+              <Link to={`/post/${post.id}`}>{post.title}</Link>
+            )}
           </h2>
+          {/* Content */}
           <p className="text-zinc-300">
-            {post.content.length > 150
-              ? `${post.content.substring(0, 150)}...`
+            {type === "item"
+              ? post.content.length > 150
+                ? `${post.content.substring(0, 150)}...`
+                : post.content
               : post.content}
           </p>
         </div>
         {/* Footer */}
         <div className="modal relative flex justify-end items-center gap-1">
-          <p className="text-zinc-500 me-auto">
-            {post.authorName && `By ${post.authorName}`}
-          </p>
+          <Link to={`/users/${post.authorId}`} className="me-auto">
+            <p className="text-zinc-500">
+              {post.authorName && `By ${post.authorName}`}
+            </p>
+          </Link>
           {isBookmarked && (
             <label
               tabIndex="0"

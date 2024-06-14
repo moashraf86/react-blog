@@ -1,7 +1,11 @@
 /* eslint-disable react/prop-types */
 import { createContext, useEffect, useReducer } from "react";
 import { auth, provider, db } from "../firebase";
-import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import {
+  signInWithPopup,
+  onAuthStateChanged,
+  signInAnonymously,
+} from "firebase/auth";
 import {
   doc,
   getDoc,
@@ -44,13 +48,14 @@ export const AuthProvider = ({ children }) => {
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
           await setDoc(userRef, {
-            name: user.displayName,
+            name: user.displayName || "Anonymous",
             email: user.email,
             photoURL: user.photoURL,
             id: user.uid,
             lastLogin: serverTimestamp(),
             isActive: true,
             bookmarks: [],
+            isGuest: user.isAnonymous,
           });
           // get the user data from the database
           const newUserSnap = await getDoc(userRef);
@@ -97,12 +102,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Sign in as Guest
+   */
+  const signInAsGuest = async () => {
+    try {
+      await signInAnonymously(auth);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
         currentUser,
         signIn,
         signOut,
+        signInAsGuest,
         updateUser: (data) => dispatch({ type: "UPDATE_USER", payload: data }),
       }}
     >

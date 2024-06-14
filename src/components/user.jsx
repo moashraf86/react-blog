@@ -2,8 +2,8 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 export const User = () => {
-  const { currentUser, signOut, signIn } = useContext(AuthContext);
-  const isSignedIn = currentUser ? true : false;
+  const { currentUser, signOut } = useContext(AuthContext);
+  const isGuest = currentUser?.isGuest;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const userImg =
     currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
@@ -55,39 +55,44 @@ export const User = () => {
               </Link>
             </li>
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              <Link to="/" className="w-full text-left font-semibold">
+              <Link
+                to={`/users/${currentUser.id}`}
+                className="w-full text-left font-semibold"
+              >
                 Profile
               </Link>
             </li>
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              <Link to="/my-posts" className="w-full text-left font-semibold">
-                My Posts
-              </Link>
+              {!isGuest ? (
+                <Link to="/my-posts" className="w-full text-left font-semibold">
+                  My Posts
+                </Link>
+              ) : (
+                <Link to="/drafts" className="w-full text-left font-semibold">
+                  Drafts
+                </Link>
+              )}
             </li>
 
-            <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              <Link to="/bookmarks" className="w-full text-left font-semibold">
-                Bookmarks
-              </Link>
-            </li>
-            {/* sparator */}
+            {!isGuest && (
+              <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
+                <Link
+                  to="/bookmarks"
+                  className="w-full text-left font-semibold"
+                >
+                  Bookmarks
+                </Link>
+              </li>
+            )}
+            {/* separator */}
             <li className="border-t my-1 border-zinc-800 -ms-1 -me-1"></li>
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              {isSignedIn ? (
-                <button
-                  className="w-full text-left font-semibold"
-                  onClick={signOut}
-                >
-                  Sign Out
-                </button>
-              ) : (
-                <button
-                  className="w-full text-left font-semibold"
-                  onClick={signIn}
-                >
-                  Sign In
-                </button>
-              )}
+              <button
+                className="w-full text-left font-semibold"
+                onClick={signOut}
+              >
+                Sign Out
+              </button>
             </li>
           </ul>
         </div>

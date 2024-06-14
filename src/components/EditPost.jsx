@@ -11,12 +11,12 @@ export const EditPost = () => {
   const id = useParams().id;
   let navigate = useNavigate();
   const post = posts.find((post) => post.id === id);
-  const [image, setImage] = useState(post.image);
+  const [image, setImage] = useState(post?.image);
   const [isImageRequired, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
-    title: id ? post.title : "",
-    content: id ? post.content : "",
-    tag: id ? post.tag : "",
+    title: id ? post?.title : "",
+    content: id ? post?.content : "",
+    tag: id ? post?.tag : "",
   });
   const { title, content, tag } = formData;
   const [errors, setErrors] = useState({
@@ -132,12 +132,13 @@ export const EditPost = () => {
     const editPost = async () => {
       // Update the post on firebase
       const postRef = doc(db, "posts", id);
-      await updateDoc(postRef, {
+      const data = {
         title,
         content,
         tag,
         image: image || `https://picsum.photos/seed/${tag}/800/600`,
-      });
+      };
+      await updateDoc(postRef, data);
       dispatch({
         type: "EDIT_POST",
         payload: { id, title, content, tag, image: image || post.image },

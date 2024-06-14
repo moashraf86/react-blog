@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 export const ConfirmModal = ({ onCancel, onConfirm, showModal }) => {
   const cancelButtonRef = useRef(null);
   useEffect(() => {
+    // Focus on the cancel button when the modal is shown
     if (showModal) {
       cancelButtonRef.current.focus();
     }

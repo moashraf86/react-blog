@@ -1,6 +1,6 @@
 import { PostsList } from "./PostsList";
 
-import { collection } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
 export const Posts = () => {
@@ -8,7 +8,7 @@ export const Posts = () => {
    * Query Variables
    */
   const posts = {
-    collection: collection(db, "posts"),
+    collection: query(collection(db, "posts"), where("published", "==", true)),
   };
 
   return (

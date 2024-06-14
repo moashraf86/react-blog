@@ -7,10 +7,11 @@ import { Alert } from "./Alert";
 
 export const MyPosts = () => {
   const { currentUser } = useContext(AuthContext);
+  const isGuest = currentUser?.isGuest;
   /**
    * Query Variables
    */
-  const posts = {
+  const postsQuery = {
     collection: query(
       collection(db, "posts"),
       where("authorId", "==", `${currentUser?.id}`)
@@ -25,8 +26,8 @@ export const MyPosts = () => {
   return (
     <>
       <PostsList
-        title="My posts"
-        postsQuery={posts}
+        title={isGuest ? "Drafts" : "My Posts"}
+        postsQuery={postsQuery}
         alertMsg="You have not created any posts yet."
       />
     </>
