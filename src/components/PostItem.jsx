@@ -8,6 +8,7 @@ import { PostsContext } from "../context/PostsContext";
 export const PostItem = ({ post, handleShowModal, className }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
+  const isGuest = currentUser?.isGuest;
   const isOwner = currentUser?.id === post.authorId;
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ export const PostItem = ({ post, handleShowModal, className }) => {
       try {
         setLoading(true);
         // if the user is not signed in, return
-        if (!currentUser) {
+        if (!currentUser || isGuest) {
           alert("Please login to bookmark this post.");
           return;
         }

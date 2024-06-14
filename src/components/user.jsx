@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 export const User = () => {
   const { currentUser, signOut } = useContext(AuthContext);
+  const isGuest = currentUser?.isGuest;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const userImg =
     currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
@@ -54,14 +55,23 @@ export const User = () => {
               </Link>
             </li>
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              <Link to="/" className="w-full text-left font-semibold">
+              <Link
+                to={`/users/${currentUser.id}`}
+                className="w-full text-left font-semibold"
+              >
                 Profile
               </Link>
             </li>
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
-              <Link to="/my-posts" className="w-full text-left font-semibold">
-                My Posts
-              </Link>
+              {!isGuest ? (
+                <Link to="/my-posts" className="w-full text-left font-semibold">
+                  My Posts
+                </Link>
+              ) : (
+                <Link to="/drafts" className="w-full text-left font-semibold">
+                  Drafts
+                </Link>
+              )}
             </li>
 
             <li className="px-4 py-1 hover:bg-zinc-800 rounded-md">
