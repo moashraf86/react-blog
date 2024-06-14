@@ -5,7 +5,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import { PostsContext } from "../context/PostsContext";
-export const PostItem = ({ post, handleShowModal, className }) => {
+export const PostItem = ({ post, handleShowModal, className, type }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
@@ -127,7 +127,7 @@ export const PostItem = ({ post, handleShowModal, className }) => {
             />
           )}
         </div>
-        {/* Content */}
+        {/* Tag */}
         <div className="flex flex-col gap-2">
           {post.tag && (
             <div className="flex justify-between items-center">
@@ -136,16 +136,24 @@ export const PostItem = ({ post, handleShowModal, className }) => {
               </span>
             </div>
           )}
+          {/* Title */}
           <h2 className="text-xl md:text-2xl text-zinc-50 font-medium capitalize">
-            <Link to={`/post/${post.id}`}>
-              {post.title.length > 50
-                ? `${post.title.substring(0, 50)}...`
-                : post.title}
-            </Link>
+            {type === "item" ? (
+              <Link to={`/post/${post.id}`}>
+                {post.title.length > 50
+                  ? `${post.title.substring(0, 50)}...`
+                  : post.title}
+              </Link>
+            ) : (
+              <Link to={`/post/${post.id}`}>{post.title}</Link>
+            )}
           </h2>
+          {/* Content */}
           <p className="text-zinc-300">
-            {post.content.length > 150
-              ? `${post.content.substring(0, 150)}...`
+            {type === "item"
+              ? post.content.length > 150
+                ? `${post.content.substring(0, 150)}...`
+                : post.content
               : post.content}
           </p>
         </div>

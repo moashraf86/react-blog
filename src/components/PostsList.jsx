@@ -227,6 +227,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
           !error &&
           posts.map((post) => (
             <PostItem
+              type="item"
               className={"sm:w-1/2 xl:w-1/3"}
               key={post.id}
               post={post}
