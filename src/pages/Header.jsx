@@ -3,18 +3,21 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { SignInModal } from "./SignInModal";
 import { createPortal } from "react-dom";
-import { User } from "./user";
+import { User } from "../components/ui/user";
 import { Button } from "../components/ui/button";
+import { ModeToggle } from "../components/ui/modeToggler";
+
 export default function Header() {
   const { currentUser } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
-
   return (
     <>
-      <header className="sticky w-full top-0 z-10 backdrop-blur border-b bg-zinc-900/ border-zinc-800 ">
+      <header className="sticky w-full top-0 z-10 backdrop-blur border-b bg-zinc-900/ border-zinc-200 dark:border-zinc-800 ">
         <div className="container mx-auto flex justify-between items-center py-4 px-4">
           <Link to="/" className="text-2xl font-semibold text-zinc-50">
-            <h1 className="text-2xl font-bold text-zinc-50 font-mono">Blogy</h1>
+            <h1 className="text-2xl font-bold text-zinc-950 dark:text-zinc-50 font-mono">
+              Blogy
+            </h1>
           </Link>
           <nav>
             <ul className="flex gap-4 items-center">
@@ -25,6 +28,9 @@ export default function Header() {
                   </Button>
                 </li>
               )}
+              <li>
+                <ModeToggle />
+              </li>
               {currentUser && <User />}
               {!currentUser && (
                 <li>
