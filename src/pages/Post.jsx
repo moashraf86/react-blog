@@ -40,7 +40,7 @@ export const Post = () => {
   return (
     <>
       {loading && <Loader />}
-      {!loading && <PostItem post={post} type="post" />}
+      {!loading && <PostItem post={post} type="post" className="mt-8" />}
       {error && <Alert type="error" msg={error} />}
     </>
   );

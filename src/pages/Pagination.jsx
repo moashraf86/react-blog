@@ -17,9 +17,9 @@ export const Pagination = ({
                 onClick={() => paginate(page)}
                 className={`py-1 px-3 ${
                   page === currentPage
-                    ? "bg-zinc-50"
-                    : "bg-zinc-900 hover:bg-zin-800 border-zinc-700 text-zinc-50"
-                }  border border-slate-200 rounded-md font-medium`}
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted  text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                } text-primary rounded-md font-medium`}
               >
                 {page}
               </button>

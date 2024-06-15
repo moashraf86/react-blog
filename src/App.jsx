@@ -9,10 +9,8 @@ export default function App() {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <PostsProvider>
         <AuthProvider>
-          <div className="container h-full mx-auto px-4">
-            <Header />
-            <Outlet />
-          </div>
+          <Header />
+          <Outlet />
         </AuthProvider>
       </PostsProvider>
     </ThemeProvider>

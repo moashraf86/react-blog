@@ -21,8 +21,8 @@ export const Form = ({
     <>
       {currentUser ? (
         <div className="flex justify-center items-center max-w-[400px] mx-auto">
-          <div className="flex flex-col w-full bg-zinc-900 border border-zinc-800 rounded-md p-6 gap-4 mt-6">
-            <h3 className="font-semibold text-xl md:text-3xl text-zinc-50 mb-2">
+          <div className="flex flex-col w-full bg-background border border-border rounded-md p-6 gap-4 mt-6">
+            <h3 className="font-semibold text-xl md:text-3xl text-primary mb-2">
               {heading}
             </h3>
             <form onSubmit={onsubmit} className="flex flex-col gap-4">
@@ -30,8 +30,8 @@ export const Form = ({
                 <input
                   name="title"
                   id="title"
-                  className={`w-full p-2 border text-zinc-50 border-zinc-800 bg-zinc-900 rounded-md ${
-                    errors.title && "border-red-600"
+                  className={`w-full p-2 border text-primary border-input bg-transparent rounded-md ${
+                    errors.title && "border-destructive"
                   }`}
                   value={title}
                   type="text"
@@ -39,14 +39,14 @@ export const Form = ({
                   onChange={(e) => handleChange(e)}
                 />
                 {errors.title && (
-                  <p className="text-sm text-red-600">{errors.title}</p>
+                  <p className="text-destructive">{errors.title}</p>
                 )}
               </div>
               <div className="flex flex-col gap-1">
                 <textarea
                   rows={4}
-                  className={`w-full p-2 text-zinc-50 border border-zinc-800 bg-zinc-900 rounded-md ${
-                    errors.content && "border-red-600"
+                  className={`w-full p-2 text-primary border border-input bg-transparent rounded-md ${
+                    errors.content && "border-destructive"
                   }`}
                   placeholder="write something here..."
                   value={content}
@@ -54,7 +54,7 @@ export const Form = ({
                   onChange={(e) => handleChange(e)}
                 ></textarea>
                 {errors.content && (
-                  <p className="text-sm text-red-600">{errors.content}</p>
+                  <p className="text-destructive">{errors.content}</p>
                 )}
               </div>
               {!image && isImageRequired && (
@@ -62,7 +62,7 @@ export const Form = ({
                   <label
                     tabIndex="0"
                     htmlFor="image"
-                    className="p-2 border border-dashed border-zinc-800 min-h-20 flex items-center justify-center rounded-md cursor-pointer bg-zinc-900 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-50 "
+                    className="p-2 border border-dashed border-input min-h-20 flex items-center justify-center rounded-md cursor-pointer bg-transparent text-primary focus:outline-none focus:ring-2 focus:ring-zinc-50 "
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
@@ -80,7 +80,7 @@ export const Form = ({
                     />
                   </label>
                   {errors.image && (
-                    <p className="text-sm text-red-600">{errors.image}</p>
+                    <p className="text-destructive">{errors.image}</p>
                   )}
                 </>
               )}
@@ -134,12 +134,12 @@ export const Form = ({
                   <input
                     type="checkbox"
                     id="checkbox"
-                    className="cursor-pointer appearance-none w-5 h-5 bg-zinc-900 border border-zinc-800 rounded-md checked:bg-[url('src/assets/check.svg')] checked:bg-indigo-500"
+                    className="cursor-pointer appearance-none w-5 h-5 bg-transparent border border-input rounded-md checked:bg-[url('src/assets/check.svg')] checked:bg-indigo-500"
                     onChange={handleSelectRandomImage}
                   />
                   <label
                     htmlFor="checkbox"
-                    className="text-sm text-zinc-50 cursor-pointer"
+                    className="text-sm text-primary cursor-pointer"
                   >
                     Select random image instead
                   </label>
@@ -148,14 +148,14 @@ export const Form = ({
               <div className="flex flex-wrap gap-3 items-center">
                 <label
                   htmlFor="tech"
-                  className={`text-zinc-50 py-1 px-4 border border-zinc-800 rounded-full cursor-pointer has-[:checked]:bg-zinc-600`}
+                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted`}
                 >
                   <input
                     type="radio"
                     id="tech"
                     value="tech"
                     name="tag"
-                    className="text-zinc-50"
+                    className="text-primary"
                     hidden
                     checked={tag === "tech"}
                     onChange={(e) => handleChange(e)}
@@ -164,14 +164,14 @@ export const Form = ({
                 </label>
                 <label
                   htmlFor="culture"
-                  className={`text-zinc-50 py-1 px-4 border border-zinc-800 rounded-full cursor-pointer has-[:checked]:bg-zinc-600 `}
+                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted `}
                 >
                   <input
                     type="radio"
                     id="culture"
                     value="culture"
                     name="tag"
-                    className="text-zinc-50"
+                    className="text-primary"
                     hidden
                     checked={tag === "culture"}
                     onChange={(e) => handleChange(e)}
@@ -180,14 +180,14 @@ export const Form = ({
                 </label>
                 <label
                   htmlFor="science"
-                  className={`text-zinc-50 py-1 px-4 border border-zinc-800 rounded-full cursor-pointer has-[:checked]:bg-zinc-600`}
+                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted`}
                 >
                   <input
                     type="radio"
                     id="science"
                     value="science"
                     name="tag"
-                    className="text-zinc-50"
+                    className="text-primary"
                     hidden
                     checked={tag === "science"}
                     onChange={(e) => handleChange(e)}
@@ -195,12 +195,12 @@ export const Form = ({
                   Science
                 </label>
                 {errors.tag && (
-                  <p className="text-sm text-red-600">{errors.tag}</p>
+                  <p className="text-sm text-destructive">{errors.tag}</p>
                 )}
               </div>
               <button
                 type="submit"
-                className="px-4 py-2 bg-zinc-50 text-zinc-900 font-semibold rounded-md text-sm md:text-base"
+                className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-md text-sm md:text-base"
               >
                 {heading === "Add Post" ? "Create Post" : "Edit Post"}
               </button>

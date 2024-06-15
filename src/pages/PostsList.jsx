@@ -210,13 +210,12 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 mt-12">
-      <div className="flex flex-wrap items-center justify-between">
-        <h2 className="px-4 text-2xl md:text-4xl font-bold mb-4 text-zinc-50">
-          {title}
-        </h2>
+    <div className="flex flex-col gap-8 mt-12">
+      <div className="container flex flex-wrap items-center justify-between">
+        <h2 className="text-2xl md:text-4xl font-bold">{title}</h2>
         {currentUser && !isGuest && <Filter handleFilter={handleFilter} />}
       </div>
+
       <ul className="flex justify-start flex-wrap">
         {loading && !posts.length && <Loader style={"w-full"} />}
         {loading &&

@@ -116,7 +116,7 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
 
   return (
     <li className={`flex w-full sm:px-2 mb-6 sm:mb-4 ${className}`}>
-      <div className="relative flex flex-col gap-4 p-4 border-zinc-800 w-full rounded-md">
+      <div className="relative flex flex-col gap-4 px-4 border-zinc-800 w-full rounded-md">
         {/* Image */}
         <div className="h-[180px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-md">
           {post.image && (
@@ -131,13 +131,13 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
         <div className="flex flex-col gap-2">
           {post.tag && (
             <div className="flex justify-between items-center">
-              <span className="text-zinc-200 text-xs uppercase tracking-widest">
+              <span className="text-muted-foreground text-xs font-medium uppercase tracking-widest">
                 {post.tag}
               </span>
             </div>
           )}
           {/* Title */}
-          <h2 className="text-xl md:text-2xl text-zinc-50 font-medium capitalize">
+          <h3 className="text-xl md:text-2xl text-primary font-bold capitalize">
             {type === "item" ? (
               <Link to={`/post/${post.id}`}>
                 {post.title.length > 50
@@ -147,9 +147,9 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
             ) : (
               <Link to={`/post/${post.id}`}>{post.title}</Link>
             )}
-          </h2>
+          </h3>
           {/* Content */}
-          <p className="text-zinc-300">
+          <p className="text-muted-foreground">
             {type === "item"
               ? post.content.length > 150
                 ? `${post.content.substring(0, 150)}...`
@@ -159,16 +159,23 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
         </div>
         {/* Footer */}
         <div className="modal relative flex justify-end items-center gap-1">
-          <Link to={`/users/${post.authorId}`} className="me-auto">
-            <p className="text-zinc-500">
-              {post.authorName && `By ${post.authorName}`}
+          {post.authorName && (
+            <p className="text-muted-foreground me-auto">
+              By{" "}
+              <Link
+                to={`/users/${post.authorId}`}
+                className="hover:text-primary hover:underline"
+              >
+                {post.authorName}
+              </Link>
             </p>
-          </Link>
+          )}
+
           {isBookmarked && (
             <label
               tabIndex="0"
               htmlFor={post.id}
-              className="cursor-pointer p-1 text-zinc-50"
+              className="cursor-pointer p-1 text-primary"
             >
               <input
                 type="checkbox"
@@ -199,7 +206,7 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
             </label>
           )}
           {/* Bookmarks count */}
-          <p className="text-zinc-100">
+          <p className="text-primary">
             {post.bookmarksCount > 0 && post.bookmarksCount}
           </p>
           {/* PopOver Button */}
@@ -208,15 +215,7 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
               className="text-zinc-50 cursor-pointer p-1"
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                className="fill-zinc-50"
-              >
-                <path d="M12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3ZM12 17C10.9 17 10 17.9 10 19C10 20.1 10.9 21 12 21C13.1 21 14 20.1 14 19C14 17.9 13.1 17 12 17ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"></path>
-              </svg>
+              <i className="ri-more-2-fill text-lg"></i>
             </button>
           )}
           {isPopoverOpen && (

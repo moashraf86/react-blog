@@ -12,8 +12,8 @@ export default function Header() {
   const [showModal, setShowModal] = useState(false);
   return (
     <>
-      <header className="sticky w-full top-0 z-10 backdrop-blur border-b bg-zinc-900/ border-zinc-200 dark:border-zinc-800 ">
-        <div className="container mx-auto flex justify-between items-center py-4 px-4">
+      <header className="sticky w-full top-0 z-10 bg-background/60 backdrop-blur border-b border-border ">
+        <div className="container flex justify-between items-center py-4 px-sm">
           <Link to="/" className="text-2xl font-semibold text-zinc-50">
             <h1 className="text-2xl font-bold text-zinc-950 dark:text-zinc-50 font-mono">
               Blogy
