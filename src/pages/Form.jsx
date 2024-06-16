@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Alert } from "./Alert";
+import { Alert, AlertDescription } from "../components/ui/alert";
 export const Form = ({
   heading,
   title,
@@ -208,7 +208,12 @@ export const Form = ({
           </div>
         </div>
       ) : (
-        <Alert msg="You need to sign in to create a post" />
+        <Alert variant="default" className="flex items-center gap-3">
+          <i className="ri-information-line text-2xl text-primary"></i>
+          <AlertDescription>
+            You need to sign in to create a post
+          </AlertDescription>
+        </Alert>
       )}
     </>
   );

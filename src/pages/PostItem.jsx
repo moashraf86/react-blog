@@ -1,34 +1,24 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import { PostsContext } from "../context/PostsContext";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "../components/ui/dropdown-menu";
+
 export const PostItem = ({ post, handleShowModal, className, type }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
   const isOwner = currentUser?.id === post.authorId;
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const isBookmarked = currentUser?.bookmarks.includes(post.id);
-
-  /**
-   * Hide the popover when clicked outside
-   */
-  useEffect(() => {
-    if (isPopoverOpen) {
-      document.addEventListener("click", (e) => {
-        if (!e.target.closest(".modal")) {
-          setIsPopoverOpen(false);
-          console.log("document clicked");
-        }
-      });
-      return () =>
-        document.removeEventListener("click", setIsPopoverOpen(false));
-    }
-  }, [isPopoverOpen]);
 
   /**
    * Handle Add Bookmark
@@ -209,36 +199,26 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
           <p className="text-primary">
             {post.bookmarksCount > 0 && post.bookmarksCount}
           </p>
-          {/* PopOver Button */}
+          {/* Edit/Delete Dropdown */}
           {isOwner && (
-            <button
-              className="text-zinc-50 cursor-pointer p-1"
-              onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-            >
-              <i className="ri-more-2-fill text-lg"></i>
-            </button>
-          )}
-          {isPopoverOpen && (
-            <ul
-              className="min-w-[120px] flex flex-col items-start absolute top-7 right-0 z-50 p-4 bg-zinc-900 border border-zinc-800 rounded-md"
-              onClick={() => setIsPopoverOpen(false)}
-            >
-              <li>
-                <Link to={`/edit/${post.id}`} className="w-full">
-                  <span className="inline-block py-1 text-zinc-50 font-medium text-start">
-                    Edit
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleShowModal(post)}
-                  className="py-1 font-medium w-full text-start text-red-500"
-                >
-                  Delete
-                </button>
-              </li>
-            </ul>
+            <div>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="text-primary cursor-pointer p-1">
+                  <i className="ri-more-2-fill text-lg"></i>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <Link to={`/edit/${post.id}`} className="font-medium">
+                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuItem
+                    className="font-medium text-red-500 focus:text-red-500"
+                    onSelect={() => handleShowModal(post)}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           )}
         </div>
       </div>
