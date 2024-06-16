@@ -15,7 +15,6 @@ import {
 import { db } from "../firebase";
 import { PostItem } from "./PostItem";
 import { Loader } from "./Loader";
-import { ConfirmModal } from "./ConfirmModal";
 import { Pagination } from "./Pagination";
 import { Filter } from "./Filter";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
@@ -28,7 +27,6 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-  AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
 /* eslint-disable react/prop-types */
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
