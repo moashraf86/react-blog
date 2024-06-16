@@ -56,10 +56,11 @@ export const User = () => {
             </Link>
           )}
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <button className="font-semibold" onClick={signOut}>
-              Sign Out
-            </button>
+          <DropdownMenuItem
+            className="font-semibold text-danger focus:text-danger"
+            onSelect={signOut}
+          >
+            Sign Out
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
