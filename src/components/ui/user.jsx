@@ -33,34 +33,52 @@ export const User = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-[12rem]">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-base">
+            My Account
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <Link to="/" className="w-full text-left font-semibold">
-            <DropdownMenuItem>Home</DropdownMenuItem>
+          <Link to="/">
+            <DropdownMenuItem className="flex gap-2 items-center h-8">
+              <i className="ri-home-5-line text-lg"></i>
+              <span className="font-semibold">Home</span>
+            </DropdownMenuItem>
           </Link>
-          <Link to={`/users/${currentUser.id}`} className="font-semibold">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+          <Link to={`/users/${currentUser.id}`}>
+            <DropdownMenuItem className="flex gap-2 items-center h-8">
+              <i className="ri-user-line text-lg"></i>
+              <span className="font-semibold">Profile</span>
+            </DropdownMenuItem>
           </Link>
           {!isGuest ? (
-            <Link to="/my-posts" className="font-semibold">
-              <DropdownMenuItem>My Posts</DropdownMenuItem>
+            <Link to="/my-posts">
+              <DropdownMenuItem className="flex gap-2 items-center h-8">
+                <i className="ri-list-view text-lg"></i>
+                <span className="font-semibold">My Posts</span>
+              </DropdownMenuItem>
             </Link>
           ) : (
-            <Link to="/drafts" className="font-semibold">
-              <DropdownMenuItem>Drafts</DropdownMenuItem>
+            <Link to="/drafts">
+              <DropdownMenuItem className="flex gap-2 items-center h-8">
+                <i className="ri-bookmark-line text-lg"></i>
+                <span className="font-semibold">Drafts</span>
+              </DropdownMenuItem>
             </Link>
           )}
           {!isGuest && (
-            <Link to="/bookmarks" className="w-full text-left font-semibold">
-              <DropdownMenuItem>Bookmarks</DropdownMenuItem>
+            <Link to="/bookmarks">
+              <DropdownMenuItem className="flex gap-2 items-center h-8">
+                <i className="ri-bookmark-line text-lg"></i>
+                <span className="font-semibold">Bookmarks</span>
+              </DropdownMenuItem>
             </Link>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="font-semibold text-danger focus:text-danger"
+            className="flex items-center gap-2 text-danger focus:text-danger h-8"
             onSelect={signOut}
           >
-            Sign Out
+            <i className="ri-logout-box-line text-lg text-danger"></i>
+            <span className="font-semibold">Sign Out</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
