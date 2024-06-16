@@ -3,7 +3,7 @@ import { db } from "../firebase";
 import { PostsList } from "./PostsList";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Alert } from "./Alert";
+import { Alert, AlertDescription } from "../components/ui/alert";
 
 export const Bookmarks = () => {
   const { currentUser } = useContext(AuthContext);
@@ -36,7 +36,12 @@ export const Bookmarks = () => {
   }, []);
 
   if (!currentUser || isGuest) {
-    return <Alert type="default" msg="Please login to see your bookmarks." />;
+    return (
+      <Alert variant="default" className="flex items-center gap-3">
+        <i className="ri-information-line text-2xl text-primary"></i>
+        <AlertDescription>Please login to see your bookmarks.</AlertDescription>
+      </Alert>
+    );
   }
 
   return (

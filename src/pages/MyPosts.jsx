@@ -3,7 +3,7 @@ import { collection, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
-import { Alert } from "./Alert";
+import { Alert, AlertDescription } from "../components/ui/alert";
 
 export const MyPosts = () => {
   const { currentUser } = useContext(AuthContext);
@@ -20,7 +20,12 @@ export const MyPosts = () => {
 
   // If user is not logged in, show a message to login
   if (!currentUser) {
-    return <Alert type="default" msg="Please login to see your posts." />;
+    return (
+      <Alert variant="default" className="flex items-center gap-3">
+        <i className="ri-information-line text-2xl text-primary"></i>
+        <AlertDescription>Please login to see your posts.</AlertDescription>
+      </Alert>
+    );
   }
 
   return (

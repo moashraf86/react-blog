@@ -15,10 +15,19 @@ import {
 import { db } from "../firebase";
 import { PostItem } from "./PostItem";
 import { Loader } from "./Loader";
-import { Alert } from "./Alert";
-import { ConfirmModal } from "./ConfirmModal";
 import { Pagination } from "./Pagination";
 import { Filter } from "./Filter";
+import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "../components/ui/alert-dialog";
 /* eslint-disable react/prop-types */
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { currentUser } = useContext(AuthContext);
@@ -210,13 +219,12 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 mt-12">
-      <div className="flex flex-wrap items-center justify-between">
-        <h2 className="px-4 text-2xl md:text-4xl font-bold mb-4 text-zinc-50">
-          {title}
-        </h2>
+    <div className="flex flex-col gap-8 mt-12">
+      <div className="container flex flex-wrap items-center justify-between">
+        <h2 className="text-2xl md:text-4xl font-bold">{title}</h2>
         {currentUser && !isGuest && <Filter handleFilter={handleFilter} />}
       </div>
+
       <ul className="flex justify-start flex-wrap">
         {loading && !posts.length && <Loader style={"w-full"} />}
         {loading &&
@@ -235,9 +243,18 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
               fetchPosts={fetchPosts}
             />
           ))}
-        {error && <Alert type="error" msg={error} />}
+        {error && (
+          <Alert variant="danger">
+            <i className="ri-error-warning-line text-xl text-danger absolute top-[10px]"></i>
+            <AlertTitle className="pl-8">Error</AlertTitle>
+            <AlertDescription className="pl-8">{error}</AlertDescription>
+          </Alert>
+        )}
         {!posts.length && !loading && !error && (
-          <Alert type="default" msg={alertMsg} />
+          <Alert variant="default" className="flex items-center gap-3">
+            <i className="ri-information-line text-2xl text-primary"></i>
+            <AlertDescription>{alertMsg}</AlertDescription>
+          </Alert>
         )}
       </ul>
       <Pagination
@@ -246,15 +263,29 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         currentPage={currentPage}
         postsPerPage={postsPerPage}
       />
-      {showModal &&
-        createPortal(
-          <ConfirmModal
-            showModal={showModal}
-            onCancel={() => setShowModal(false)}
-            onConfirm={handleDeletePost}
-          />,
-          document.body
-        )}
+      {/* Confirm Delete Dialog */}
+      <AlertDialog open={showModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowModal(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeletePost}
+              className="bg-danger text-danger-foreground hover:text-danger-foreground hover:bg-danger/95"
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

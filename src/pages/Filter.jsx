@@ -1,9 +1,9 @@
 export const Filter = ({ handleFilter }) => {
   return (
-    <div className="flex items-center gap-3 px-4 text-zinc-400">
+    <div className="flex items-center gap-3  text-zinc-400">
       <label
         htmlFor="all"
-        className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+        className="hover:text-primary cursor-pointer text-sm has-[:checked]:text-primary"
       >
         <input
           type="radio"
@@ -17,7 +17,7 @@ export const Filter = ({ handleFilter }) => {
       </label>
       <label
         htmlFor="tech"
-        className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+        className="hover:text-primary cursor-pointer text-sm has-[:checked]:text-primary"
       >
         <input
           type="radio"
@@ -31,7 +31,7 @@ export const Filter = ({ handleFilter }) => {
       </label>
       <label
         htmlFor="science"
-        className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+        className="hover:text-primary cursor-pointer text-sm has-[:checked]:text-primary"
       >
         <input
           type="radio"
@@ -45,7 +45,7 @@ export const Filter = ({ handleFilter }) => {
       </label>
       <label
         htmlFor="culture"
-        className="hover:text-zinc-50 cursor-pointer text-sm has-[:checked]:text-zinc-50"
+        className="hover:text-primary cursor-pointer text-sm has-[:checked]:text-primary"
       >
         <input
           type="radio"

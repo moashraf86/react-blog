@@ -5,7 +5,7 @@ import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Loader } from "./Loader";
 import { PostItem } from "./PostItem";
-import { Alert } from "./Alert";
+import { Alert, AlertDescription } from "../components/ui/alert";
 
 export const Post = () => {
   const { posts, dispatch } = useContext(PostsContext);
@@ -40,8 +40,13 @@ export const Post = () => {
   return (
     <>
       {loading && <Loader />}
-      {!loading && <PostItem post={post} type="post" />}
-      {error && <Alert type="error" msg={error} />}
+      {!loading && <PostItem post={post} type="post" className="mt-8" />}
+      {error && (
+        <Alert variant="danger" className="flex items-center gap-3">
+          <i className="ri-error-warning-line text-xl text-danger"></i>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
     </>
   );
 };
