@@ -139,7 +139,7 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
             )}
           </h3>
           {/* Content */}
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground break-words">
             {type === "item"
               ? post.content.length > 150
                 ? `${post.content.substring(0, 150)}...`
