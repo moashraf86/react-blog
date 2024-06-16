@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useHref } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,6 +15,7 @@ export const User = () => {
   const isGuest = currentUser?.isGuest;
   const userImg =
     currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
+  const currentPage = useHref().split("/")[1];
 
   return (
     <div>
@@ -38,36 +39,76 @@ export const User = () => {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <Link to="/">
-            <DropdownMenuItem className="flex gap-2 items-center h-8">
-              <i className="ri-home-5-line text-lg"></i>
+            <DropdownMenuItem
+              className={`flex gap-2 items-center h-8 ${
+                currentPage === "" && "bg-accent"
+              }`}
+            >
+              <i
+                className={`ri-home-5-${
+                  currentPage === "" ? "fill" : "line"
+                } text-lg`}
+              ></i>
               <span className="font-semibold">Home</span>
             </DropdownMenuItem>
           </Link>
           <Link to={`/users/${currentUser.id}`}>
-            <DropdownMenuItem className="flex gap-2 items-center h-8">
-              <i className="ri-user-line text-lg"></i>
+            <DropdownMenuItem
+              className={`flex gap-2 items-center h-8 ${
+                currentPage === "users" && "bg-accent"
+              }`}
+            >
+              <i
+                className={`ri-user-${
+                  currentPage === "users" ? "fill" : "line"
+                } text-lg`}
+              ></i>
               <span className="font-semibold">Profile</span>
             </DropdownMenuItem>
           </Link>
           {!isGuest ? (
             <Link to="/my-posts">
-              <DropdownMenuItem className="flex gap-2 items-center h-8">
-                <i className="ri-list-view text-lg"></i>
+              <DropdownMenuItem
+                className={`flex gap-2 items-center h-8 ${
+                  currentPage === "my-posts" && "bg-accent"
+                }`}
+              >
+                <i
+                  className={`ri-file-list-${
+                    currentPage === "my-posts" ? "fill" : "line"
+                  } text-lg`}
+                ></i>
                 <span className="font-semibold">My Posts</span>
               </DropdownMenuItem>
             </Link>
           ) : (
             <Link to="/drafts">
-              <DropdownMenuItem className="flex gap-2 items-center h-8">
-                <i className="ri-bookmark-line text-lg"></i>
+              <DropdownMenuItem
+                className={`flex gap-2 items-center h-8 ${
+                  currentPage === "drafts" && "bg-accent"
+                }`}
+              >
+                <i
+                  className={`ri-bookmark-${
+                    currentPage === "drafts" ? "fill" : "line"
+                  } text-lg`}
+                ></i>
                 <span className="font-semibold">Drafts</span>
               </DropdownMenuItem>
             </Link>
           )}
           {!isGuest && (
             <Link to="/bookmarks">
-              <DropdownMenuItem className="flex gap-2 items-center h-8">
-                <i className="ri-bookmark-line text-lg"></i>
+              <DropdownMenuItem
+                className={`flex gap-2 items-center h-8 ${
+                  currentPage === "bookmarks" && "bg-accent"
+                }`}
+              >
+                <i
+                  className={`ri-bookmark-${
+                    currentPage === "bookmarks" ? "fill" : "line"
+                  } text-lg`}
+                ></i>
                 <span className="font-semibold">Bookmarks</span>
               </DropdownMenuItem>
             </Link>
