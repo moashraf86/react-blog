@@ -2,11 +2,9 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { SignInModal } from "./SignInModal";
-import { createPortal } from "react-dom";
 import { User } from "../components/ui/user";
 import { Button } from "../components/ui/button";
 import { ModeToggle } from "../components/ui/modeToggler";
-
 export default function Header() {
   const { currentUser } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
@@ -46,14 +44,7 @@ export default function Header() {
           </nav>
         </div>
       </header>
-      {showModal &&
-        createPortal(
-          <SignInModal
-            showModal={showModal}
-            onCancel={() => setShowModal(false)}
-          />,
-          document.body
-        )}
+      <SignInModal showModal={showModal} onCancel={() => setShowModal(false)} />
     </>
   );
 }
