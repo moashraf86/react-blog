@@ -42,8 +42,8 @@ export const Post = () => {
       {loading && <Loader />}
       {!loading && <PostItem post={post} type="post" className="mt-8" />}
       {error && (
-        <Alert variant="destructive" className="flex items-center gap-3">
-          <i className="ri-error-warning-line text-xl text-destructive"></i>
+        <Alert variant="danger" className="flex items-center gap-3">
+          <i className="ri-error-warning-line text-xl text-danger"></i>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

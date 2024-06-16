@@ -244,8 +244,8 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
             />
           ))}
         {error && (
-          <Alert variant="destructive">
-            <i className="ri-error-warning-line text-xl text-destructive absolute top-[10px]"></i>
+          <Alert variant="danger">
+            <i className="ri-error-warning-line text-xl text-danger absolute top-[10px]"></i>
             <AlertTitle className="pl-8">Error</AlertTitle>
             <AlertDescription className="pl-8">{error}</AlertDescription>
           </Alert>
@@ -277,7 +277,10 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
             <AlertDialogCancel onClick={() => setShowModal(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeletePost}>
+            <AlertDialogAction
+              onClick={handleDeletePost}
+              className="bg-danger text-danger-foreground hover:text-danger-foreground hover:bg-danger/95"
+            >
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>

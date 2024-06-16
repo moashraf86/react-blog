@@ -31,7 +31,7 @@ export const Form = ({
                   name="title"
                   id="title"
                   className={`w-full p-2 border text-primary border-input bg-transparent rounded-md ${
-                    errors.title && "border-destructive"
+                    errors.title && "border-danger"
                   }`}
                   value={title}
                   type="text"
@@ -39,14 +39,14 @@ export const Form = ({
                   onChange={(e) => handleChange(e)}
                 />
                 {errors.title && (
-                  <p className="text-destructive">{errors.title}</p>
+                  <p className="text-danger">{errors.title}</p>
                 )}
               </div>
               <div className="flex flex-col gap-1">
                 <textarea
                   rows={4}
                   className={`w-full p-2 text-primary border border-input bg-transparent rounded-md ${
-                    errors.content && "border-destructive"
+                    errors.content && "border-danger"
                   }`}
                   placeholder="write something here..."
                   value={content}
@@ -54,7 +54,7 @@ export const Form = ({
                   onChange={(e) => handleChange(e)}
                 ></textarea>
                 {errors.content && (
-                  <p className="text-destructive">{errors.content}</p>
+                  <p className="text-danger">{errors.content}</p>
                 )}
               </div>
               {!image && isImageRequired && (
@@ -80,7 +80,7 @@ export const Form = ({
                     />
                   </label>
                   {errors.image && (
-                    <p className="text-destructive">{errors.image}</p>
+                    <p className="text-danger">{errors.image}</p>
                   )}
                 </>
               )}
@@ -195,7 +195,7 @@ export const Form = ({
                   Science
                 </label>
                 {errors.tag && (
-                  <p className="text-sm text-destructive">{errors.tag}</p>
+                  <p className="text-sm text-danger">{errors.tag}</p>
                 )}
               </div>
               <button
