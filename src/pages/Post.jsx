@@ -14,6 +14,7 @@ export const Post = () => {
   const { currentUser, updateUser } = useContext(AuthContext);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [bookmarking, setBookmarking] = useState(false);
   const [error, setError] = useState(null);
   const post = posts.find((post) => post.id === id) || {};
   const isGuest = currentUser?.isGuest;
@@ -49,7 +50,7 @@ export const Post = () => {
   const handleAddBookmark = (post) => {
     const addBookmark = async (post) => {
       try {
-        setLoading(true);
+        setBookmarking(true);
         // if the user is not signed in, return
         if (!currentUser || isGuest) {
           alert("Please login to bookmark this post.");
@@ -84,7 +85,7 @@ export const Post = () => {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        setBookmarking(false);
       }
     };
     addBookmark(post);
@@ -96,7 +97,7 @@ export const Post = () => {
   const handleRemoveBookmark = (post) => {
     const removeBookmark = async (post) => {
       try {
-        setLoading(true);
+        // setLoading(true);
         const userRef = doc(db, "users", currentUser.id);
         const userSnap = await getDoc(userRef);
         const postRef = doc(db, "posts", post.id);
@@ -121,7 +122,7 @@ export const Post = () => {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
     removeBookmark(post);
@@ -206,8 +207,10 @@ export const Post = () => {
                         hidden
                         onChange={() => handleRemoveBookmark(post)}
                       />
-                      {loading && <i className="ri-loader-4-line"></i>}
-                      {!loading && <i className="ri-bookmark-fill text-lg"></i>}
+                      {bookmarking && <i className="ri-loader-4-line"></i>}
+                      {!bookmarking && (
+                        <i className="ri-bookmark-fill text-lg"></i>
+                      )}
                     </label>
                   )}
                   {!isBookmarked && (
@@ -223,8 +226,10 @@ export const Post = () => {
                         hidden
                         onChange={() => handleAddBookmark(post)}
                       />
-                      {loading && <i className="ri-loader-4-line"></i>}
-                      {!loading && <i className="ri-bookmark-line text-lg"></i>}
+                      {bookmarking && <i className="ri-loader-4-line"></i>}
+                      {!bookmarking && (
+                        <i className="ri-bookmark-line text-lg"></i>
+                      )}
                     </label>
                   )}
                   {/* Bookmarks count */}
