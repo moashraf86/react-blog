@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
 } from "../components/ui/dropdown-menu";
 
-export const PostItem = ({ post, handleShowModal, className, type }) => {
+export const PostItem = ({ post, handleShowModal }) => {
   const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
@@ -105,7 +105,7 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
   };
 
   return (
-    <li className={`flex w-full sm:px-2 mb-6 sm:mb-4 ${className}`}>
+    <div className="flex w-full sm:px-2 mb-6 sm:mb-4 sm:w-1/2 xl:w-1/3">
       <div className="relative flex flex-col gap-4 px-4 border-zinc-800 w-full rounded-md">
         {/* Image */}
         <div className="h-[180px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-md">
@@ -128,22 +128,16 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
           )}
           {/* Title */}
           <h3 className="text-xl md:text-2xl text-primary font-bold capitalize">
-            {type === "item" ? (
-              <Link to={`/post/${post.id}`}>
-                {post.title.length > 50
-                  ? `${post.title.substring(0, 50)}...`
-                  : post.title}
-              </Link>
-            ) : (
-              <Link to={`/post/${post.id}`}>{post.title}</Link>
-            )}
+            <Link to={`/post/${post.id}`}>
+              {post.title.length > 50
+                ? `${post.title.substring(0, 50)}...`
+                : post.title}
+            </Link>
           </h3>
           {/* Content */}
-          <p className="text-muted-foreground">
-            {type === "item"
-              ? post.content.length > 150
-                ? `${post.content.substring(0, 150)}...`
-                : post.content
+          <p className="text-muted-foreground break-words">
+            {post.content.length > 150
+              ? `${post.content.substring(0, 150)}...`
               : post.content}
           </p>
         </div>
@@ -222,6 +216,6 @@ export const PostItem = ({ post, handleShowModal, className, type }) => {
           )}
         </div>
       </div>
-    </li>
+    </div>
   );
 };
