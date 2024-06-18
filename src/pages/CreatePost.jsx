@@ -9,6 +9,8 @@ export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
   const authorId = currentUser?.id;
   const authorName = currentUser?.name || "Anonymous";
+  const authorImage =
+    currentUser?.photoURL || `https://i.pravatar.cc/150?img=${authorId}`;
   const isGuest = currentUser?.isGuest;
   const [image, setImage] = useState(null);
   const [isImageRequired, setIsImageRequired] = useState(true);
@@ -140,6 +142,7 @@ export const CreatePost = () => {
         bookmarksCount: 0,
         authorId: authorId,
         authorName: authorName,
+        authorImage: authorImage,
         published: isGuest ? false : true,
         createdAt: new Date().toISOString(),
       };
