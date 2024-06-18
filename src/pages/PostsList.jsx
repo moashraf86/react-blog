@@ -224,7 +224,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         {currentUser && !isGuest && <Filter handleFilter={handleFilter} />}
       </div>
 
-      <div className="flex justify-start flex-wrap">
+      <div className="container px-5 flex justify-start flex-wrap">
         {loading && !posts.length && <Loader style={"w-full"} />}
         {loading &&
           posts.map((post) => (
