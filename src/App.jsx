@@ -3,6 +3,7 @@ import Header from "./pages/Header";
 import { PostsProvider } from "./context/PostsContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeProviderContext";
+import { CommentsProvider } from "./context/CommentsContext";
 
 export default function App() {
   return (
@@ -10,7 +11,9 @@ export default function App() {
       <PostsProvider>
         <AuthProvider>
           <Header />
-          <Outlet />
+          <CommentsProvider>
+            <Outlet />
+          </CommentsProvider>
         </AuthProvider>
       </PostsProvider>
     </ThemeProvider>
