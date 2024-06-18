@@ -1,5 +1,4 @@
 import { useEffect, useContext, useState } from "react";
-import { createPortal } from "react-dom";
 import { PostsContext } from "../context/PostsContext";
 import { AuthContext } from "../context/AuthContext";
 import {
@@ -225,7 +224,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         {currentUser && !isGuest && <Filter handleFilter={handleFilter} />}
       </div>
 
-      <ul className="flex justify-start flex-wrap">
+      <div className="container px-5 flex justify-start flex-wrap">
         {loading && !posts.length && <Loader style={"w-full"} />}
         {loading &&
           posts.map((post) => (
@@ -235,8 +234,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
           !error &&
           posts.map((post) => (
             <PostItem
-              type="item"
-              className={"sm:w-1/2 xl:w-1/3"}
               key={post.id}
               post={post}
               handleShowModal={() => handleShowModal(post)}
@@ -256,7 +253,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
             <AlertDescription>{alertMsg}</AlertDescription>
           </Alert>
         )}
-      </ul>
+      </div>
       <Pagination
         totalPosts={totalPosts}
         paginate={handlePaginate}
