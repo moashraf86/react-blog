@@ -39,7 +39,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterKey, setFilterKey] = useState("all");
-  const postsPerPage = 3;
+  const postsPerPage = 4;
 
   /**
    * Fetch posts from the Firebase store After the component mounts
