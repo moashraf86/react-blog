@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+import { getRelTime } from "../../utils/getRelTime";
 export const Comment = ({ comment, commentToEdit, handleDelete }) => {
   const { posts } = useContext(PostsContext);
   const { authorName, authorImage, authorId, content, createdAt } = comment;
@@ -17,7 +18,8 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
   const { currentUser } = useContext(AuthContext);
   const isCommentOwner = currentUser?.id === authorId;
   const isPostOwner = currentUser?.id === post.authorId;
-
+	const date = new Date(createdAt.seconds * 1000);
+	const timeAgo = getRelTime(date);
   /**
    * Comment To Edit
    */
@@ -35,13 +37,16 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
             alt={authorName}
             className="w-8 h-8 rounded-full mr-2"
           />
-          <Link to={`/users/${authorId}`}>
-            <p className="text-sm font-bold">{authorName}</p>
-          </Link>
+					<div className="flex items-center gap-1">
+						<Link to={`/users/${authorId}`}>
+							<p className="text-sm font-bold">{authorName}</p>
+						</Link>
+							<span className="text-xs text-gray-500">•</span>
+						<p className="text-xs text-gray-500">
+							{timeAgo}
+						</p>
+					</div>
         </div>
-        <p className="text-xs text-gray-500">
-          {/* {createdAt?.toDate().toLocaleDateString()} */}
-        </p>
         {/* Edit/Delete Dropdown */}
         {isCommentOwner && (
           <DropdownMenu>
@@ -65,7 +70,7 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
           </DropdownMenu>
         )}
       </div>
-      <p className="text-base text-muted-foreground">{content}</p>
+      <p className="text-base text-muted-foreground whitespace-pre-wrap leading-5">{content}</p>
     </div>
   );
 };
