@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState, useContext } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebase";
 import { Skeleton } from "./skeleton";
 import { Comment } from "./comment";
@@ -19,8 +19,8 @@ export const CommentList = ({ post, commentToEdit, handleDelete }) => {
     try {
       setLoading(true);
       setError(null);
-      const commentsCollection = collection(db, "posts", post?.id, "comments");
-      const commentsSnapshot = await getDocs(commentsCollection);
+			const commentsQuery = query(collection(db, "posts", post?.id, "comments"), orderBy("createdAt", "desc"));
+      const commentsSnapshot = await getDocs(commentsQuery);
       const commentsList = commentsSnapshot.docs.map((doc) => doc.data());
       CommentsDispatch({ type: "FETCH_COMMENTS", payload: commentsList });
     } catch (error) {
