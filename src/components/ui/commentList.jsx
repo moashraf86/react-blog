@@ -23,7 +23,8 @@ export const CommentList = ({ post, commentToEdit, handleDelete }) => {
       const commentsSnapshot = await getDocs(commentsQuery);
       const commentsList = commentsSnapshot.docs.map((doc) => doc.data());
       CommentsDispatch({ type: "FETCH_COMMENTS", payload: commentsList });
-			// update comemntCount in the post
+			setLoading(false);
+			// update commentCount in the post
 			await updateDoc(doc(db, "posts", post?.id), {
 				commentsCount: commentsList.length
 			});
