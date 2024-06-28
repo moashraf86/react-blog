@@ -3,7 +3,7 @@ import { PostsContext } from "../context/PostsContext";
 import { useParams } from "react-router-dom";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { Loader } from "./Loader";
+import { Skeleton } from "../components/ui/skeleton";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -134,7 +134,29 @@ export const Post = () => {
 
   return (
     <div className="max-w-[800px] mx-auto mt-8">
-      {loading && <Loader />}
+      {loading && (
+				<div className="flex flex-col gap-4 rounded-md p-4">
+					<Skeleton className="w-20 h-8 rounded-full" />
+          <Skeleton className="w-full h-8" />
+          <div className="w-full flex items-center gap-2 mb-4">
+            <Skeleton className="w-8 h-8 rounded-full" />
+						<Skeleton className="w-32 h-3" />
+          </div>
+					<Skeleton className="w-full h-96 mb-4" />
+					<div className="flex flex-col gap-2">
+						<Skeleton className="w-full h-3" />
+						<Skeleton className="w-3/4 h-3" />
+						<Skeleton className="w-1/2 h-3" />
+					</div>
+					<div className="flex items-center gap-3 border-t border-b py-3">
+						<Skeleton className="w-10 h-10 rounded-full" />
+						<div className="flex flex-col gap-2">
+							<Skeleton className="w-24 h-3" />
+							<Skeleton className="w-32 h-2" />
+						</div>
+					</div>
+        </div>
+			)}
       {!loading && (
         <div className={`flex w-full sm:px-2 mb-6 sm:mb-4`}>
           <div className="relative flex flex-col  px-4 border-zinc-800 w-full rounded-md">

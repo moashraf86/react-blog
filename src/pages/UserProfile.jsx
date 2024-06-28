@@ -13,15 +13,19 @@ export const UserProfile = () => {
   const getUser = async () => {
     const userRef = doc(db, "users", id);
     const userSnap = await getDoc(userRef);
-    setUserName(userSnap.data().name);
+		if (userSnap.exists()) {
+			setUserName(userSnap.data().name);
+		} else {
+			setUserName("User Not Found");
+		}
   };
 
   useEffect(() => {
-    getUser();
+		getUser();
   }, [userName]);
 
-  // change the url when the user name is fetched
-  history.pushState({}, "", `/users/${userName}`);
+	// Update the URL
+	history.pushState({}, "", `/users/${userName}`);
 
   /**
    * Query Variables

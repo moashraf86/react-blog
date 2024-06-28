@@ -27,6 +27,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "../components/ui/alert-dialog";
+import { Skeleton } from "../components/ui/skeleton";
 /* eslint-disable react/prop-types */
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { currentUser } = useContext(AuthContext);
@@ -39,7 +40,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterKey, setFilterKey] = useState("all");
-  const postsPerPage = 3;
+  const postsPerPage = 4;
 
   /**
    * Fetch posts from the Firebase store After the component mounts
@@ -225,11 +226,25 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
       </div>
 
       <div className="container px-5 flex justify-start flex-wrap">
-        {loading && !posts.length && <Loader style={"w-full"} />}
         {loading &&
-          posts.map((post) => (
-            <Loader key={post.id} style={"sm:w-1/2 xl:w-1/3"} />
-          ))}
+					(
+						Array.from({ length: 3 }).map((_, i) => (
+							<div key={i} className="flex flex-col gap-3 sm:px-3 w-full sm:w-1/2 xl:w-1/3 ">
+								<div className="bg-muted/30 border border-border rounded-md mb-6">
+									<Skeleton className="w-full h-[180px] rounded-br-none rounded-bl-none" />
+									<div className="flex flex-col gap-3 p-4">
+										<Skeleton className="w-20 h-4" />
+										<Skeleton className="w-full h-6 mb-2" />
+										<Skeleton className="w-full h-3" />
+										<Skeleton className="w-3/4 h-3" />
+										<Skeleton className="w-1/2 h-3" />
+										<Skeleton className="w-32 h-4 mt-3" />
+									</div>
+								</div>
+							</div>
+						))
+					)
+				}
         {!loading &&
           !error &&
           posts.map((post) => (

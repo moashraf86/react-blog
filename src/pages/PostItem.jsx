@@ -105,8 +105,8 @@ export const PostItem = ({ post, handleShowModal }) => {
   };
 
   return (
-    <div className="flex w-full sm:px-2 mb-6 sm:mb-4 sm:w-1/2 xl:w-1/3 2xl:w-1/4">
-      <div className="relative  flex flex-col  w-full rounded-md">
+    <div className="flex w-full sm:px-3 mb-6 sm:w-1/2 xl:w-1/3 2xl:w-1/4">
+      <div className="relative flex flex-col w-full rounded-md">
         {/* Image */}
         <div className="h-[180px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-md">
           {post.image && (
@@ -118,7 +118,7 @@ export const PostItem = ({ post, handleShowModal }) => {
           )}
         </div>
         {/* Content */}
-        <div className="flex flex-col gap-2 py-4 px-4 border border-t-0 border-border rounded-br-md rounded-bl-md">
+        <div className="flex flex-col gap-2 py-4 px-4 bg-muted/30 border border-t-0 border-border rounded-br-md rounded-bl-md">
           {/* Tag */}
           {post.tag && (
             <div className="flex justify-between items-center">
