@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { getRelTime } from "../../utils/getRelTime";
+import {isArabicText} from "../../utils/isArabicText";
 export const Comment = ({ comment, commentToEdit, handleDelete }) => {
   const { posts } = useContext(PostsContext);
   const { authorName, authorImage, authorId, content, createdAt } = comment;
@@ -28,6 +29,8 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
   //   console.log("Edit Comment", comment);
   // };
 
+	const isArabic = isArabicText(content);
+	console.log(isArabic);
   return (
     <div key={comment.id} className="mb-4 p-4 border border-border rounded-md">
       <div className="flex items-center justify-between mb-4">
@@ -70,7 +73,7 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
           </DropdownMenu>
         )}
       </div>
-      <p className="text-base text-muted-foreground whitespace-pre-wrap leading-5">{content}</p>
+      <p className={`text-base text-muted-foreground whitespace-pre-wrap leading-5 ${isArabic && 'text-right'}`}>{content}</p>
     </div>
   );
 };
