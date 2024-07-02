@@ -220,7 +220,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
 
   return (
     <div className="flex flex-col gap-8 mt-6">
-      <div className="container">
+      <div className="container px-5 sm:px-8">
         <BreadCrumbs />
         <div className="flex flex-wrap items-center justify-between">
           <h2 className="text-2xl md:text-4xl font-bold">{title}</h2>

@@ -11,7 +11,7 @@ export default function Header() {
   return (
     <>
       <header className="sticky w-full top-0 z-10 bg-background/60 backdrop-blur border-b border-border ">
-        <div className="container flex justify-between items-center py-4 px-sm">
+        <div className="container px-5 sm:px-8 flex justify-between items-center py-4 px-sm">
           <Link to="/" className="text-2xl font-semibold text-zinc-50">
             <h1 className="text-2xl font-bold text-zinc-950 dark:text-zinc-50 font-mono">
               Blogy
