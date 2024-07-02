@@ -13,7 +13,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { PostItem } from "./PostItem";
-import { Loader } from "./Loader";
 import { Pagination } from "./Pagination";
 import { Filter } from "./Filter";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
@@ -28,6 +27,7 @@ import {
   AlertDialogAction,
 } from "../components/ui/alert-dialog";
 import { Skeleton } from "../components/ui/skeleton";
+import { BreadCrumbs } from "../components/ui/breadCrumbs";
 /* eslint-disable react/prop-types */
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { currentUser } = useContext(AuthContext);
@@ -219,32 +219,34 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   };
 
   return (
-    <div className="flex flex-col gap-8 mt-12">
-      <div className="container flex flex-wrap items-center justify-between">
-        <h2 className="text-2xl md:text-4xl font-bold">{title}</h2>
-        {currentUser && !isGuest && <Filter handleFilter={handleFilter} />}
+    <div className="flex flex-col gap-8 mt-6">
+      <div className="container px-5 sm:px-8">
+        <BreadCrumbs />
+        <div className="flex flex-wrap items-center justify-between">
+          <h2 className="text-2xl md:text-4xl font-bold">{title}</h2>
+          {currentUser && !isGuest && <Filter handleFilter={handleFilter} />}
+        </div>
       </div>
-
       <div className="container px-5 flex justify-start flex-wrap">
         {loading &&
-					(
-						Array.from({ length: 3 }).map((_, i) => (
-							<div key={i} className="flex flex-col gap-3 sm:px-3 w-full sm:w-1/2 xl:w-1/3 ">
-								<div className="bg-muted/30 border border-border rounded-md mb-6">
-									<Skeleton className="w-full h-[180px] rounded-br-none rounded-bl-none" />
-									<div className="flex flex-col gap-3 p-4">
-										<Skeleton className="w-20 h-4" />
-										<Skeleton className="w-full h-6 mb-2" />
-										<Skeleton className="w-full h-3" />
-										<Skeleton className="w-3/4 h-3" />
-										<Skeleton className="w-1/2 h-3" />
-										<Skeleton className="w-32 h-4 mt-3" />
-									</div>
-								</div>
-							</div>
-						))
-					)
-				}
+          Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-3 sm:px-3 w-full sm:w-1/2 xl:w-1/3 "
+            >
+              <div className="bg-muted/30 border border-border rounded-md mb-6">
+                <Skeleton className="w-full h-[180px] rounded-br-none rounded-bl-none" />
+                <div className="flex flex-col gap-3 p-4">
+                  <Skeleton className="w-20 h-4" />
+                  <Skeleton className="w-full h-6 mb-2" />
+                  <Skeleton className="w-full h-3" />
+                  <Skeleton className="w-3/4 h-3" />
+                  <Skeleton className="w-1/2 h-3" />
+                  <Skeleton className="w-32 h-4 mt-3" />
+                </div>
+              </div>
+            </div>
+          ))}
         {!loading &&
           !error &&
           posts.map((post) => (

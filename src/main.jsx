@@ -11,7 +11,6 @@ import { UserProfile } from "./pages/UserProfile.jsx";
 import "remixicon/fonts/remixicon.css";
 import App from "./App.jsx";
 import "./index.css";
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,13 +18,44 @@ const router = createBrowserRouter([
     errorElement: <div>Not Found</div>,
     children: [
       { path: "/", element: <Posts /> },
-      { path: "/post/:id", element: <Post /> },
-      { path: "/create", element: <CreatePost /> },
-      { path: "/edit/:id", element: <EditPost /> },
-      { path: "/bookmarks", element: <Bookmarks /> },
-      { path: "/my-posts", element: <MyPosts /> },
-      { path: "/drafts", element: <MyPosts /> },
-      { path: "/users/:id", element: <UserProfile /> },
+      {
+        path: "/post/:id",
+        element: <Post />,
+        handle: {
+          crumb: () => `Post`,
+        },
+      },
+      {
+        path: "/create",
+        element: <CreatePost />,
+        handle: { crumb: () => `Create Post` },
+      },
+      {
+        path: "/edit/:id",
+        element: <EditPost />,
+        handle: { crumb: () => `Edit Post` },
+      },
+      {
+        path: "/bookmarks",
+        element: <Bookmarks />,
+        loader: () => import("./pages/Bookmarks.jsx"),
+        handle: { crumb: () => `Bookmarks` },
+      },
+      {
+        path: "/my-posts",
+        element: <MyPosts />,
+        handle: { crumb: () => `My Posts` },
+      },
+      {
+        path: "/drafts",
+        element: <MyPosts />,
+        handle: { crumb: () => `Drafts` },
+      },
+      {
+        path: "/users/:id",
+        element: <UserProfile />,
+        handle: { crumb: () => `User Profile` },
+      },
     ],
   },
 ]);
