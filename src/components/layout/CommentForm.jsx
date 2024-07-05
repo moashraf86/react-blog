@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Button } from "./button";
+import { Button } from "../ui/button";
 export const CommentForm = ({
   handleChangeComment,
   handleSubmit,
@@ -11,12 +11,12 @@ export const CommentForm = ({
 }) => {
   const userImg =
     currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
-	const isGuest = currentUser?.isGuest
+  const isGuest = currentUser?.isGuest;
 
-	//view the form only if the user is not a guest
-	if(!currentUser || isGuest) {
-		return
-	}
+  //view the form only if the user is not a guest
+  if (!currentUser || isGuest) {
+    return;
+  }
 
   return (
     <div ref={formRef}>

@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useContext, useState } from "react";
-import { PostsContext } from "../context/PostsContext";
-import { AuthContext } from "../context/AuthContext";
+import { PostsContext } from "../../context/PostsContext";
+import { AuthContext } from "../../context/AuthContext";
 import {
   getDocs,
   doc,
@@ -11,24 +12,16 @@ import {
   orderBy,
   startAt,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { PostItem } from "./PostItem";
-import { Pagination } from "./Pagination";
-import { Filter } from "./Filter";
-import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "../components/ui/alert-dialog";
-import { Skeleton } from "../components/ui/skeleton";
-import { BreadCrumbs } from "../components/ui/breadCrumbs";
-/* eslint-disable react/prop-types */
+import { Pagination } from "../shared/Pagination";
+import { Filter } from "../shared/Filter";
+import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
+import { Skeleton } from "../ui/skeleton";
+import { BreadCrumbs } from "../shared/BreadCrumbs";
+import { ConfirmDeleteModal } from "../shared/ConfirmDeleteModal";
+import { getTargetSnapShot } from "../../utils/getTargetSnapShot";
+
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { currentUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
@@ -40,7 +33,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterKey, setFilterKey] = useState("all");
-  const postsPerPage = 4;
+  const postsPerPage = 3;
 
   /**
    * Fetch posts from the Firebase store After the component mounts
@@ -107,17 +100,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   };
 
   /**
-   *  Get Target snapShot for pagination based on page number
-   */
-  const getTargetSnapShot = async (i) => {
-    const targetDoc = await getDocs(
-      query(postsQuery.collection, orderBy("title", "asc"))
-    );
-    let targetSnapShot = targetDoc.docs[(i - 1) * postsPerPage];
-    return targetSnapShot;
-  };
-
-  /**
    * Handle pagination
    */
   const handlePaginate = async (pageNumber) => {
@@ -126,8 +108,11 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
       setLoading(true);
       setError(null);
       history.pushState({}, "", `?pages=${pageNumber}`);
-      await getTargetSnapShot(pageNumber);
-      let target = await getTargetSnapShot(pageNumber);
+      let target = await getTargetSnapShot(
+        pageNumber,
+        postsQuery,
+        postsPerPage
+      );
       let snapShot;
       if (pageNumber > currentPage) {
         if (filterKey === "all") {
@@ -278,28 +263,11 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         postsPerPage={postsPerPage}
       />
       {/* Confirm Delete Dialog */}
-      <AlertDialog open={showModal}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowModal(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeletePost}
-              className="bg-danger text-danger-foreground hover:text-danger-foreground hover:bg-danger/95"
-            >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDeleteModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        handleDeletePost={handleDeletePost}
+      />
     </div>
   );
 };

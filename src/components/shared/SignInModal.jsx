@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogTitle,
-} from "../components/ui/alert-dialog";
-import { Button } from "../components/ui/button";
+} from "../ui/alert-dialog";
+import { Button } from "../ui/button";
 export const SignInModal = ({ onCancel, showModal }) => {
   const { signIn, signInAsGuest } = useContext(AuthContext);
 
@@ -23,15 +23,6 @@ export const SignInModal = ({ onCancel, showModal }) => {
   const handleGuestSignIn = () => {
     signInAsGuest();
     onCancel();
-  };
-
-  /**
-   * Hide the modal when the user clicks outside the modal
-   */
-  const handleOutsideClick = () => {
-    // if (e.target.classList.contains("fixed")) {
-    //   onCancel();
-    // }
   };
 
   return (

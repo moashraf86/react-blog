@@ -1,4 +1,4 @@
-import { PostsList } from "./PostsList";
+import { PostsList } from "../components/layout/PostsList";
 
 import { collection, query, where } from "firebase/firestore";
 import { db } from "../firebase";

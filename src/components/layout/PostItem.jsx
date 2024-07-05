@@ -2,15 +2,15 @@
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
-import { AuthContext } from "../context/AuthContext";
-import { PostsContext } from "../context/PostsContext";
+import { db } from "../../firebase";
+import { AuthContext } from "../../context/AuthContext";
+import { PostsContext } from "../../context/PostsContext";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "../components/ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 
 export const PostItem = ({ post, handleShowModal }) => {
   const { dispatch } = useContext(PostsContext);

@@ -1,6 +1,6 @@
 import { collection, query, where, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { PostsList } from "./PostsList";
+import { PostsList } from "../components/layout/PostsList";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Alert, AlertDescription } from "../components/ui/alert";

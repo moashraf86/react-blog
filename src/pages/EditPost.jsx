@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { PostsContext } from "../context/PostsContext";
 import { useNavigate } from "react-router-dom";
-import { Form } from "./Form";
+import { Form } from "../components/layout/Form";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import {

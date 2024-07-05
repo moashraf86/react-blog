@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useContext, useRef } from "react";
-import { CommentForm } from "./commentForm";
-import { CommentList } from "./commentList";
+import { CommentForm } from "./CommentForm";
+import { CommentList } from "./CommentList";
 import { useParams } from "react-router-dom";
 import { PostsContext } from "../../context/PostsContext";
 import { CommentsContext } from "../../context/CommentsContext";

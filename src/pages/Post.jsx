@@ -8,9 +8,9 @@ import { Alert, AlertDescription } from "../components/ui/alert";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { updateDoc } from "firebase/firestore";
-import { Comments } from "../components/ui/comments";
+import { Comments } from "../components/layout/Comments";
 import { CommentsContext } from "../context/CommentsContext";
-import { BreadCrumbs } from "../components/ui/breadCrumbs";
+import { BreadCrumbs } from "../components/shared/BreadCrumbs";
 
 export const Post = () => {
   const { posts, dispatch } = useContext(PostsContext);

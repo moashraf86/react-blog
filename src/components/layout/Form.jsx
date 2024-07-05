@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { Alert, AlertDescription } from "../components/ui/alert";
+import { AuthContext } from "../../context/AuthContext";
+import { Alert, AlertDescription } from "../ui/alert";
 export const Form = ({
   heading,
   title,
@@ -38,9 +38,7 @@ export const Form = ({
                   placeholder="Add title"
                   onChange={(e) => handleChange(e)}
                 />
-                {errors.title && (
-                  <p className="text-danger">{errors.title}</p>
-                )}
+                {errors.title && <p className="text-danger">{errors.title}</p>}
               </div>
               <div className="flex flex-col gap-1">
                 <textarea
