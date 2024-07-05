@@ -5,6 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { Form } from "./Form";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import {
+  validateTitle,
+  validateContent,
+  validateImage,
+  validateTag,
+} from "../utils/validateForm";
 
 export const EditPost = () => {
   const { posts, dispatch } = useContext(PostsContext);
@@ -29,45 +35,6 @@ export const EditPost = () => {
   /**
    * Validate Form Inputs
    */
-  const validateTitle = (title) => {
-    // min 3 chars, max 60 chars al
-    const regExp = /^.{10,60}$/;
-    if (!title) {
-      return "Title is required";
-    } else if (!regExp.test(title)) {
-      return "Title must be between 10 and 60 characters";
-    }
-    return true;
-  };
-
-  const validateContent = (content) => {
-    // min 100 chars  max limit 1000 chars
-    const regExp = /^.{100,500}$/;
-    if (!content) {
-      return "Content is required";
-    } else if (!regExp.test(content)) {
-      return "Content must be between 10 and 1000 characters";
-    }
-    return true;
-  };
-
-  const validateTag = (tag) => {
-    if (!tag) {
-      return "Tag is required";
-    }
-    return true;
-  };
-
-  const validateImage = (image) => {
-    // max size 1mb and file type jpg, jpeg, png
-    if (!image && isImageRequired) {
-      return "Image is required";
-    } else if (image?.size > 1000000) {
-      return "Image must be less than 1mb";
-    }
-    return true;
-  };
-
   const validateForm = () => {
     let validationErrors = {};
     validationErrors.title = validateTitle(title);

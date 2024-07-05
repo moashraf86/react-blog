@@ -4,7 +4,12 @@ import { Form } from "./Form";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
-
+import {
+  validateTitle,
+  validateContent,
+  validateImage,
+  validateTag,
+} from "../utils/validateForm";
 export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
   const authorId = currentUser?.id;
@@ -31,51 +36,12 @@ export const CreatePost = () => {
   /**
    * Validate Form Inputs
    */
-  const validateTitle = (title) => {
-    // min 3 chars, max 60 chars al
-    const regExp = /^.{10,60}$/;
-    if (!title) {
-      return "Title is required";
-    } else if (!regExp.test(title)) {
-      return "Title must be between 10 and 60 characters";
-    }
-    return true;
-  };
-
-  const validateContent = (content) => {
-    // min 100 chars  max limit 1000 chars
-    const regExp = /^.{100,500}$/;
-    if (!content) {
-      return "Content is required";
-    } else if (!regExp.test(content)) {
-      return "Content must be between 100 and 500 characters";
-    }
-    return true;
-  };
-
-  const validateTag = (tag) => {
-    if (!tag) {
-      return "Tag is required";
-    }
-    return true;
-  };
-
-  const validateImage = (image) => {
-    // max size 1mb and file type jpg, jpeg, png
-    if (!image && isImageRequired) {
-      return "Image is required";
-    } else if (image?.size > 1000000) {
-      return "Image must be less than 1mb";
-    }
-    return true;
-  };
-
   const validateForm = () => {
     let validationErrors = {};
     validationErrors.title = validateTitle(title);
     validationErrors.content = validateContent(content);
     validationErrors.tag = validateTag(tag);
-    validationErrors.image = validateImage(image);
+    validationErrors.image = validateImage(image, isImageRequired);
     setErrors(validationErrors);
     return Object.values(validationErrors).every((err) => err === true); // True || False
   };
