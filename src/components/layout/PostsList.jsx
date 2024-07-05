@@ -55,6 +55,11 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
    * Fetch posts from the Firebase store After the component mounts
    */
   const fetchPosts = useCallback(async () => {
+    //check for internet connection
+    if (!navigator.onLine) {
+      setError("No internet Connection!");
+      return;
+    }
     try {
       let postsSnapshot;
       setLoading(true);
@@ -189,6 +194,10 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
           fetchPosts();
           break;
         default:
+          if (!navigator.onLine) {
+            setError("No internet Connection!");
+            return;
+          }
           try {
             setLoading(true);
             setError(null);
@@ -262,18 +271,18 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
               </div>
             </div>
           ))}
-        {!loading && !error && MemoizedPostItem}
+        {!loading && !error && posts.length > 0 && MemoizedPostItem}
+        {!loading && !error && !posts.length && (
+          <Alert variant="default" className="flex items-center gap-3">
+            <i className="ri-information-line text-2xl text-primary"></i>
+            <AlertDescription>{alertMsg}</AlertDescription>
+          </Alert>
+        )}
         {error && (
           <Alert variant="danger">
             <i className="ri-error-warning-line text-xl text-danger absolute top-[10px]"></i>
             <AlertTitle className="pl-8">Error</AlertTitle>
             <AlertDescription className="pl-8">{error}</AlertDescription>
-          </Alert>
-        )}
-        {!posts.length && !loading && !error && (
-          <Alert variant="default" className="flex items-center gap-3">
-            <i className="ri-information-line text-2xl text-primary"></i>
-            <AlertDescription>{alertMsg}</AlertDescription>
           </Alert>
         )}
       </div>
