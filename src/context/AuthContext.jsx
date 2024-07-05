@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { createContext, useEffect, useReducer } from "react";
-import { auth, provider, db } from "../firebase";
+import { auth, provider, db } from "../utils/firebase";
 import {
   signInWithPopup,
   onAuthStateChanged,

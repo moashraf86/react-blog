@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { SignInModal } from "./SignInModal";
-import { User } from "../components/ui/user";
-import { Button } from "../components/ui/button";
-import { ModeToggle } from "../components/ui/modeToggler";
+import { AuthContext } from "../../context/AuthContext";
+import { SignInModal } from "../shared/SignInModal";
+import { User } from "../shared/User";
+import { Button } from "../ui/button";
+import { ModeToggle } from "../shared/ModeToggler";
 export default function Header() {
   const { currentUser } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);

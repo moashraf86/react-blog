@@ -1,6 +1,15 @@
-import { useEffect, useContext, useState } from "react";
-import { PostsContext } from "../context/PostsContext";
-import { AuthContext } from "../context/AuthContext";
+/* eslint-disable react/prop-types */
+import {
+  useEffect,
+  useContext,
+  useState,
+  lazy,
+  Suspense,
+  useMemo,
+  useCallback,
+} from "react";
+import { PostsContext } from "../../context/PostsContext";
+import { AuthContext } from "../../context/AuthContext";
 import {
   getDocs,
   doc,
@@ -11,24 +20,24 @@ import {
   orderBy,
   startAt,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../../utils/firebase";
 import { PostItem } from "./PostItem";
-import { Pagination } from "./Pagination";
-import { Filter } from "./Filter";
-import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "../components/ui/alert-dialog";
-import { Skeleton } from "../components/ui/skeleton";
-import { BreadCrumbs } from "../components/ui/breadCrumbs";
-/* eslint-disable react/prop-types */
+import { Pagination } from "../shared/Pagination";
+import { Filter } from "../shared/Filter";
+import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
+import { Skeleton } from "../ui/skeleton";
+import { BreadCrumbs } from "../shared/BreadCrumbs";
+import { getTargetSnapShot } from "../../utils/getTargetSnapShot";
+
+/**
+ * Lazy load ConfirmDeleteModal
+ */
+const ConfirmDeleteModal = lazy(() =>
+  import("../shared/ConfirmDeleteModal").then((module) => ({
+    default: module.ConfirmDeleteModal,
+  }))
+);
+
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { currentUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
@@ -40,12 +49,17 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterKey, setFilterKey] = useState("all");
-  const postsPerPage = 4;
+  const postsPerPage = 3;
 
   /**
    * Fetch posts from the Firebase store After the component mounts
    */
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
+    //check for internet connection
+    if (!navigator.onLine) {
+      setError("No internet Connection!");
+      return;
+    }
     try {
       let postsSnapshot;
       setLoading(true);
@@ -72,7 +86,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [postsQuery]);
 
   useEffect(() => {
     fetchPosts();
@@ -107,17 +121,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   };
 
   /**
-   *  Get Target snapShot for pagination based on page number
-   */
-  const getTargetSnapShot = async (i) => {
-    const targetDoc = await getDocs(
-      query(postsQuery.collection, orderBy("title", "asc"))
-    );
-    let targetSnapShot = targetDoc.docs[(i - 1) * postsPerPage];
-    return targetSnapShot;
-  };
-
-  /**
    * Handle pagination
    */
   const handlePaginate = async (pageNumber) => {
@@ -126,8 +129,11 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
       setLoading(true);
       setError(null);
       history.pushState({}, "", `?pages=${pageNumber}`);
-      await getTargetSnapShot(pageNumber);
-      let target = await getTargetSnapShot(pageNumber);
+      let target = await getTargetSnapShot(
+        pageNumber,
+        postsQuery,
+        postsPerPage
+      );
       let snapShot;
       if (pageNumber > currentPage) {
         if (filterKey === "all") {
@@ -188,6 +194,10 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
           fetchPosts();
           break;
         default:
+          if (!navigator.onLine) {
+            setError("No internet Connection!");
+            return;
+          }
           try {
             setLoading(true);
             setError(null);
@@ -218,6 +228,20 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     setCurrentPage(1);
   };
 
+  /**
+   * Memoize the PostItem components
+   */
+  const MemoizedPostItem = useMemo(() => {
+    return posts.map((post) => (
+      <PostItem
+        key={post.id}
+        post={post}
+        handleShowModal={() => handleShowModal(post)}
+        fetchPosts={fetchPosts}
+      />
+    ));
+  }, [posts, fetchPosts]);
+
   return (
     <div className="flex flex-col gap-8 mt-6">
       <div className="container px-5 sm:px-8">
@@ -247,27 +271,18 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
               </div>
             </div>
           ))}
-        {!loading &&
-          !error &&
-          posts.map((post) => (
-            <PostItem
-              key={post.id}
-              post={post}
-              handleShowModal={() => handleShowModal(post)}
-              fetchPosts={fetchPosts}
-            />
-          ))}
+        {!loading && !error && posts.length > 0 && MemoizedPostItem}
+        {!loading && !error && !posts.length && (
+          <Alert variant="default" className="flex items-center gap-3">
+            <i className="ri-information-line text-2xl text-primary"></i>
+            <AlertDescription>{alertMsg}</AlertDescription>
+          </Alert>
+        )}
         {error && (
           <Alert variant="danger">
             <i className="ri-error-warning-line text-xl text-danger absolute top-[10px]"></i>
             <AlertTitle className="pl-8">Error</AlertTitle>
             <AlertDescription className="pl-8">{error}</AlertDescription>
-          </Alert>
-        )}
-        {!posts.length && !loading && !error && (
-          <Alert variant="default" className="flex items-center gap-3">
-            <i className="ri-information-line text-2xl text-primary"></i>
-            <AlertDescription>{alertMsg}</AlertDescription>
           </Alert>
         )}
       </div>
@@ -278,28 +293,13 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         postsPerPage={postsPerPage}
       />
       {/* Confirm Delete Dialog */}
-      <AlertDialog open={showModal}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowModal(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeletePost}
-              className="bg-danger text-danger-foreground hover:text-danger-foreground hover:bg-danger/95"
-            >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ConfirmDeleteModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleDeletePost={handleDeletePost}
+        />
+      </Suspense>
     </div>
   );
 };

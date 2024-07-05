@@ -1,8 +1,8 @@
-import { PostsList } from "./PostsList";
-import { collection, query, where } from "firebase/firestore";
-import { db } from "../firebase";
-import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
+import { collection, query, where } from "firebase/firestore";
+import { db } from "../utils/firebase";
+import { AuthContext } from "../context/AuthContext";
+import { PostsList } from "../components/layout/PostsList";
 import { Alert, AlertDescription } from "../components/ui/alert";
 
 export const MyPosts = () => {

@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "./dropdown-menu";
-import { Button } from "./button";
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 export const User = () => {
   const { currentUser, signOut } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;

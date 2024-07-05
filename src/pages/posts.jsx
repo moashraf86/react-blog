@@ -1,7 +1,6 @@
-import { PostsList } from "./PostsList";
-
 import { collection, query, where } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../utils/firebase";
+import { PostsList } from "../components/layout/PostsList";
 
 export const Posts = () => {
   /**

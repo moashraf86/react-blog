@@ -1,16 +1,14 @@
 import { useContext, useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 import { PostsContext } from "../context/PostsContext";
-import { useParams } from "react-router-dom";
-import { collection, doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { CommentsContext } from "../context/CommentsContext";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../utils/firebase";
+import { Comments } from "../components/layout/Comments";
+import { BreadCrumbs } from "../components/shared/BreadCrumbs";
 import { Skeleton } from "../components/ui/skeleton";
 import { Alert, AlertDescription } from "../components/ui/alert";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { updateDoc } from "firebase/firestore";
-import { Comments } from "../components/ui/comments";
-import { CommentsContext } from "../context/CommentsContext";
-import { BreadCrumbs } from "../components/ui/breadCrumbs";
 
 export const Post = () => {
   const { posts, dispatch } = useContext(PostsContext);

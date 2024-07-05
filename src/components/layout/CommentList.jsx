@@ -1,10 +1,17 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState, useContext } from "react";
-import { collection, getDocs, query, orderBy, updateDoc, doc } from "firebase/firestore";
-import { db } from "../../firebase";
-import { Skeleton } from "./skeleton";
-import { Comment } from "./comment";
-import { Alert, AlertDescription } from "./alert";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
+import { db } from "../../utils/firebase";
+import { Skeleton } from "../ui/skeleton";
+import { Comment } from "./Comment";
+import { Alert, AlertDescription } from "../ui/alert";
 import { CommentsContext } from "../../context/CommentsContext";
 
 export const CommentList = ({ post, commentToEdit, handleDelete }) => {
@@ -19,15 +26,18 @@ export const CommentList = ({ post, commentToEdit, handleDelete }) => {
     try {
       setLoading(true);
       setError(null);
-			const commentsQuery = query(collection(db, "posts", post?.id, "comments"), orderBy("createdAt", "desc"));
+      const commentsQuery = query(
+        collection(db, "posts", post?.id, "comments"),
+        orderBy("createdAt", "desc")
+      );
       const commentsSnapshot = await getDocs(commentsQuery);
       const commentsList = commentsSnapshot.docs.map((doc) => doc.data());
       CommentsDispatch({ type: "FETCH_COMMENTS", payload: commentsList });
-			setLoading(false);
-			// update commentCount in the post
-			await updateDoc(doc(db, "posts", post?.id), {
-				commentsCount: commentsList.length
-			});
+      setLoading(false);
+      // update commentCount in the post
+      await updateDoc(doc(db, "posts", post?.id), {
+        commentsCount: commentsList.length,
+      });
     } catch (error) {
       setError(error.message);
     } finally {
