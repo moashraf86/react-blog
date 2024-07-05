@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form } from "../components/layout/Form";
 import { collection, doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../utils/firebase";
 import { AuthContext } from "../context/AuthContext";
 import {
   validateTitle,
@@ -10,6 +9,8 @@ import {
   validateImage,
   validateTag,
 } from "../utils/validateForm";
+import { Form } from "../components/layout/Form";
+
 export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
   const authorId = currentUser?.id;

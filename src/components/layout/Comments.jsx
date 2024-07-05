@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useState, useContext, useRef } from "react";
-import { CommentForm } from "./CommentForm";
-import { CommentList } from "./CommentList";
 import { useParams } from "react-router-dom";
 import { PostsContext } from "../../context/PostsContext";
 import { CommentsContext } from "../../context/CommentsContext";
@@ -14,7 +12,9 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../utils/firebase";
+import { CommentForm } from "./CommentForm";
+import { CommentList } from "./CommentList";
 
 export const Comments = ({ post }) => {
   const { posts, dispatch } = useContext(PostsContext);

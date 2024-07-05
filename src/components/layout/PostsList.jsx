@@ -12,7 +12,7 @@ import {
   orderBy,
   startAt,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../utils/firebase";
 import { PostItem } from "./PostItem";
 import { Pagination } from "../shared/Pagination";
 import { Filter } from "../shared/Filter";

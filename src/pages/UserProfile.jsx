@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { collection, query, where, getDoc, doc } from "@firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../utils/firebase";
 import { PostsList } from "../components/layout/PostsList";
 
 export const UserProfile = () => {

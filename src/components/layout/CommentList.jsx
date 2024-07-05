@@ -8,7 +8,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../utils/firebase";
 import { Skeleton } from "../ui/skeleton";
 import { Comment } from "./Comment";
 import { Alert, AlertDescription } from "../ui/alert";

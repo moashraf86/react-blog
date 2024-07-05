@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../utils/firebase";
 import { AuthContext } from "../../context/AuthContext";
 import { PostsContext } from "../../context/PostsContext";
 import {

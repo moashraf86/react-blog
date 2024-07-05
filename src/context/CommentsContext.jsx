@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import { createContext, useReducer } from "react";
 
 // Define the initial state for comments
 const initialState = {
@@ -9,10 +9,10 @@ const initialState = {
 const commentsReducer = (state, action) => {
   switch (action.type) {
     case "ADD_COMMENT":
-			return {
-				...state,
-				comments: [action.payload, ...state.comments],
-			};
+      return {
+        ...state,
+        comments: [action.payload, ...state.comments],
+      };
     case "EDIT_COMMENT":
       return {
         ...state,
