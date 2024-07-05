@@ -1,5 +1,13 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useContext, useState } from "react";
+import {
+  useEffect,
+  useContext,
+  useState,
+  lazy,
+  Suspense,
+  useMemo,
+  useCallback,
+} from "react";
 import { PostsContext } from "../../context/PostsContext";
 import { AuthContext } from "../../context/AuthContext";
 import {
@@ -19,8 +27,16 @@ import { Filter } from "../shared/Filter";
 import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
 import { Skeleton } from "../ui/skeleton";
 import { BreadCrumbs } from "../shared/BreadCrumbs";
-import { ConfirmDeleteModal } from "../shared/ConfirmDeleteModal";
 import { getTargetSnapShot } from "../../utils/getTargetSnapShot";
+
+/**
+ * Lazy load ConfirmDeleteModal
+ */
+const ConfirmDeleteModal = lazy(() =>
+  import("../shared/ConfirmDeleteModal").then((module) => ({
+    default: module.ConfirmDeleteModal,
+  }))
+);
 
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { currentUser } = useContext(AuthContext);
@@ -38,7 +54,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   /**
    * Fetch posts from the Firebase store After the component mounts
    */
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       let postsSnapshot;
       setLoading(true);
@@ -65,7 +81,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [postsQuery]);
 
   useEffect(() => {
     fetchPosts();
@@ -203,6 +219,20 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     setCurrentPage(1);
   };
 
+  /**
+   * Memoize the PostItem components
+   */
+  const MemoizedPostItem = useMemo(() => {
+    return posts.map((post) => (
+      <PostItem
+        key={post.id}
+        post={post}
+        handleShowModal={() => handleShowModal(post)}
+        fetchPosts={fetchPosts}
+      />
+    ));
+  }, [posts, fetchPosts]);
+
   return (
     <div className="flex flex-col gap-8 mt-6">
       <div className="container px-5 sm:px-8">
@@ -232,16 +262,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
               </div>
             </div>
           ))}
-        {!loading &&
-          !error &&
-          posts.map((post) => (
-            <PostItem
-              key={post.id}
-              post={post}
-              handleShowModal={() => handleShowModal(post)}
-              fetchPosts={fetchPosts}
-            />
-          ))}
+        {!loading && !error && MemoizedPostItem}
         {error && (
           <Alert variant="danger">
             <i className="ri-error-warning-line text-xl text-danger absolute top-[10px]"></i>
@@ -263,11 +284,13 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         postsPerPage={postsPerPage}
       />
       {/* Confirm Delete Dialog */}
-      <ConfirmDeleteModal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        handleDeletePost={handleDeletePost}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ConfirmDeleteModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleDeletePost={handleDeletePost}
+        />
+      </Suspense>
     </div>
   );
 };
