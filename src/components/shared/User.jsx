@@ -34,7 +34,7 @@ export const User = () => {
             />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-[13rem]">
+        <DropdownMenuContent align="end" className="min-w-[16rem]">
           <DropdownMenuLabel className="text-base font-bold pt-0 pb-1">
             {userName}
           </DropdownMenuLabel>
@@ -45,7 +45,7 @@ export const User = () => {
                 <Button
                   variant="default"
                   size="default"
-                  className="w-full flex items-center gap-3 text-base"
+                  className="w-full flex items-center gap-3 md:text-base"
                 >
                   <i className="ri-edit-box-line text-lg text-primary-foreground"></i>
                   Write Post
@@ -56,7 +56,7 @@ export const User = () => {
           <DropdownMenuSeparator />
           <Link to="/">
             <DropdownMenuItem
-              className={`flex gap-2 items-center h-8 ${
+              className={`flex gap-2 items-center ${
                 currentPage === "" && "bg-accent"
               }`}
             >
@@ -70,7 +70,7 @@ export const User = () => {
           </Link>
           <Link to={`/users/${currentUser.id}`}>
             <DropdownMenuItem
-              className={`flex gap-2 items-center h-8 ${
+              className={`flex gap-2 items-center ${
                 currentPage === "users" && "bg-accent"
               }`}
             >
@@ -85,7 +85,7 @@ export const User = () => {
           {!isGuest ? (
             <Link to="/my-posts">
               <DropdownMenuItem
-                className={`flex gap-2 items-center h-8 ${
+                className={`flex gap-2 items-center ${
                   currentPage === "my-posts" && "bg-accent"
                 }`}
               >
@@ -100,7 +100,7 @@ export const User = () => {
           ) : (
             <Link to="/drafts">
               <DropdownMenuItem
-                className={`flex gap-2 items-center h-8 ${
+                className={`flex gap-2 items-center ${
                   currentPage === "drafts" && "bg-accent"
                 }`}
               >
@@ -116,7 +116,7 @@ export const User = () => {
           {!isGuest && (
             <Link to="/bookmarks">
               <DropdownMenuItem
-                className={`flex gap-2 items-center h-8 ${
+                className={`flex gap-2 items-center ${
                   currentPage === "bookmarks" && "bg-accent"
                 }`}
               >
@@ -131,7 +131,7 @@ export const User = () => {
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="flex items-center gap-2 text-danger focus:text-danger h-8"
+            className="flex items-center gap-2 text-danger focus:text-danger mb-0"
             onSelect={signOut}
           >
             <i className="ri-logout-box-line text-lg text-danger"></i>
