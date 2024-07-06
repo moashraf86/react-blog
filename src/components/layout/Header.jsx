@@ -19,13 +19,6 @@ export default function Header() {
           </Link>
           <nav>
             <ul className="flex gap-4 items-center">
-              {currentUser && (
-                <li className="flex">
-                  <Button variant="default" size="default" asChild={true}>
-                    <Link to="/create">Create Post</Link>
-                  </Button>
-                </li>
-              )}
               <li>
                 <ModeToggle />
               </li>

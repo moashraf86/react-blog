@@ -15,6 +15,7 @@ export const User = () => {
   const isGuest = currentUser?.isGuest;
   const userImg =
     currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
+  const userName = currentUser?.displayName || "Anonymous";
   const currentPage = useHref().split("/")[1];
 
   return (
@@ -33,10 +34,25 @@ export const User = () => {
             />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-[12rem]">
-          <DropdownMenuLabel className="text-base">
-            My Account
+        <DropdownMenuContent align="end" className="min-w-[13rem]">
+          <DropdownMenuLabel className="text-base font-bold pt-0 pb-1">
+            {userName}
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {currentUser && (
+            <Link to="/create">
+              <DropdownMenuItem>
+                <Button
+                  variant="default"
+                  size="default"
+                  className="w-full flex items-center gap-3 text-base"
+                >
+                  <i className="ri-edit-box-line text-lg text-primary-foreground"></i>
+                  Write Post
+                </Button>
+              </DropdownMenuItem>
+            </Link>
+          )}
           <DropdownMenuSeparator />
           <Link to="/">
             <DropdownMenuItem
