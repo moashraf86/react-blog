@@ -15,7 +15,7 @@ export const User = () => {
   const isGuest = currentUser?.isGuest;
   const userImg =
     currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
-  const userName = currentUser?.displayName || "Anonymous";
+  const userName = currentUser?.name || "Anonymous";
   const currentPage = useHref().split("/")[1];
 
   return (
@@ -35,7 +35,7 @@ export const User = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-[16rem]">
-          <DropdownMenuLabel className="text-base font-bold pt-0 pb-1">
+          <DropdownMenuLabel className="text-base font-bold">
             {userName}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
