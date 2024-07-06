@@ -21,7 +21,7 @@ export const Form = ({
     <>
       {currentUser ? (
         <div className="flex justify-center items-center max-w-[400px] mx-auto">
-          <div className="flex flex-col w-full bg-background border border-border rounded-md p-6 gap-4 mt-6">
+          <div className="flex flex-col w-full bg-background sm:border border-border rounded-md p-6 gap-4 mt-6">
             <h3 className="font-semibold text-xl md:text-3xl text-primary mb-2">
               {heading}
             </h3>
@@ -198,7 +198,7 @@ export const Form = ({
               </div>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-md text-sm md:text-base"
+                className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-md text-base mt-2"
               >
                 {heading === "Add Post" ? "Create Post" : "Edit Post"}
               </button>
