@@ -1,30 +1,21 @@
-import { useContext, useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { PostsContext } from "../context/PostsContext";
 import { CommentsContext } from "../context/CommentsContext";
-import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
-import { Comments } from "../components/layout/Comments";
 import { BreadCrumbs } from "../components/shared/BreadCrumbs";
+import { Comments } from "../components/layout/Comments";
+import { SignlePost } from "../components/layout/SinglePost";
 import { Skeleton } from "../components/ui/skeleton";
 import { Alert, AlertDescription } from "../components/ui/alert";
-
 export const Post = () => {
   const { posts, dispatch } = useContext(PostsContext);
-  const { currentUser, updateUser } = useContext(AuthContext);
   const { comments } = useContext(CommentsContext);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const post = posts.find((post) => post.id === id) || {};
-  const isGuest = currentUser?.isGuest;
-  const authorId = post?.authorId;
-  const authorImg = post?.authorImage;
-  const [bookmarks, setBookmarks] = useState({
-    isBookmarked: false,
-    bookmarksCount: post?.bookmarksCount,
-  });
 
   // fetch single post from firebase based on the id
   const fetchPost = async () => {
@@ -45,104 +36,9 @@ export const Post = () => {
     }
   };
 
-  // update the currentUser reducer to match firestore data
-  const updateBookmarks = async () => {
-    const userRef = doc(db, "users", currentUser?.id);
-    const postRef = doc(db, "posts", post.id);
-    const userSnap = await getDoc(userRef);
-    const postSnap = await getDoc(postRef);
-    // dispatch action to update the currentUser reducer
-    updateUser({
-      bookmarks: userSnap.data().bookmarks.includes(post.id)
-        ? userSnap.data().bookmarks
-        : [...userSnap.data().bookmarks, post.id],
-    });
-    // set the initial state of the bookmark button
-    setBookmarks({
-      isBookmarked: userSnap.data().bookmarks.includes(post.id) ? true : false,
-      bookmarksCount: postSnap.data().bookmarksCount,
-    });
-  };
-
   useEffect(() => {
     fetchPost();
-    updateBookmarks();
   }, []);
-
-  /**
-   * Handle Add Bookmark
-   */
-
-  const handleAddBookmark = (post) => {
-    const userRef = doc(db, "users", currentUser.id);
-    const postRef = doc(db, "posts", post.id);
-    // if the user is not signed in, return
-    if (!currentUser || isGuest) {
-      alert("Please login to bookmark this post.");
-      return;
-    }
-    if (!navigator.onLine) {
-      alert("You are offline. Please check your internet connection.");
-      return;
-    }
-    // update the bookmark state in UI immediately to give feedback to the user
-    setBookmarks({
-      isBookmarked: true,
-      bookmarksCount: bookmarks.bookmarksCount + 1,
-    });
-    // add the bookmark to the database
-    const addBookmark = async (post) => {
-      try {
-        const userSnap = await getDoc(userRef);
-        const postSnap = await getDoc(postRef);
-        // update post count + 1
-        await updateDoc(postRef, {
-          ...post,
-          bookmarksCount: postSnap.data().bookmarksCount + 1,
-        });
-        // update user doc bookmarks array
-        await updateDoc(userRef, {
-          // check if the post is already bookmarked
-          bookmarks: userSnap.data().bookmarks.includes(post.id)
-            ? userSnap.data().bookmarks
-            : [...userSnap.data().bookmarks, post.id],
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    addBookmark(post);
-  };
-
-  /**
-   * Handle Remove Bookmark
-   */
-  const handleRemoveBookmark = (post) => {
-    const userRef = doc(db, "users", currentUser.id);
-    const postRef = doc(db, "posts", post.id);
-    setBookmarks({
-      isBookmarked: false,
-      bookmarksCount: bookmarks.bookmarksCount - 1,
-    });
-    const removeBookmark = async (post) => {
-      try {
-        const userSnap = await getDoc(userRef);
-        const postSnap = await getDoc(postRef);
-        // update post count - 1
-        await updateDoc(postRef, {
-          ...post,
-          bookmarksCount: Math.max(postSnap.data().bookmarksCount - 1, 0),
-        });
-        // update user doc bookmarks array
-        await updateDoc(userRef, {
-          bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    removeBookmark(post);
-  };
 
   return (
     <div className="max-w-[800px] mx-auto mt-8">
@@ -173,115 +69,7 @@ export const Post = () => {
       {!loading && (
         <div className={`flex w-full mb-6 sm:mb-4`}>
           <div className="relative flex flex-col  px-4 border-zinc-800 w-full rounded-md">
-            {/* Tag */}
-            {post.tag && (
-              <div className="flex justify-between items-center mb-3">
-                <span className="bg-accent py-2 px-4 rounded-full text-muted-foreground text-xs font-medium uppercase tracking-widest">
-                  {post.tag}
-                </span>
-              </div>
-            )}
-            {/* Title */}
-            <h3 className="text-2xl md:text-4xl text-primary font-bold capitalize mb-4">
-              <Link to={`/post/${post.id}`}>{post.title}</Link>
-            </h3>
-            {/* Author / date */}
-            <div className="flex items-center gap-2 mb-8">
-              <img
-                src={authorImg}
-                alt={post.authorName}
-                className="w-8 h-8 rounded-full"
-              />
-              <div className="flex flex-col gap-1">
-                <p className="text-muted-foreground text-sm">
-                  <Link to={`/users/${post.authorId}`}>{post.authorName}</Link>{" "}
-                  | {post.createdAt?.split("T")[0]}
-                </p>
-              </div>
-            </div>
-            {/* Image */}
-            <div className="h-[360px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-none mb-6">
-              {post.image && (
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="h-full w-full object-cover rounded-none"
-                />
-              )}
-            </div>
-            {/* Content */}
-            <div className="flex flex-col gap-2">
-              <p className="text-muted-foreground">{post.content}</p>
-            </div>
-            {/* Footer */}
-            <div className="flex justify-between items-center py-3 my-4 border-t border-b border-border">
-              <div className="flex items-center gap-2">
-                <img
-                  src={authorImg}
-                  alt={post.authorName}
-                  className="w-10 h-10 rounded-full"
-                />
-                <div className="flex flex-col ">
-                  <p className="text-primary font-semibold ml-2">
-                    <Link to={`/users/${authorId}`}>{post.authorName}</Link>
-                  </p>
-                  <p className="text-muted-foreground text-sm ml-2">
-                    Published at: {post.createdAt?.split("T")[0]}
-                  </p>
-                </div>
-              </div>
-              {/* bookmarks / comments */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center">
-                  {bookmarks.isBookmarked && (
-                    <label
-                      tabIndex="0"
-                      htmlFor={post.id}
-                      className="cursor-pointer p-1 text-primary"
-                    >
-                      <input
-                        type="checkbox"
-                        name="bookmark"
-                        id={post.id}
-                        hidden
-                        onChange={() => handleRemoveBookmark(post)}
-                      />
-                      <i className="ri-bookmark-fill text-lg"></i>
-                    </label>
-                  )}
-                  {!bookmarks.isBookmarked && (
-                    <label
-                      tabIndex="0"
-                      htmlFor={post.id}
-                      className="cursor-pointer p-1 text-zinc-50"
-                    >
-                      <input
-                        type="checkbox"
-                        name="bookmark"
-                        id={post.id}
-                        hidden
-                        onChange={() => handleAddBookmark(post)}
-                      />
-                      <i className="ri-bookmark-line text-lg"></i>
-                    </label>
-                  )}
-                  {/* Bookmarks count */}
-                  <p className="text-primary">
-                    {bookmarks.bookmarksCount > 0 && bookmarks.bookmarksCount}
-                  </p>
-                </div>
-                {/* comments */}
-                <div className="flex items-center gap-2">
-                  <i className="ri-chat-3-line text-primary text-lg"></i>
-                  {comments.length > 0 && (
-                    <p className="text-lg">{comments.length}</p>
-                  )}
-                </div>
-                {/* Share */}
-                <i className="ri-share-forward-line text-primary text-lg"></i>
-              </div>
-            </div>
-            {/* Comments */}
+            <SignlePost post={post} comments={comments} />
             <Comments post={post} />
           </div>
         </div>
