@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { collection, query, where, getDoc, doc } from "@firebase/firestore";
 import { db } from "../utils/firebase";
@@ -36,11 +36,17 @@ export const UserProfile = () => {
     ),
   };
 
-  return (
-    <PostsList
-      title={userName ? userName + "'s Posts" : "Loading..."}
-      postsQuery={posts}
-      alertMsg="No Posts Added yet."
-    />
+  // memoize the posts query
+  const memoizedPosts = useMemo(
+    () => (
+      <PostsList
+        title={userName ? userName + "'s Posts" : "Loading..."}
+        postsQuery={posts}
+        alertMsg="No Posts Added yet."
+      />
+    ),
+    []
   );
+
+  return <>{memoizedPosts}</>;
 };
