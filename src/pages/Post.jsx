@@ -16,13 +16,15 @@ export const Post = () => {
   const { comments } = useContext(CommentsContext);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
-  const [bookmarking, setBookmarking] = useState(false);
   const [error, setError] = useState(null);
   const post = posts.find((post) => post.id === id) || {};
   const isGuest = currentUser?.isGuest;
-  const authorId = post.authorId;
-  const isBookmarked = currentUser?.bookmarks.includes(post.id);
+  const authorId = post?.authorId;
   const authorImg = post?.authorImage;
+  const [bookmarks, setBookmarks] = useState({
+    isBookmarked: false,
+    bookmarksCount: post?.bookmarksCount,
+  });
 
   // fetch single post from firebase based on the id
   const fetchPost = async () => {
@@ -43,52 +45,70 @@ export const Post = () => {
     }
   };
 
+  // update the currentUser reducer to match firestore data
+  const updateBookmarks = async () => {
+    const userRef = doc(db, "users", currentUser?.id);
+    const postRef = doc(db, "posts", post.id);
+    const userSnap = await getDoc(userRef);
+    const postSnap = await getDoc(postRef);
+    // dispatch action to update the currentUser reducer
+    updateUser({
+      bookmarks: userSnap.data().bookmarks.includes(post.id)
+        ? userSnap.data().bookmarks
+        : [...userSnap.data().bookmarks, post.id],
+    });
+    // set the initial state of the bookmark button
+    setBookmarks({
+      isBookmarked: userSnap.data().bookmarks.includes(post.id) ? true : false,
+      bookmarksCount: postSnap.data().bookmarksCount,
+    });
+  };
+
   useEffect(() => {
     fetchPost();
+    updateBookmarks();
   }, []);
 
   /**
    * Handle Add Bookmark
    */
+
   const handleAddBookmark = (post) => {
+    const userRef = doc(db, "users", currentUser.id);
+    const postRef = doc(db, "posts", post.id);
+    // if the user is not signed in, return
+    if (!currentUser || isGuest) {
+      alert("Please login to bookmark this post.");
+      return;
+    }
+    if (!navigator.onLine) {
+      alert("You are offline. Please check your internet connection.");
+      return;
+    }
+    // update the bookmark state in UI immediately to give feedback to the user
+    setBookmarks({
+      isBookmarked: true,
+      bookmarksCount: bookmarks.bookmarksCount + 1,
+    });
+    // add the bookmark to the database
     const addBookmark = async (post) => {
       try {
-        setBookmarking(true);
-        // if the user is not signed in, return
-        if (!currentUser || isGuest) {
-          alert("Please login to bookmark this post.");
-          return;
-        }
-        const userRef = doc(db, "users", currentUser.id);
         const userSnap = await getDoc(userRef);
-        const postRef = doc(db, "posts", post.id);
+        const postSnap = await getDoc(postRef);
         // update post count + 1
         await updateDoc(postRef, {
           ...post,
-          bookmarksCount: post.bookmarksCount + 1,
+          bookmarksCount: postSnap.data().bookmarksCount + 1,
         });
-        // update user doc bookmarks
+        // update user doc bookmarks array
         await updateDoc(userRef, {
           // check if the post is already bookmarked
           bookmarks: userSnap.data().bookmarks.includes(post.id)
             ? userSnap.data().bookmarks
             : [...userSnap.data().bookmarks, post.id],
         });
-        // update the post reducer
-        dispatch({
-          type: "EDIT_POST",
-          payload: { ...post, bookmarksCount: post.bookmarksCount + 1 },
-        });
-        // update the currentUser reducer
-        updateUser({
-          bookmarks: userSnap.data().bookmarks.includes(post.id)
-            ? userSnap.data().bookmarks
-            : [...userSnap.data().bookmarks, post.id],
-        });
       } catch (error) {
         console.log(error);
-      } finally {
-        setBookmarking(false);
       }
     };
     addBookmark(post);
@@ -98,34 +118,27 @@ export const Post = () => {
    * Handle Remove Bookmark
    */
   const handleRemoveBookmark = (post) => {
+    const userRef = doc(db, "users", currentUser.id);
+    const postRef = doc(db, "posts", post.id);
+    setBookmarks({
+      isBookmarked: false,
+      bookmarksCount: bookmarks.bookmarksCount - 1,
+    });
     const removeBookmark = async (post) => {
       try {
-        // setLoading(true);
-        const userRef = doc(db, "users", currentUser.id);
         const userSnap = await getDoc(userRef);
-        const postRef = doc(db, "posts", post.id);
+        const postSnap = await getDoc(postRef);
         // update post count - 1
         await updateDoc(postRef, {
           ...post,
-          bookmarksCount: Math.max(post.bookmarksCount - 1, 0),
+          bookmarksCount: Math.max(postSnap.data().bookmarksCount - 1, 0),
         });
-        // update user doc bookmarks
+        // update user doc bookmarks array
         await updateDoc(userRef, {
-          bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
-        });
-        // update post reducer
-        dispatch({
-          type: "EDIT_POST",
-          payload: { ...post, bookmarksCount: post.bookmarksCount - 1 },
-        });
-        // update currentUser reducer
-        updateUser({
           bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
         });
       } catch (error) {
         console.log(error);
-      } finally {
-        // setLoading(false);
       }
     };
     removeBookmark(post);
@@ -220,7 +233,7 @@ export const Post = () => {
               {/* bookmarks / comments */}
               <div className="flex items-center gap-4">
                 <div className="flex items-center">
-                  {isBookmarked && (
+                  {bookmarks.isBookmarked && (
                     <label
                       tabIndex="0"
                       htmlFor={post.id}
@@ -233,13 +246,10 @@ export const Post = () => {
                         hidden
                         onChange={() => handleRemoveBookmark(post)}
                       />
-                      {bookmarking && <i className="ri-loader-4-line"></i>}
-                      {!bookmarking && (
-                        <i className="ri-bookmark-fill text-lg"></i>
-                      )}
+                      <i className="ri-bookmark-fill text-lg"></i>
                     </label>
                   )}
-                  {!isBookmarked && (
+                  {!bookmarks.isBookmarked && (
                     <label
                       tabIndex="0"
                       htmlFor={post.id}
@@ -252,15 +262,12 @@ export const Post = () => {
                         hidden
                         onChange={() => handleAddBookmark(post)}
                       />
-                      {bookmarking && <i className="ri-loader-4-line"></i>}
-                      {!bookmarking && (
-                        <i className="ri-bookmark-line text-lg"></i>
-                      )}
+                      <i className="ri-bookmark-line text-lg"></i>
                     </label>
                   )}
                   {/* Bookmarks count */}
                   <p className="text-primary">
-                    {post.bookmarksCount > 0 && post.bookmarksCount}
+                    {bookmarks.bookmarksCount > 0 && bookmarks.bookmarksCount}
                   </p>
                 </div>
                 {/* comments */}
