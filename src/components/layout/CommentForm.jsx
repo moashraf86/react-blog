@@ -26,29 +26,22 @@ export const CommentForm = ({
       >
         Write a Comment
       </label>
-      <div className="flex items-start gap-3">
-        <img
-          className="w-10 h-10 rounded-full"
-          src={userImg}
-          alt={currentUser?.name || "Guest"}
-        />
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
-          <textarea
-            className="w-full p-3 text-gray-600 border border-input bg-transparent rounded-md shadow-sm focus:ring-0 focus:border-primary"
-            name="comment"
-            id="comment"
-            rows={4}
-            placeholder="write comment"
-            onChange={handleChangeComment}
-            value={content}
-          ></textarea>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
+        <textarea
+          className="w-full p-3 text-primary border border-input bg-transparent rounded-md shadow-sm focus:ring-0 focus:border-primary"
+          name="comment"
+          id="comment"
+          rows={4}
+          placeholder="write comment"
+          onChange={handleChangeComment}
+          value={content}
+        ></textarea>
 
-          {error && <p className="text-danger">{error}</p>}
-          <Button size="lg" type="submit" className="self-end text-base">
-            Send
-          </Button>
-        </form>
-      </div>
+        {error && <p className="text-danger">{error}</p>}
+        <Button size="lg" type="submit" className="self-end text-base">
+          Send
+        </Button>
+      </form>
     </div>
   );
 };
