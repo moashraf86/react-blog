@@ -10,6 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "../ui/dropdown-menu";
+import { debounce } from "../../utils/debounce";
 
 export const PostItem = ({ post, handleShowModal }) => {
   const { currentUser, updateUser } = useContext(AuthContext);
@@ -46,7 +47,7 @@ export const PostItem = ({ post, handleShowModal }) => {
    * Handle Add Bookmark
    */
 
-  const handleAddBookmark = (post) => {
+  const handleAddBookmark = debounce((post) => {
     const userRef = doc(db, "users", currentUser?.id);
     const postRef = doc(db, "posts", post?.id);
     // if the user is not signed in, return
@@ -86,12 +87,12 @@ export const PostItem = ({ post, handleShowModal }) => {
       }
     };
     addBookmark(post);
-  };
+  }, 300);
 
   /**
    * Handle Remove Bookmark
    */
-  const handleRemoveBookmark = (post) => {
+  const handleRemoveBookmark = debounce((post) => {
     const userRef = doc(db, "users", currentUser?.id);
     const postRef = doc(db, "posts", post?.id);
     setBookmarks({
@@ -116,7 +117,7 @@ export const PostItem = ({ post, handleShowModal }) => {
       }
     };
     removeBookmark(post);
-  };
+  }, 300);
 
   return (
     <div className="flex w-full sm:px-3 mb-6 sm:w-1/2 xl:w-1/3 2xl:w-1/4">

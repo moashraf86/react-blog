@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { AuthContext } from "../../context/AuthContext";
+import { debounce } from "../../utils/debounce";
 
 export const PostFooter = ({ post, comments }) => {
   const { currentUser, updateUser } = useContext(AuthContext);
@@ -39,7 +40,7 @@ export const PostFooter = ({ post, comments }) => {
    * Handle Add Bookmark
    */
 
-  const handleAddBookmark = (post) => {
+  const handleAddBookmark = debounce((post) => {
     const userRef = doc(db, "users", currentUser?.id);
     const postRef = doc(db, "posts", post?.id);
     // if the user is not signed in, return
@@ -78,12 +79,12 @@ export const PostFooter = ({ post, comments }) => {
       }
     };
     addBookmark(post);
-  };
+  }, 300);
 
   /**
    * Handle Remove Bookmark
    */
-  const handleRemoveBookmark = (post) => {
+  const handleRemoveBookmark = debounce((post) => {
     const userRef = doc(db, "users", currentUser?.id);
     const postRef = doc(db, "posts", post?.id);
     setBookmarks({
@@ -108,7 +109,7 @@ export const PostFooter = ({ post, comments }) => {
       }
     };
     removeBookmark(post);
-  };
+  }, 300);
 
   return (
     <div className="flex justify-between items-center py-3 my-4 border-t border-b border-border">
