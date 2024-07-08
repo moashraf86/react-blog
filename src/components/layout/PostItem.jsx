@@ -19,11 +19,11 @@ export const PostItem = ({ post, handleShowModal }) => {
     isBookmarked: false,
     bookmarksCount: post.bookmarksCount,
   });
-  const userRef = doc(db, "users", currentUser?.id);
-  const postRef = doc(db, "posts", post.id);
 
   // update the currentUser reducer to match firestore data
   const updateBookmarks = async () => {
+    const userRef = doc(db, "users", currentUser?.id);
+    const postRef = doc(db, "posts", post?.id);
     const userSnap = await getDoc(userRef);
     const postSnap = await getDoc(postRef);
     updateUser({
@@ -47,6 +47,8 @@ export const PostItem = ({ post, handleShowModal }) => {
    */
 
   const handleAddBookmark = (post) => {
+    const userRef = doc(db, "users", currentUser?.id);
+    const postRef = doc(db, "posts", post?.id);
     // if the user is not signed in, return
     if (!currentUser || isGuest) {
       alert("Please login to bookmark this post.");
@@ -90,6 +92,8 @@ export const PostItem = ({ post, handleShowModal }) => {
    * Handle Remove Bookmark
    */
   const handleRemoveBookmark = (post) => {
+    const userRef = doc(db, "users", currentUser?.id);
+    const postRef = doc(db, "posts", post?.id);
     setBookmarks({
       isBookmarked: false,
       bookmarksCount: bookmarks.bookmarksCount - 1,
