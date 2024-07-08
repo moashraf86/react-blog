@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { PostsContext } from "../../context/PostsContext";
 import { CommentsContext } from "../../context/CommentsContext";
@@ -201,6 +201,19 @@ export const Comments = ({ post }) => {
     };
     deleteComment();
   };
+
+  // memoize the comment list component to prevent re-rendering
+  const memoizedList = useMemo(
+    () => (
+      <CommentList
+        post={post}
+        commentToEdit={handleToEdit}
+        handleDelete={handleDeleteComment}
+      />
+    ),
+    []
+  );
+
   return (
     <>
       <CommentForm
@@ -212,11 +225,7 @@ export const Comments = ({ post }) => {
         error={error}
         formRef={formRef}
       />
-      <CommentList
-        post={post}
-        commentToEdit={handleToEdit}
-        handleDelete={handleDeleteComment}
-      />
+      {memoizedList}
     </>
   );
 };
