@@ -8,6 +8,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -176,23 +177,24 @@ export const Comments = ({ post }) => {
    * Handle Delete Comment
    */
   const handleDeleteComment = (comment) => {
+    const postRef = doc(db, "posts", post?.id);
+    const commentRef = doc(db, "posts", post?.id, "comments", comment.id);
     const deleteComment = async () => {
       try {
         setError(null);
-        const commentRef = doc(db, "posts", post?.id, "comments", comment.id);
         await deleteDoc(commentRef);
+        const postSnap = await getDoc(postRef);
         CommentsDispatch({ type: "DELETE_COMMENT", payload: comment.id });
         // update posts comments count
-        const postRef = doc(db, "posts", post?.id);
         await updateDoc(postRef, {
-          commentsCount: currentPost.commentsCount - 1,
+          commentsCount: postSnap.data().commentsCount - 1,
         });
         // update the post reducer
         dispatch({
           type: "EDIT_POST",
           payload: {
             ...currentPost,
-            commentsCount: currentPost.commentsCount - 1,
+            commentsCount: postSnap.data().commentsCount - 1,
           },
         });
       } catch (error) {
@@ -211,7 +213,7 @@ export const Comments = ({ post }) => {
         handleDelete={handleDeleteComment}
       />
     ),
-    []
+    [post]
   );
 
   return (
