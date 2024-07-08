@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { collection, query, where } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import { PostsList } from "../components/layout/PostsList";
@@ -10,13 +11,17 @@ export const Posts = () => {
     collection: query(collection(db, "posts"), where("published", "==", true)),
   };
 
-  return (
-    <>
+  // memoize the posts query
+  const memoizedPosts = useMemo(
+    () => (
       <PostsList
         title="All posts"
         postsQuery={posts}
         alertMsg="No Posts Added yet."
       />
-    </>
+    ),
+    []
   );
+
+  return <>{memoizedPosts}</>;
 };

@@ -1,108 +1,123 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { AuthContext } from "../../context/AuthContext";
-import { PostsContext } from "../../context/PostsContext";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "../ui/dropdown-menu";
+import { debounce } from "../../utils/debounce";
 
 export const PostItem = ({ post, handleShowModal }) => {
-  const { dispatch } = useContext(PostsContext);
   const { currentUser, updateUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
   const isOwner = currentUser?.id === post.authorId;
-  const [loading, setLoading] = useState(false);
-  const isBookmarked = currentUser?.bookmarks.includes(post.id);
+  const [bookmarks, setBookmarks] = useState({
+    isBookmarked: false,
+    bookmarksCount: post.bookmarksCount,
+  });
+
+  // update the currentUser reducer to match firestore data
+  const updateBookmarks = async () => {
+    const userRef = doc(db, "users", currentUser?.id);
+    const postRef = doc(db, "posts", post?.id);
+    const userSnap = await getDoc(userRef);
+    const postSnap = await getDoc(postRef);
+    updateUser({
+      bookmarks: userSnap.data().bookmarks.includes(post.id)
+        ? userSnap.data().bookmarks
+        : [...userSnap.data().bookmarks, post.id],
+    });
+    // set the initial state of the bookmark button
+    setBookmarks({
+      isBookmarked: userSnap.data().bookmarks.includes(post.id) ? true : false,
+      bookmarksCount: postSnap.data().bookmarksCount,
+    });
+  };
+
+  useEffect(() => {
+    updateBookmarks();
+  }, []);
 
   /**
    * Handle Add Bookmark
    */
-  const handleAddBookmark = (post) => {
+
+  const handleAddBookmark = debounce((post) => {
+    const userRef = doc(db, "users", currentUser?.id);
+    const postRef = doc(db, "posts", post?.id);
+    // if the user is not signed in, return
+    if (!currentUser || isGuest) {
+      alert("Please login to bookmark this post.");
+      return;
+    }
+    // check if the user is offline
+    if (!navigator.onLine) {
+      alert("You are offline. Please check your internet connection.");
+      return;
+    }
+    // update the bookmark state in UI immediately to give feedback to the user
+    setBookmarks({
+      isBookmarked: true,
+      bookmarksCount: bookmarks.bookmarksCount + 1,
+    });
+    // add the bookmark to the database
     const addBookmark = async (post) => {
       try {
-        setLoading(true);
-        // if the user is not signed in, return
-        if (!currentUser || isGuest) {
-          alert("Please login to bookmark this post.");
-          return;
-        }
-        const userRef = doc(db, "users", currentUser.id);
         const userSnap = await getDoc(userRef);
-        const postRef = doc(db, "posts", post.id);
+        const postSnap = await getDoc(postRef);
         // update post count + 1
         await updateDoc(postRef, {
           ...post,
-          bookmarksCount: post.bookmarksCount + 1,
+          bookmarksCount: postSnap.data().bookmarksCount + 1,
         });
-        // update user doc bookmarks
+        // update user doc bookmarks array
         await updateDoc(userRef, {
           // check if the post is already bookmarked
           bookmarks: userSnap.data().bookmarks.includes(post.id)
             ? userSnap.data().bookmarks
             : [...userSnap.data().bookmarks, post.id],
         });
-        // update the post reducer
-        dispatch({
-          type: "EDIT_POST",
-          payload: { ...post, bookmarksCount: post.bookmarksCount + 1 },
-        });
-        // update the currentUser reducer
-        updateUser({
-          bookmarks: userSnap.data().bookmarks.includes(post.id)
-            ? userSnap.data().bookmarks
-            : [...userSnap.data().bookmarks, post.id],
-        });
       } catch (error) {
         console.log(error);
-      } finally {
-        setLoading(false);
       }
     };
     addBookmark(post);
-  };
+  }, 300);
 
   /**
    * Handle Remove Bookmark
    */
-  const handleRemoveBookmark = (post) => {
+  const handleRemoveBookmark = debounce((post) => {
+    const userRef = doc(db, "users", currentUser?.id);
+    const postRef = doc(db, "posts", post?.id);
+    setBookmarks({
+      isBookmarked: false,
+      bookmarksCount: bookmarks.bookmarksCount - 1,
+    });
     const removeBookmark = async (post) => {
       try {
-        setLoading(true);
-        const userRef = doc(db, "users", currentUser.id);
         const userSnap = await getDoc(userRef);
-        const postRef = doc(db, "posts", post.id);
+        const postSnap = await getDoc(postRef);
         // update post count - 1
         await updateDoc(postRef, {
           ...post,
-          bookmarksCount: Math.max(post.bookmarksCount - 1, 0),
+          bookmarksCount: Math.max(postSnap.data().bookmarksCount - 1, 0),
         });
-        // update user doc bookmarks
+        // update user doc bookmarks array
         await updateDoc(userRef, {
-          bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
-        });
-        // update post reducer
-        dispatch({
-          type: "EDIT_POST",
-          payload: { ...post, bookmarksCount: post.bookmarksCount - 1 },
-        });
-        // update currentUser reducer
-        updateUser({
           bookmarks: userSnap.data().bookmarks.filter((id) => id !== post.id),
         });
       } catch (error) {
         console.log(error);
-      } finally {
-        setLoading(false);
       }
     };
     removeBookmark(post);
-  };
+  }, 300);
 
   return (
     <div className="flex w-full sm:px-3 mb-6 sm:w-1/2 xl:w-1/3 2xl:w-1/4">
@@ -158,7 +173,7 @@ export const PostItem = ({ post, handleShowModal }) => {
             <div className="flex items-center gap-4">
               {/* Bookmarks */}
               <div className="flex items-center">
-                {isBookmarked && (
+                {bookmarks.isBookmarked && (
                   <label
                     tabIndex="0"
                     htmlFor={post.id}
@@ -171,11 +186,10 @@ export const PostItem = ({ post, handleShowModal }) => {
                       hidden
                       onChange={() => handleRemoveBookmark(post)}
                     />
-                    {loading && <i className="ri-loader-4-line"></i>}
-                    {!loading && <i className="ri-bookmark-fill text-lg"></i>}
+                    <i className="ri-bookmark-fill text-lg"></i>
                   </label>
                 )}
-                {!isBookmarked && (
+                {!bookmarks.isBookmarked && (
                   <label
                     tabIndex="0"
                     htmlFor={post.id}
@@ -188,13 +202,12 @@ export const PostItem = ({ post, handleShowModal }) => {
                       hidden
                       onChange={() => handleAddBookmark(post)}
                     />
-                    {loading && <i className="ri-loader-4-line"></i>}
-                    {!loading && <i className="ri-bookmark-line text-lg"></i>}
+                    <i className="ri-bookmark-line text-lg"></i>
                   </label>
                 )}
 
                 <p className="text-primary">
-                  {post.bookmarksCount > 0 && post.bookmarksCount}
+                  {bookmarks.bookmarksCount > 0 && bookmarks.bookmarksCount}
                 </p>
               </div>
 

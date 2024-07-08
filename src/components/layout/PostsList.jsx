@@ -28,6 +28,7 @@ import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
 import { Skeleton } from "../ui/skeleton";
 import { BreadCrumbs } from "../shared/BreadCrumbs";
 import { getTargetSnapShot } from "../../utils/getTargetSnapShot";
+import { debounce } from "../../utils/debounce";
 
 /**
  * Lazy load ConfirmDeleteModal
@@ -123,7 +124,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   /**
    * Handle pagination
    */
-  const handlePaginate = async (pageNumber) => {
+  const handlePaginate = debounce(async (pageNumber) => {
     if (pageNumber === currentPage) return;
     try {
       setLoading(true);
@@ -181,12 +182,12 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, 300);
 
   /**
    * Filter posts based on category
    */
-  const handleFilter = (key) => {
+  const handleFilter = debounce((key) => {
     const createFilter = async (key) => {
       let postsSnapshot;
       switch (key) {
@@ -226,7 +227,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     createFilter(key);
     setFilterKey(key);
     setCurrentPage(1);
-  };
+  }, 1000);
 
   /**
    * Memoize the PostItem components

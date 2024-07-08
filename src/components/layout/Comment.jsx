@@ -9,14 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { getRelTime } from "../../utils/getRelTime";
-import { isArabicText } from "../../utils/isArabicText";
 export const Comment = ({ comment, commentToEdit, handleDelete }) => {
   const { authorName, authorImage, authorId, content, createdAt } = comment;
   const { currentUser } = useContext(AuthContext);
   const isCommentOwner = currentUser?.id === authorId;
   const date = new Date(createdAt.seconds * 1000);
   const timeAgo = getRelTime(date);
-  const isArabic = isArabicText(content);
 
   return (
     <div
@@ -62,9 +60,8 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
         )}
       </div>
       <p
-        className={`text-base text-primary/95 whitespace-pre-wrap leading-5 ${
-          isArabic && "text-right"
-        }`}
+        dir="auto"
+        className="text-base text-primary/95 whitespace-pre-wrap leading-5"
       >
         {content}
       </p>
