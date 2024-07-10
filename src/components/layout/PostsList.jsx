@@ -227,7 +227,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
     createFilter(key);
     setFilterKey(key);
     setCurrentPage(1);
-  }, 1000);
+  }, 300);
 
   /**
    * Memoize the PostItem components
@@ -294,7 +294,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         postsPerPage={postsPerPage}
       />
       {/* Confirm Delete Dialog */}
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense>
         <ConfirmDeleteModal
           showModal={showModal}
           setShowModal={setShowModal}
