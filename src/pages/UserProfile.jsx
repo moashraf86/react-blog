@@ -45,7 +45,7 @@ export const UserProfile = () => {
         alertMsg="No Posts Added yet."
       />
     ),
-    []
+    [userName]
   );
 
   return <>{memoizedPosts}</>;
