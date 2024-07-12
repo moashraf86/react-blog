@@ -2,6 +2,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Alert, AlertDescription } from "../ui/alert";
+import { Switch } from "../ui/switch";
 export const Form = ({
   heading,
   title,
@@ -129,14 +130,13 @@ export const Form = ({
               {/* Select Random image */}
               {!image && (
                 <div className="flex gap-2 items-center ">
-                  <input
-                    type="checkbox"
-                    id="checkbox"
-                    className="cursor-pointer appearance-none w-5 h-5 bg-transparent border border-input rounded-md checked:bg-[url('src/assets/check.svg')] checked:bg-indigo-500"
-                    onChange={handleSelectRandomImage}
+                  <Switch
+                    aria-label="Select random image instead"
+                    id="switch"
+                    onCheckedChange={handleSelectRandomImage}
                   />
                   <label
-                    htmlFor="checkbox"
+                    htmlFor="switch"
                     className="text-sm text-primary cursor-pointer"
                   >
                     Select random image instead
@@ -144,54 +144,44 @@ export const Form = ({
                 </div>
               )}
               <div className="flex flex-wrap gap-3 items-center">
-                <label
-                  htmlFor="tech"
-                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted`}
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={tag === "tech"}
+                  tabIndex="0"
+                  className="text-primary py-1 px-4 border border-input rounded-full cursor-pointer aria-checked:bg-muted"
+                  onClick={() =>
+                    handleChange({ target: { name: "tag", value: "tech" } })
+                  }
                 >
-                  <input
-                    type="radio"
-                    id="tech"
-                    value="tech"
-                    name="tag"
-                    className="text-primary"
-                    hidden
-                    checked={tag === "tech"}
-                    onChange={(e) => handleChange(e)}
-                  />
                   Tech
-                </label>
-                <label
-                  htmlFor="culture"
-                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted `}
+                </button>
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={tag === "culture"}
+                  tabIndex="0"
+                  className="text-primary aria-checked:bg-muted py-1 px-4 border border-input rounded-full cursor-pointer"
+                  onClick={() =>
+                    handleChange({ target: { name: "tag", value: "culture" } })
+                  }
                 >
-                  <input
-                    type="radio"
-                    id="culture"
-                    value="culture"
-                    name="tag"
-                    className="text-primary"
-                    hidden
-                    checked={tag === "culture"}
-                    onChange={(e) => handleChange(e)}
-                  />
                   Culture
-                </label>
-                <label
-                  htmlFor="science"
-                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted`}
+                </button>
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={tag === "science"}
+                  tabIndex="0"
+                  className="text-primary aria-checked:bg-muted py-1 px-4 border border-input rounded-full cursor-pointer"
+                  onClick={() =>
+                    handleChange({
+                      target: { name: "tag", value: "science" },
+                    })
+                  }
                 >
-                  <input
-                    type="radio"
-                    id="science"
-                    value="science"
-                    name="tag"
-                    className="text-primary"
-                    hidden
-                    checked={tag === "science"}
-                    onChange={(e) => handleChange(e)}
-                  />
                   Science
-                </label>
+                </button>
                 {errors.tag && (
                   <p className="text-sm text-danger">{errors.tag}</p>
                 )}
