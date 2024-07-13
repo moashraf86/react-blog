@@ -39,7 +39,10 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
         {/* Edit/Delete Dropdown */}
         {isCommentOwner && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="text-primary cursor-pointer p-1">
+            <DropdownMenuTrigger
+              className="text-primary cursor-pointer p-1"
+              aria-label="Click to edit or delete comment"
+            >
               <i className="ri-more-2-fill text-lg"></i>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
