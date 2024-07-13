@@ -2,6 +2,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Alert, AlertDescription } from "../ui/alert";
+import { Switch } from "../ui/switch";
 export const Form = ({
   heading,
   title,
@@ -17,34 +18,45 @@ export const Form = ({
   errors,
 }) => {
   const { currentUser } = useContext(AuthContext);
+
   return (
     <>
       {currentUser ? (
-        <div className="flex justify-center items-center max-w-[400px] mx-auto">
+        <div className="flex justify-center items-center max-w-[600px] mx-auto">
           <div className="flex flex-col w-full bg-background sm:border border-border rounded-md p-6 gap-4 mt-6">
             <h3 className="font-semibold text-xl md:text-3xl text-primary mb-2">
               {heading}
             </h3>
             <form onSubmit={onsubmit} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 relative">
                 <input
                   name="title"
                   id="title"
-                  className={`w-full p-2 border text-primary border-input bg-transparent rounded-md ${
-                    errors.title && "border-danger"
+                  className={`w-full p-2 border text-primary bg-transparent rounded-md ${
+                    errors.title === true && "border-input"
+                  } ${
+                    errors.title !== true &&
+                    errors.title !== "" &&
+                    "border-danger"
                   }`}
                   value={title}
                   type="text"
                   placeholder="Add title"
                   onChange={(e) => handleChange(e)}
                 />
-                {errors.title && <p className="text-danger">{errors.title}</p>}
+                {errors.title && (
+                  <p className="text-sm text-danger">{errors.title}</p>
+                )}
               </div>
               <div className="flex flex-col gap-1">
                 <textarea
-                  rows={4}
-                  className={`w-full p-2 text-primary border border-input bg-transparent rounded-md ${
-                    errors.content && "border-danger"
+                  rows="6"
+                  className={`w-full p-2 text-primary border bg-transparent rounded-md ${
+                    errors.content === true && "border-input"
+                  } ${
+                    errors.content !== true &&
+                    errors.content !== "" &&
+                    "border-danger"
                   }`}
                   placeholder="write something here..."
                   value={content}
@@ -52,15 +64,21 @@ export const Form = ({
                   onChange={(e) => handleChange(e)}
                 ></textarea>
                 {errors.content && (
-                  <p className="text-danger">{errors.content}</p>
+                  <p className="text-sm text-danger">{errors.content}</p>
                 )}
               </div>
               {!image && isImageRequired && (
-                <>
+                <div className="flex flex-col gap-1">
                   <label
                     tabIndex="0"
                     htmlFor="image"
-                    className="p-2 border border-dashed border-input min-h-20 flex items-center justify-center rounded-md cursor-pointer bg-transparent text-primary focus:outline-none focus:ring-2 focus:ring-zinc-50 "
+                    className={`p-2 border border-dashed min-h-20 flex items-center justify-center rounded-md cursor-pointer bg-transparent text-primary focus:outline-none focus:ring-2 focus:ring-zinc-50 ${
+                      errors.image === true && "border-green-500"
+                    } ${
+                      errors.image !== true &&
+                      errors.image !== "" &&
+                      "border-danger"
+                    }`}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
@@ -78,9 +96,9 @@ export const Form = ({
                     />
                   </label>
                   {errors.image && (
-                    <p className="text-danger">{errors.image}</p>
+                    <p className="text-sm text-danger">{errors.image}</p>
                   )}
-                </>
+                </div>
               )}
               {image && (
                 <div className="relative rounded-md overflow-clip">
@@ -129,69 +147,64 @@ export const Form = ({
               {/* Select Random image */}
               {!image && (
                 <div className="flex gap-2 items-center ">
-                  <input
-                    type="checkbox"
-                    id="checkbox"
-                    className="cursor-pointer appearance-none w-5 h-5 bg-transparent border border-input rounded-md checked:bg-[url('src/assets/check.svg')] checked:bg-indigo-500"
-                    onChange={handleSelectRandomImage}
+                  <Switch
+                    aria-label="Select random image instead"
+                    id="switch"
+                    onCheckedChange={handleSelectRandomImage}
                   />
                   <label
-                    htmlFor="checkbox"
-                    className="text-sm text-primary cursor-pointer"
+                    htmlFor="switch"
+                    className={`text-sm cursor-pointer ${
+                      isImageRequired && "text-muted-foreground"
+                    }`}
                   >
                     Select random image instead
                   </label>
                 </div>
               )}
-              <div className="flex flex-wrap gap-3 items-center">
-                <label
-                  htmlFor="tech"
-                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted`}
-                >
-                  <input
-                    type="radio"
-                    id="tech"
-                    value="tech"
-                    name="tag"
-                    className="text-primary"
-                    hidden
-                    checked={tag === "tech"}
-                    onChange={(e) => handleChange(e)}
-                  />
-                  Tech
-                </label>
-                <label
-                  htmlFor="culture"
-                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted `}
-                >
-                  <input
-                    type="radio"
-                    id="culture"
-                    value="culture"
-                    name="tag"
-                    className="text-primary"
-                    hidden
-                    checked={tag === "culture"}
-                    onChange={(e) => handleChange(e)}
-                  />
-                  Culture
-                </label>
-                <label
-                  htmlFor="science"
-                  className={`text-primary py-1 px-4 border border-input rounded-full cursor-pointer has-[:checked]:bg-muted`}
-                >
-                  <input
-                    type="radio"
-                    id="science"
-                    value="science"
-                    name="tag"
-                    className="text-primary"
-                    hidden
-                    checked={tag === "science"}
-                    onChange={(e) => handleChange(e)}
-                  />
-                  Science
-                </label>
+              <div className="flex flex-col gap-1">
+                <div className="flex flex-wrap gap-3 items-center">
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={tag === "tech"}
+                    tabIndex="0"
+                    className="text-primary py-1 px-4 border border-input rounded-full cursor-pointer aria-checked:bg-muted"
+                    onClick={() =>
+                      handleChange({ target: { name: "tag", value: "tech" } })
+                    }
+                  >
+                    Tech
+                  </button>
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={tag === "culture"}
+                    tabIndex="0"
+                    className="text-primary aria-checked:bg-muted py-1 px-4 border border-input rounded-full cursor-pointer"
+                    onClick={() =>
+                      handleChange({
+                        target: { name: "tag", value: "culture" },
+                      })
+                    }
+                  >
+                    Culture
+                  </button>
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={tag === "science"}
+                    tabIndex="0"
+                    className="text-primary aria-checked:bg-muted py-1 px-4 border border-input rounded-full cursor-pointer"
+                    onClick={() =>
+                      handleChange({
+                        target: { name: "tag", value: "science" },
+                      })
+                    }
+                  >
+                    Science
+                  </button>
+                </div>
                 {errors.tag && (
                   <p className="text-sm text-danger">{errors.tag}</p>
                 )}

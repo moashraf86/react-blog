@@ -9,14 +9,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
 export const User = () => {
   const { currentUser, signOut } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
-  const userImg =
-    currentUser?.photoURL || "https://robohash.org/mail@ashallendesign.co.uk";
+  const userImg = currentUser?.photoURL;
   const userName = currentUser?.name || "Anonymous";
   const currentPage = useHref().split("/")[1];
+  /**
+   * Get the first char of the user name and the first char after the space
+   */
+  const [firstName, lastName] = userName.split(" ");
 
   return (
     <div>
@@ -25,13 +29,18 @@ export const User = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="w-10 h-10 rounded-full cursor-pointer overflow-clip p-[1px] border border-zinc-300 dark:border-zinc-800"
+            className="w-10 h-10 rounded-full cursor-pointer overflow-clip border border-zinc-300 dark:border-zinc-800"
           >
-            <img
-              src={userImg}
-              alt="user avatar"
-              className="rounded-full w-full h-full mx-auto"
-            />
+            {!isGuest ? (
+              <Avatar className="flex w-full h-full items-center justify-center">
+                <AvatarImage src={userImg} alt="User avatar" />
+                <AvatarFallback>
+                  {firstName[0]} {lastName[0]}
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <i className="ri-user-line text-2xl text-muted-foreground"></i>
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-[16rem]">
