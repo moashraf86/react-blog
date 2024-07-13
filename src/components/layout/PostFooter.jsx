@@ -132,36 +132,22 @@ export const PostFooter = ({ post, comments }) => {
       <div className="flex items-center gap-4">
         <div className="flex items-center">
           {bookmarks.isBookmarked && (
-            <label
-              tabIndex="0"
-              htmlFor={post.id}
+            <button
               className="cursor-pointer p-1 text-primary"
+              onClick={() => handleRemoveBookmark(post)}
+              aria-label="Remove Bookmark"
             >
-              <input
-                type="checkbox"
-                name="bookmark"
-                id={post.id}
-                hidden
-                onChange={() => handleRemoveBookmark(post)}
-              />
               <i className="ri-bookmark-fill text-lg"></i>
-            </label>
+            </button>
           )}
           {!bookmarks.isBookmarked && (
-            <label
-              tabIndex="0"
-              htmlFor={post.id}
+            <button
               className="cursor-pointer p-1 text-zinc-50"
+              onClick={() => handleAddBookmark(post)}
+              aria-label="Add Bookmark"
             >
-              <input
-                type="checkbox"
-                name="bookmark"
-                id={post.id}
-                hidden
-                onChange={() => handleAddBookmark(post)}
-              />
               <i className="ri-bookmark-line text-lg"></i>
-            </label>
+            </button>
           )}
           {/* Bookmarks count */}
           <p className="text-primary">

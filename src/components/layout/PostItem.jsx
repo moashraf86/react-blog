@@ -174,36 +174,22 @@ export const PostItem = ({ post, handleShowModal }) => {
               {/* Bookmarks */}
               <div className="flex items-center">
                 {bookmarks.isBookmarked && (
-                  <label
-                    tabIndex="0"
-                    htmlFor={post.id}
+                  <button
                     className="cursor-pointer text-primary p-1"
+                    onClick={() => handleRemoveBookmark(post)}
+                    aria-label="Remove Bookmark"
                   >
-                    <input
-                      type="checkbox"
-                      name="bookmark"
-                      id={post.id}
-                      hidden
-                      onChange={() => handleRemoveBookmark(post)}
-                    />
                     <i className="ri-bookmark-fill text-lg"></i>
-                  </label>
+                  </button>
                 )}
                 {!bookmarks.isBookmarked && (
-                  <label
-                    tabIndex="0"
-                    htmlFor={post.id}
+                  <button
                     className="cursor-pointer text-primary p-1"
+                    onClick={() => handleAddBookmark(post)}
+                    aria-label="Add Bookmark"
                   >
-                    <input
-                      type="checkbox"
-                      name="bookmark"
-                      id={post.id}
-                      hidden
-                      onChange={() => handleAddBookmark(post)}
-                    />
                     <i className="ri-bookmark-line text-lg"></i>
-                  </label>
+                  </button>
                 )}
 
                 <p className="text-primary">
@@ -213,7 +199,7 @@ export const PostItem = ({ post, handleShowModal }) => {
 
               {/* comments */}
               {post.commentsCount > 0 && (
-                <Link to={`/post/${post.id}`}>
+                <Link to={`/post/${post.id}`} aria-label="View Comments">
                   <div className="flex items-center">
                     <i className="ri-chat-3-line text-primary text-l p-1"></i>
                     <p className="text-lg">{post.commentsCount}</p>
@@ -222,24 +208,31 @@ export const PostItem = ({ post, handleShowModal }) => {
               )}
               {/* Edit/Delete Dropdown */}
               {isOwner && (
-                <div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="text-primary cursor-pointer p-1">
-                      <i className="ri-more-2-fill text-lg"></i>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <Link to={`/edit/${post.id}`} className="font-medium">
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                      </Link>
-                      <DropdownMenuItem
-                        className="font-medium text-red-500 focus:text-red-500"
-                        onSelect={() => handleShowModal(post)}
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className="text-primary cursor-pointer p-1"
+                    aria-label="Trigger popover to edit or delete post"
+                  >
+                    <i className="ri-more-2-fill text-lg"></i>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Link
+                        to={`/edit/${post.id}`}
+                        className="w-full font-medium"
+                        asChild
                       >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                        Edit
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="font-medium text-red-500 focus:text-red-500"
+                      onSelect={() => handleShowModal(post)}
+                    >
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </div>
           </div>
