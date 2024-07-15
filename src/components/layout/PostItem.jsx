@@ -216,11 +216,11 @@ export const PostItem = ({ post, handleShowModal }) => {
                     <i className="ri-more-2-fill text-lg"></i>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link
                         to={`/edit/${post.id}`}
                         className="w-full font-medium"
-                        asChild
+                        aria-label="Edit Post"
                       >
                         Edit
                       </Link>
@@ -228,6 +228,7 @@ export const PostItem = ({ post, handleShowModal }) => {
                     <DropdownMenuItem
                       className="font-medium text-red-500 focus:text-red-500"
                       onSelect={() => handleShowModal(post)}
+                      aria-label="Delete Post"
                     >
                       Delete
                     </DropdownMenuItem>

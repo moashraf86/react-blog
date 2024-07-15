@@ -11,6 +11,8 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
+import { buttonVariants } from "@/components/ui/button";
+
 export const User = () => {
   const { currentUser, signOut } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
@@ -49,99 +51,106 @@ export const User = () => {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {currentUser && (
-            <Link to="/create">
-              <DropdownMenuItem>
-                <Button
-                  variant="default"
-                  size="default"
-                  className="w-full flex items-center gap-3 md:text-base"
-                >
-                  <i className="ri-edit-box-line text-lg text-primary-foreground"></i>
-                  Write Post
-                </Button>
-              </DropdownMenuItem>
-            </Link>
+            <DropdownMenuItem asChild>
+              <Link
+                className={
+                  buttonVariants({ variant: "default" }) +
+                  " w-full gap-3 mt-1 focus:bg-accent-foreground focus:text-accent focus-visible:outline-accent-foreground"
+                }
+                to="/create"
+                aria-label="Create a new post"
+              >
+                <i className="ri-edit-box-line text-lg text-primary-foreground"></i>
+                <span>Write Post</span>
+              </Link>
+            </DropdownMenuItem>
           )}
-          <DropdownMenuSeparator />
-          <Link to="/">
-            <DropdownMenuItem
-              className={`flex gap-2 items-center ${
-                currentPage === "" && "bg-accent"
-              }`}
-            >
+          <DropdownMenuSeparator aria-label="separator line" />
+          <DropdownMenuItem
+            asChild
+            className={`flex gap-2 items-center ${
+              currentPage === "" && "bg-accent"
+            }`}
+          >
+            <Link to="/" aria-label="Home page">
               <i
                 className={`ri-home-5-${
                   currentPage === "" ? "fill" : "line"
                 } text-lg`}
               ></i>
               <span className="font-semibold">Home</span>
-            </DropdownMenuItem>
-          </Link>
-          <Link to={`/users/${currentUser.id}`}>
-            <DropdownMenuItem
-              className={`flex gap-2 items-center ${
-                currentPage === "users" && "bg-accent"
-              }`}
-            >
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className={`flex gap-2 items-center ${
+              currentPage === "users" && "bg-accent"
+            }`}
+          >
+            <Link to={`/users/${currentUser.id}`} aria-label="Profile page">
               <i
                 className={`ri-user-${
                   currentPage === "users" ? "fill" : "line"
                 } text-lg`}
               ></i>
               <span className="font-semibold">Profile</span>
-            </DropdownMenuItem>
-          </Link>
+            </Link>
+          </DropdownMenuItem>
           {!isGuest ? (
-            <Link to="/my-posts">
-              <DropdownMenuItem
-                className={`flex gap-2 items-center ${
-                  currentPage === "my-posts" && "bg-accent"
-                }`}
-              >
+            <DropdownMenuItem
+              asChild
+              className={`flex gap-2 items-center ${
+                currentPage === "my-posts" && "bg-accent"
+              }`}
+            >
+              <Link to="/my-posts" aria-label="my posts page">
                 <i
                   className={`ri-file-list-${
                     currentPage === "my-posts" ? "fill" : "line"
                   } text-lg`}
                 ></i>
                 <span className="font-semibold">My Posts</span>
-              </DropdownMenuItem>
-            </Link>
+              </Link>
+            </DropdownMenuItem>
           ) : (
-            <Link to="/drafts">
-              <DropdownMenuItem
-                className={`flex gap-2 items-center ${
-                  currentPage === "drafts" && "bg-accent"
-                }`}
-              >
+            <DropdownMenuItem
+              asChild
+              className={`flex gap-2 items-center ${
+                currentPage === "drafts" && "bg-accent"
+              }`}
+            >
+              <Link to="/drafts" aria-label="Drafts page">
                 <i
                   className={`ri-bookmark-${
                     currentPage === "drafts" ? "fill" : "line"
                   } text-lg`}
                 ></i>
                 <span className="font-semibold">Drafts</span>
-              </DropdownMenuItem>
-            </Link>
+              </Link>
+            </DropdownMenuItem>
           )}
           {!isGuest && (
-            <Link to="/bookmarks">
-              <DropdownMenuItem
-                className={`flex gap-2 items-center ${
-                  currentPage === "bookmarks" && "bg-accent"
-                }`}
-              >
+            <DropdownMenuItem
+              asChild
+              className={`flex gap-2 items-center ${
+                currentPage === "bookmarks" && "bg-accent"
+              }`}
+            >
+              <Link to="/bookmarks" aria-label="Bookmarks page">
                 <i
                   className={`ri-bookmark-${
                     currentPage === "bookmarks" ? "fill" : "line"
                   } text-lg`}
                 ></i>
                 <span className="font-semibold">Bookmarks</span>
-              </DropdownMenuItem>
-            </Link>
+              </Link>
+            </DropdownMenuItem>
           )}
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator aria-label="separator line" />
           <DropdownMenuItem
             className="flex items-center gap-2 text-danger focus:text-danger mb-0"
             onSelect={signOut}
+            aria-label="Sign out Button"
           >
             <i className="ri-logout-box-line text-lg text-danger"></i>
             <span className="font-semibold">Sign Out</span>
