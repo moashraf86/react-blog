@@ -11,6 +11,12 @@ import {
   DropdownMenuItem,
 } from "../ui/dropdown-menu";
 import { debounce } from "../../utils/debounce";
+import {
+  RiBookmarkFill,
+  RiBookmarkLine,
+  RiChat3Line,
+  RiMore2Fill,
+} from "@remixicon/react";
 
 export const PostItem = ({ post, handleShowModal }) => {
   const { currentUser, updateUser } = useContext(AuthContext);
@@ -179,7 +185,7 @@ export const PostItem = ({ post, handleShowModal }) => {
                     onClick={() => handleRemoveBookmark(post)}
                     aria-label="Remove Bookmark"
                   >
-                    <i className="ri-bookmark-fill text-lg"></i>
+                    <RiBookmarkFill size={18} />
                   </button>
                 )}
                 {!bookmarks.isBookmarked && (
@@ -188,7 +194,7 @@ export const PostItem = ({ post, handleShowModal }) => {
                     onClick={() => handleAddBookmark(post)}
                     aria-label="Add Bookmark"
                   >
-                    <i className="ri-bookmark-line text-lg"></i>
+                    <RiBookmarkLine size={18} />
                   </button>
                 )}
 
@@ -201,7 +207,7 @@ export const PostItem = ({ post, handleShowModal }) => {
               {post.commentsCount > 0 && (
                 <Link to={`/post/${post.id}`} aria-label="View Comments">
                   <div className="flex items-center">
-                    <i className="ri-chat-3-line text-primary text-l p-1"></i>
+                    <RiChat3Line size={24} className="fill-primary p-1" />
                     <p className="text-lg">{post.commentsCount}</p>
                   </div>
                 </Link>
@@ -213,7 +219,7 @@ export const PostItem = ({ post, handleShowModal }) => {
                     className="text-primary cursor-pointer p-1"
                     aria-label="Trigger popover to edit or delete post"
                   >
-                    <i className="ri-more-2-fill text-lg"></i>
+                    <RiMore2Fill size={20} />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>

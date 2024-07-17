@@ -3,6 +3,11 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Switch } from "../ui/switch";
+import {
+  RiDeleteBinLine,
+  RiEditBoxLine,
+  RiInformationLine,
+} from "@remixicon/react";
 export const Form = ({
   heading,
   title,
@@ -115,7 +120,7 @@ export const Form = ({
                         }
                       }}
                     >
-                      <i className="ri-edit-box-line text-white text-3xl"></i>
+                      <RiEditBoxLine size={30} className="fill-white" />
                       <input
                         id="image"
                         type="file"
@@ -129,7 +134,7 @@ export const Form = ({
                       className="w-12 h-12 focus:outline-none focus:ring-2 focus:ring-zinc-50 rounded-md"
                       title="Delete Image"
                     >
-                      <i className="ri-delete-bin-line text-zinc-50 text-3xl"></i>
+                      <RiDeleteBinLine size={30} className="fill-white" />
                     </button>
                   </div>
                   <img
@@ -220,7 +225,7 @@ export const Form = ({
         </div>
       ) : (
         <Alert variant="default" className="flex items-center gap-3">
-          <i className="ri-information-line text-2xl text-primary"></i>
+          <RiInformationLine size={24} />
           <AlertDescription>
             You need to sign in to create a post
           </AlertDescription>

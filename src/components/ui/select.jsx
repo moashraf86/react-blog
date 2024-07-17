@@ -3,6 +3,12 @@ import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 
 import { cn } from "@/lib/utils";
+import {
+  RiArrowDownSLine,
+  RiArrowUpSLine,
+  RiCheckLine,
+  RiEqualizer2Line,
+} from "@remixicon/react";
 
 const Select = SelectPrimitive.Root;
 
@@ -22,7 +28,7 @@ const SelectTrigger = React.forwardRef(
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <i className="ri-equalizer-2-line text-lg opacity-70"></i>
+        <RiEqualizer2Line size={18} className="opacity-70" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -39,7 +45,7 @@ const SelectScrollUpButton = React.forwardRef(
       )}
       {...props}
     >
-      <i className="ri-arrow-up-s-line"></i>
+      <RiArrowUpSLine size={18} />
     </SelectPrimitive.ScrollUpButton>
   )
 );
@@ -55,7 +61,7 @@ const SelectScrollDownButton = React.forwardRef(
       )}
       {...props}
     >
-      <i className="ri-arrow-down-s-line"></i>
+      <RiArrowDownSLine size={18} />
     </SelectPrimitive.ScrollDownButton>
   )
 );
@@ -114,7 +120,7 @@ const SelectItem = React.forwardRef(
     >
       <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <i className="ri-check-line"></i>
+          <RiCheckLine size={18} />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

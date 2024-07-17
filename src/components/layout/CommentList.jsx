@@ -13,6 +13,7 @@ import { Skeleton } from "../ui/skeleton";
 import { Comment } from "./Comment";
 import { Alert, AlertDescription } from "../ui/alert";
 import { CommentsContext } from "../../context/CommentsContext";
+import { RiErrorWarningLine } from "@remixicon/react";
 
 export const CommentList = ({ post, commentToEdit, handleDelete }) => {
   const { comments, CommentsDispatch } = useContext(CommentsContext);
@@ -72,7 +73,7 @@ export const CommentList = ({ post, commentToEdit, handleDelete }) => {
       )}
       {error && (
         <Alert variant="danger" className="flex items-center gap-3">
-          <i className="ri-error-warning-line text-xl text-danger"></i>
+          <RiErrorWarningLine size={20} className="fill-danger" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

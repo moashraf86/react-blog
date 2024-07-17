@@ -4,6 +4,7 @@ import { db } from "../utils/firebase";
 import { AuthContext } from "../context/AuthContext";
 import { PostsList } from "../components/layout/PostsList";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { RiInformationLine } from "@remixicon/react";
 
 export const MyPosts = () => {
   const { currentUser } = useContext(AuthContext);
@@ -34,7 +35,7 @@ export const MyPosts = () => {
   if (!currentUser) {
     return (
       <Alert variant="default" className="flex items-center gap-3">
-        <i className="ri-information-line text-2xl text-primary"></i>
+        <RiInformationLine size={24} />
         <AlertDescription>Please login to see your posts.</AlertDescription>
       </Alert>
     );
