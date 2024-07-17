@@ -89,7 +89,7 @@ export const User = () => {
               ) : (
                 <RiHome5Line size={18} />
               )}
-              <span className="font-semibold">Home</span>
+              <span>Home</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -104,7 +104,7 @@ export const User = () => {
               ) : (
                 <RiUserLine size={18} />
               )}
-              <span className="font-semibold">Profile</span>
+              <span>Profile</span>
             </Link>
           </DropdownMenuItem>
           {!isGuest ? (
@@ -120,7 +120,7 @@ export const User = () => {
                 ) : (
                   <RiFileListLine size={18} />
                 )}
-                <span className="font-semibold">My Posts</span>
+                <span>My Posts</span>
               </Link>
             </DropdownMenuItem>
           ) : (
@@ -136,7 +136,7 @@ export const User = () => {
                 ) : (
                   <RiBookmarkLine size={18} />
                 )}
-                <span className="font-semibold">Drafts</span>
+                <span>Drafts</span>
               </Link>
             </DropdownMenuItem>
           )}
@@ -153,7 +153,7 @@ export const User = () => {
                 ) : (
                   <RiBookmarkLine size={18} />
                 )}
-                <span className="font-semibold">Bookmarks</span>
+                <span>Bookmarks</span>
               </Link>
             </DropdownMenuItem>
           )}
