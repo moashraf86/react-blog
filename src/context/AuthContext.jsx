@@ -41,9 +41,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // update the current user state when the user signs in or signs out
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setLoading(true);
       // if user is signed in, update the current user state
       if (user) {
+        setLoading(true);
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
@@ -102,6 +102,8 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: "SIGN_OUT", payload: null });
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
