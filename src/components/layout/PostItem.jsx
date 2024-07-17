@@ -17,16 +17,27 @@ import {
   RiChat3Line,
   RiMore2Fill,
 } from "@remixicon/react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
+import { GoogleIcon } from "../shared/GoogleIcon";
 
 export const PostItem = ({ post, handleShowModal }) => {
-  const { currentUser, updateUser } = useContext(AuthContext);
+  const { currentUser, updateUser, signIn } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
   const isOwner = currentUser?.id === post.authorId;
   const [bookmarks, setBookmarks] = useState({
     isBookmarked: false,
     bookmarksCount: post.bookmarksCount,
   });
-
+  const [bookmarkAlert, setBookmarkAlert] = useState(false);
   // update the currentUser reducer to match firestore data
   const updateBookmarks = async () => {
     const userRef = doc(db, "users", currentUser?.id);
@@ -54,11 +65,9 @@ export const PostItem = ({ post, handleShowModal }) => {
    */
 
   const handleAddBookmark = debounce((post) => {
-    const userRef = doc(db, "users", currentUser?.id);
-    const postRef = doc(db, "posts", post?.id);
     // if the user is not signed in, return
     if (!currentUser || isGuest) {
-      alert("Please login to bookmark this post.");
+      setBookmarkAlert(true);
       return;
     }
     // check if the user is offline
@@ -73,6 +82,8 @@ export const PostItem = ({ post, handleShowModal }) => {
     });
     // add the bookmark to the database
     const addBookmark = async (post) => {
+      const userRef = doc(db, "users", currentUser?.id);
+      const postRef = doc(db, "posts", post?.id);
       try {
         const userSnap = await getDoc(userRef);
         const postSnap = await getDoc(postRef);
@@ -99,13 +110,13 @@ export const PostItem = ({ post, handleShowModal }) => {
    * Handle Remove Bookmark
    */
   const handleRemoveBookmark = debounce((post) => {
-    const userRef = doc(db, "users", currentUser?.id);
-    const postRef = doc(db, "posts", post?.id);
     setBookmarks({
       isBookmarked: false,
       bookmarksCount: bookmarks.bookmarksCount - 1,
     });
     const removeBookmark = async (post) => {
+      const userRef = doc(db, "users", currentUser?.id);
+      const postRef = doc(db, "posts", post?.id);
       try {
         const userSnap = await getDoc(userRef);
         const postSnap = await getDoc(postRef);
@@ -124,6 +135,14 @@ export const PostItem = ({ post, handleShowModal }) => {
     };
     removeBookmark(post);
   }, 300);
+
+  /**
+   * Handle Sign In With Google
+   */
+  const handleGoogleSignIn = () => {
+    signIn();
+    setBookmarkAlert(false);
+  };
 
   return (
     <div className="flex w-full sm:px-3 mb-6 sm:w-1/2 xl:w-1/3 2xl:w-1/4">
@@ -207,7 +226,7 @@ export const PostItem = ({ post, handleShowModal }) => {
               {post.commentsCount > 0 && (
                 <Link to={`/post/${post.id}`} aria-label="View Comments">
                   <div className="flex items-center">
-                    <RiChat3Line size={24} className="fill-primary p-1" />
+                    <RiChat3Line size={18} className="fill-primary m-1" />
                     <p className="text-lg">{post.commentsCount}</p>
                   </div>
                 </Link>
@@ -241,6 +260,32 @@ export const PostItem = ({ post, handleShowModal }) => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
+              {/* Sign in to bookmark alert */}
+              <AlertDialog open={bookmarkAlert}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Want to bookmark this post?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Sign in with Google to save it to your account and access
+                      it anytime!
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setBookmarkAlert(false)}>
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      className="md:text-base flex gap-[10px]"
+                      onClick={() => handleGoogleSignIn()}
+                    >
+                      <GoogleIcon />
+                      Sign in with Google
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </div>

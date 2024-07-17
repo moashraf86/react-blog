@@ -11,17 +11,30 @@ import {
   RiChat3Line,
   RiShareForwardLine,
 } from "@remixicon/react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
+import { GoogleIcon } from "../shared/GoogleIcon";
 
 export const PostFooter = ({ post, comments }) => {
-  const { currentUser, updateUser } = useContext(AuthContext);
+  const { currentUser, updateUser, signIn } = useContext(AuthContext);
   const [bookmarks, setBookmarks] = useState({
     isBookmarked: false,
     bookmarksCount: post.bookmarksCount,
   });
   const { authorImage, authorName, authorId, createdAt } = post;
   const { isGuest } = currentUser || {};
-
-  // update the currentUser reducer to match firestore data
+  const [bookmarkAlert, setBookmarkAlert] = useState(false);
+  /**
+   * update the currentUser reducer to match firestore data
+   */
   const updateBookmarks = async () => {
     const userRef = doc(db, "users", currentUser?.id);
     const postRef = doc(db, "posts", post?.id);
@@ -39,19 +52,18 @@ export const PostFooter = ({ post, comments }) => {
       bookmarksCount: postSnap.data().bookmarksCount,
     });
   };
+
   useEffect(() => {
     updateBookmarks();
   }, []);
+
   /**
    * Handle Add Bookmark
    */
-
   const handleAddBookmark = debounce((post) => {
-    const userRef = doc(db, "users", currentUser?.id);
-    const postRef = doc(db, "posts", post?.id);
     // if the user is not signed in, return
     if (!currentUser || isGuest) {
-      alert("Please login to bookmark this post.");
+      setBookmarkAlert(true);
       return;
     }
     if (!navigator.onLine) {
@@ -65,6 +77,8 @@ export const PostFooter = ({ post, comments }) => {
     });
     // add the bookmark to the database
     const addBookmark = async (post) => {
+      const userRef = doc(db, "users", currentUser?.id);
+      const postRef = doc(db, "posts", post?.id);
       try {
         const userSnap = await getDoc(userRef);
         const postSnap = await getDoc(postRef);
@@ -117,6 +131,14 @@ export const PostFooter = ({ post, comments }) => {
     removeBookmark(post);
   }, 300);
 
+  /**
+   * Handle Sign In With Google
+   */
+  const handleGoogleSignIn = () => {
+    signIn();
+    setBookmarkAlert(false);
+  };
+
   return (
     <div className="flex justify-between items-center py-3 my-4 border-t border-b border-border">
       <div className="flex items-center gap-2">
@@ -136,23 +158,23 @@ export const PostFooter = ({ post, comments }) => {
       </div>
       {/* bookmarks / comments */}
       <div className="flex items-center gap-4">
-        <div className="flex items-center">
+        <div className="flex items-center gap-1">
           {bookmarks.isBookmarked && (
             <button
-              className="cursor-pointer p-1 text-primary"
+              className="cursor-pointer text-primary"
               onClick={() => handleRemoveBookmark(post)}
               aria-label="Remove Bookmark"
             >
-              <RiBookmarkFill size={18} />
+              <RiBookmarkFill size={18} className="fill-primary" />
             </button>
           )}
           {!bookmarks.isBookmarked && (
             <button
-              className="cursor-pointer p-1 text-zinc-50"
+              className="cursor-pointer text-zinc-50"
               onClick={() => handleAddBookmark(post)}
               aria-label="Add Bookmark"
             >
-              <RiBookmarkLine size={18} />
+              <RiBookmarkLine size={18} className="fill-primary" />
             </button>
           )}
           {/* Bookmarks count */}
@@ -161,15 +183,39 @@ export const PostFooter = ({ post, comments }) => {
           </p>
         </div>
         {/* comments */}
-        <div className="flex items-center gap-2">
-          <RiChat3Line size={18} />
+        <div className="flex items-center gap-1">
+          <RiChat3Line size={18} className="fill-primary" />
           {comments?.length > 0 && (
             <p className="text-lg">{comments?.length}</p>
           )}
         </div>
         {/* Share */}
-        <RiShareForwardLine size={18} />
+        <RiShareForwardLine size={18} className="fill-primary" />
       </div>
+      {/* Sign In to Bookmark alert */}
+      <AlertDialog open={bookmarkAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Want to bookmark this post?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Sign in with Google to save it to your account and access it
+              anytime!
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setBookmarkAlert(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="md:text-base flex gap-[10px]"
+              onClick={() => handleGoogleSignIn()}
+            >
+              <GoogleIcon />
+              Sign in with Google
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
