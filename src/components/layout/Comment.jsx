@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { getRelTime } from "../../utils/getRelTime";
+import { RiMore2Fill } from "@remixicon/react";
 export const Comment = ({ comment, commentToEdit, handleDelete }) => {
   const { authorName, authorImage, authorId, content, createdAt } = comment;
   const { currentUser } = useContext(AuthContext);
@@ -43,7 +44,7 @@ export const Comment = ({ comment, commentToEdit, handleDelete }) => {
               className="text-primary cursor-pointer p-1"
               aria-label="Click to edit or delete comment"
             >
-              <i className="ri-more-2-fill text-lg"></i>
+              <RiMore2Fill size={18} />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem

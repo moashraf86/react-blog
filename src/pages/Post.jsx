@@ -9,6 +9,7 @@ import { Comments } from "../components/layout/Comments";
 import { SignlePost } from "../components/layout/SinglePost";
 import { Skeleton } from "../components/ui/skeleton";
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { RiErrorWarningLine } from "@remixicon/react";
 export const Post = () => {
   const { posts, dispatch } = useContext(PostsContext);
   const { comments } = useContext(CommentsContext);
@@ -76,7 +77,7 @@ export const Post = () => {
       )}
       {error && (
         <Alert variant="danger" className="flex items-center gap-3">
-          <i className="ri-error-warning-line text-xl text-danger"></i>
+          <RiErrorWarningLine size={20} className="fill-danger" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

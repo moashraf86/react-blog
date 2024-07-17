@@ -5,6 +5,12 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { AuthContext } from "../../context/AuthContext";
 import { debounce } from "../../utils/debounce";
+import {
+  RiBookmarkFill,
+  RiBookmarkLine,
+  RiChat3Line,
+  RiShareForwardLine,
+} from "@remixicon/react";
 
 export const PostFooter = ({ post, comments }) => {
   const { currentUser, updateUser } = useContext(AuthContext);
@@ -137,7 +143,7 @@ export const PostFooter = ({ post, comments }) => {
               onClick={() => handleRemoveBookmark(post)}
               aria-label="Remove Bookmark"
             >
-              <i className="ri-bookmark-fill text-lg"></i>
+              <RiBookmarkFill size={18} />
             </button>
           )}
           {!bookmarks.isBookmarked && (
@@ -146,7 +152,7 @@ export const PostFooter = ({ post, comments }) => {
               onClick={() => handleAddBookmark(post)}
               aria-label="Add Bookmark"
             >
-              <i className="ri-bookmark-line text-lg"></i>
+              <RiBookmarkLine size={18} />
             </button>
           )}
           {/* Bookmarks count */}
@@ -156,13 +162,13 @@ export const PostFooter = ({ post, comments }) => {
         </div>
         {/* comments */}
         <div className="flex items-center gap-2">
-          <i className="ri-chat-3-line text-primary text-lg"></i>
+          <RiChat3Line size={18} />
           {comments?.length > 0 && (
             <p className="text-lg">{comments?.length}</p>
           )}
         </div>
         {/* Share */}
-        <i className="ri-share-forward-line text-primary text-lg"></i>
+        <RiShareForwardLine size={18} />
       </div>
     </div>
   );

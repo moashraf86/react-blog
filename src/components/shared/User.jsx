@@ -12,6 +12,18 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  RiBookmarkFill,
+  RiBookmarkLine,
+  RiEditBoxLine,
+  RiFileListFill,
+  RiFileListLine,
+  RiHome5Fill,
+  RiHome5Line,
+  RiLogoutBoxLine,
+  RiUserFill,
+  RiUserLine,
+} from "@remixicon/react";
 
 export const User = () => {
   const { currentUser, signOut } = useContext(AuthContext);
@@ -41,7 +53,7 @@ export const User = () => {
                 </AvatarFallback>
               </Avatar>
             ) : (
-              <i className="ri-user-line text-2xl text-muted-foreground"></i>
+              <RiUserLine size={24} className="text-muted-foreground" />
             )}
           </Button>
         </DropdownMenuTrigger>
@@ -54,13 +66,12 @@ export const User = () => {
             <DropdownMenuItem asChild>
               <Link
                 className={
-                  buttonVariants({ variant: "default" }) +
-                  " w-full gap-3 mt-1 focus:bg-accent-foreground focus:text-accent focus-visible:outline-accent-foreground"
+                  buttonVariants({ variant: "default" }) + " w-full gap-3 mt-1"
                 }
                 to="/create"
                 aria-label="Create a new post"
               >
-                <i className="ri-edit-box-line text-lg text-primary-foreground"></i>
+                <RiEditBoxLine size={18} className="fill-current" />
                 <span>Write Post</span>
               </Link>
             </DropdownMenuItem>
@@ -73,11 +84,11 @@ export const User = () => {
             }`}
           >
             <Link to="/" aria-label="Home page">
-              <i
-                className={`ri-home-5-${
-                  currentPage === "" ? "fill" : "line"
-                } text-lg`}
-              ></i>
+              {currentPage === "" ? (
+                <RiHome5Fill size={18} />
+              ) : (
+                <RiHome5Line size={18} />
+              )}
               <span className="font-semibold">Home</span>
             </Link>
           </DropdownMenuItem>
@@ -88,11 +99,11 @@ export const User = () => {
             }`}
           >
             <Link to={`/users/${currentUser.id}`} aria-label="Profile page">
-              <i
-                className={`ri-user-${
-                  currentPage === "users" ? "fill" : "line"
-                } text-lg`}
-              ></i>
+              {currentPage === "users" ? (
+                <RiUserFill size={18} />
+              ) : (
+                <RiUserLine size={18} />
+              )}
               <span className="font-semibold">Profile</span>
             </Link>
           </DropdownMenuItem>
@@ -104,11 +115,11 @@ export const User = () => {
               }`}
             >
               <Link to="/my-posts" aria-label="my posts page">
-                <i
-                  className={`ri-file-list-${
-                    currentPage === "my-posts" ? "fill" : "line"
-                  } text-lg`}
-                ></i>
+                {currentPage === "my-posts" ? (
+                  <RiFileListFill size={18} />
+                ) : (
+                  <RiFileListLine size={18} />
+                )}
                 <span className="font-semibold">My Posts</span>
               </Link>
             </DropdownMenuItem>
@@ -120,11 +131,11 @@ export const User = () => {
               }`}
             >
               <Link to="/drafts" aria-label="Drafts page">
-                <i
-                  className={`ri-bookmark-${
-                    currentPage === "drafts" ? "fill" : "line"
-                  } text-lg`}
-                ></i>
+                {currentPage === "drafts" ? (
+                  <RiBookmarkFill size={18} />
+                ) : (
+                  <RiBookmarkLine size={18} />
+                )}
                 <span className="font-semibold">Drafts</span>
               </Link>
             </DropdownMenuItem>
@@ -137,11 +148,11 @@ export const User = () => {
               }`}
             >
               <Link to="/bookmarks" aria-label="Bookmarks page">
-                <i
-                  className={`ri-bookmark-${
-                    currentPage === "bookmarks" ? "fill" : "line"
-                  } text-lg`}
-                ></i>
+                {currentPage === "bookmarks" ? (
+                  <RiBookmarkFill size={18} />
+                ) : (
+                  <RiBookmarkLine size={18} />
+                )}
                 <span className="font-semibold">Bookmarks</span>
               </Link>
             </DropdownMenuItem>
@@ -152,7 +163,7 @@ export const User = () => {
             onSelect={signOut}
             aria-label="Sign out Button"
           >
-            <i className="ri-logout-box-line text-lg text-danger"></i>
+            <RiLogoutBoxLine size={18} className="fill-danger" />
             <span className="font-semibold">Sign Out</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

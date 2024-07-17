@@ -29,6 +29,7 @@ import { Skeleton } from "../ui/skeleton";
 import { BreadCrumbs } from "../shared/BreadCrumbs";
 import { getTargetSnapShot } from "../../utils/getTargetSnapShot";
 import { debounce } from "../../utils/debounce";
+import { RiErrorWarningLine, RiInformationLine } from "@remixicon/react";
 
 /**
  * Lazy load ConfirmDeleteModal
@@ -275,13 +276,18 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         {!loading && !error && posts.length > 0 && MemoizedPostItem}
         {!loading && !error && !posts.length && (
           <Alert variant="default" className="flex items-center gap-3">
-            <i className="ri-information-line text-2xl text-primary"></i>
+            <span>
+              <RiInformationLine size={24} className="fill-primary" />
+            </span>
             <AlertDescription>{alertMsg}</AlertDescription>
           </Alert>
         )}
         {error && (
           <Alert variant="danger">
-            <i className="ri-error-warning-line text-xl text-danger absolute top-[10px]"></i>
+            <RiErrorWarningLine
+              size={24}
+              className="fill-danger absolute top-[10px]"
+            />
             <AlertTitle className="pl-8">Error</AlertTitle>
             <AlertDescription className="pl-8">{error}</AlertDescription>
           </Alert>
