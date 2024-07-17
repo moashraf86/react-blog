@@ -34,7 +34,7 @@ export const User = () => {
   /**
    * Get the first char of the user name and the first char after the space
    */
-  const [firstName, lastName] = userName.split(" ");
+  const [firstName, lastName] = userName.split(" ") || "";
 
   return (
     <div>
