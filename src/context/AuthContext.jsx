@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import { auth, provider, db } from "../utils/firebase";
 import {
   signInWithPopup,
@@ -35,13 +35,13 @@ export const AuthProvider = ({ children }) => {
         return currentUser;
     }
   };
-
-  // use the reducer to create the current user state
   const [currentUser, dispatch] = useReducer(currentUserReducer, null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // update the current user state when the user signs in or signs out
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setLoading(true);
       // if user is signed in, update the current user state
       if (user) {
         const userRef = doc(db, "users", user.uid);
@@ -60,12 +60,14 @@ export const AuthProvider = ({ children }) => {
           // get the user data from the database
           const newUserSnap = await getDoc(userRef);
           dispatch({ type: "SIGN_IN", payload: newUserSnap.data() });
+          setLoading(false);
         } else {
           await updateDoc(userRef, {
             lastLogin: serverTimestamp(),
             isActive: true,
           });
           dispatch({ type: "SIGN_IN", payload: userSnap.data() });
+          setLoading(false);
         }
       } else {
         if (currentUser) {
@@ -74,6 +76,7 @@ export const AuthProvider = ({ children }) => {
             isActive: false,
           });
           dispatch({ type: "SIGN_OUT", payload: null });
+          setLoading(false);
         }
       }
     });
@@ -116,6 +119,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         currentUser,
+        loading,
         signIn,
         signOut,
         signInAsGuest,

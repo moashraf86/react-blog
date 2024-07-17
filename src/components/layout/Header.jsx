@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { SignInModal } from "../shared/SignInModal";
 import { User } from "../shared/User";
-import { Button } from "../ui/button";
 import { ModeToggle } from "../shared/ModeToggler";
+import { LoadingSpinner } from "../ui/loading-spinner";
 export default function Header() {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, loading } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
   return (
     <>
@@ -29,7 +29,13 @@ export default function Header() {
                     onClick={() => setShowModal(true)}
                     className="px-6 py-2 bg-zinc-50 text-zinc-900 font-semibold rounded-md md:text-lg"
                   >
-                    Sign In
+                    {loading ? (
+                      <span>
+                        <LoadingSpinner />
+                      </span>
+                    ) : (
+                      "Sign In"
+                    )}
                   </button>
                 </li>
               )}
