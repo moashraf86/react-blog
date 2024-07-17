@@ -225,14 +225,14 @@ export const PostItem = ({ post, handleShowModal }) => {
                     <DropdownMenuItem asChild>
                       <Link
                         to={`/edit/${post.id}`}
-                        className="w-full font-medium"
+                        className="w-full"
                         aria-label="Edit Post"
                       >
                         Edit
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="font-medium text-red-500 focus:text-red-500"
+                      className="font-medium text-danger focus:text-danger"
                       onSelect={() => handleShowModal(post)}
                       aria-label="Delete Post"
                     >
