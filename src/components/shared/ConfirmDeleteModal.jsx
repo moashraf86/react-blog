@@ -31,7 +31,7 @@ export const ConfirmDeleteModal = ({
             onClick={handleDeletePost}
             className="bg-danger text-danger-foreground hover:text-danger-foreground hover:bg-danger/95"
           >
-            Continue
+            Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
