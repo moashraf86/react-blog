@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Switch } from "../ui/switch";
@@ -8,6 +8,8 @@ import {
   RiEditBoxLine,
   RiInformationLine,
 } from "@remixicon/react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { Editor } from "../ui/Editor";
 export const Form = ({
   heading,
   title,
@@ -15,6 +17,8 @@ export const Form = ({
   tag,
   image,
   onsubmit,
+  editorState,
+  setEditorState,
   handleImageChange,
   handleRemoveImage,
   handleChange,
@@ -23,7 +27,8 @@ export const Form = ({
   errors,
 }) => {
   const { currentUser } = useContext(AuthContext);
-
+  const editorRef = useRef(null);
+  console.log(editorRef);
   return (
     <>
       {currentUser ? (
@@ -54,7 +59,7 @@ export const Form = ({
                 )}
               </div>
               <div className="flex flex-col gap-1">
-                <textarea
+                {/* <textarea
                   rows="6"
                   className={`w-full p-2 text-primary border bg-transparent rounded-md ${
                     errors.content === true && "border-input"
@@ -67,7 +72,12 @@ export const Form = ({
                   value={content}
                   name="content"
                   onChange={(e) => handleChange(e)}
-                ></textarea>
+                ></textarea> */}
+                <Editor
+                  editorRef={editorRef}
+                  editorState={editorState}
+                  setEditorState={setEditorState}
+                />
                 {errors.content && (
                   <p className="text-sm text-danger">{errors.content}</p>
                 )}

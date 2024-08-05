@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { PostsContext } from "../context/PostsContext";
 import { doc, updateDoc } from "firebase/firestore";
@@ -16,14 +16,19 @@ export const EditPost = () => {
   const id = useParams().id;
   let navigate = useNavigate();
   const post = posts.find((post) => post.id === id);
+  console.log(post);
   const [image, setImage] = useState(post?.image);
   const [isImageRequired, setIsImageRequired] = useState(true);
+  const [editorState, setEditorState] = useState(
+    JSON.parse(post?.content || "{}")
+  );
+  const content = editorState;
   const [formData, setFormData] = useState({
     title: id ? post?.title : "",
     content: id ? post?.content : "",
     tag: id ? post?.tag : "",
   });
-  const { title, content, tag } = formData;
+  const { title, tag } = formData;
   const [errors, setErrors] = useState({
     title: "",
     content: "",
@@ -31,6 +36,7 @@ export const EditPost = () => {
     image: "",
   });
 
+  useEffect(() => {}, []);
   /**
    * Validate Form Inputs
    */
@@ -100,7 +106,7 @@ export const EditPost = () => {
       const postRef = doc(db, "posts", id);
       const data = {
         title,
-        content,
+        content: JSON.stringify(content),
         tag,
         image: image || `https://picsum.photos/seed/${tag}/800/600`,
       };
@@ -123,6 +129,8 @@ export const EditPost = () => {
       content={content}
       tag={tag}
       image={image}
+      editorState={editorState}
+      setEditorState={setEditorState}
       onsubmit={handleEditPost}
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}

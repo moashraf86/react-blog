@@ -20,12 +20,13 @@ export const CreatePost = () => {
   const isGuest = currentUser?.isGuest;
   const [image, setImage] = useState(null);
   const [isImageRequired, setIsImageRequired] = useState(true);
+  const [editorState, setEditorState] = useState(null);
+  const content = editorState;
   const [formData, setFormData] = useState({
     title: "",
-    content: "",
     tag: "",
   });
-  const { title, content, tag } = formData;
+  const { title, tag } = formData;
   const [errors, setErrors] = useState({
     title: "",
     content: "",
@@ -51,7 +52,10 @@ export const CreatePost = () => {
    * Handle Inputs Change
    */
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
     let validationErrors = errors;
     if (e.target.name === "title")
       validationErrors.title = validateTitle(e.target.value);
@@ -103,7 +107,7 @@ export const CreatePost = () => {
       const data = {
         id: postsRef.id,
         title,
-        content,
+        content: JSON.stringify(content),
         tag,
         image: image || `https://picsum.photos/seed/${tag}/800/600`,
         bookmarksCount: 0,
@@ -129,6 +133,8 @@ export const CreatePost = () => {
       content={content}
       tag={tag}
       image={image}
+      editorState={editorState}
+      setEditorState={setEditorState}
       onsubmit={handleCreatePost}
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}

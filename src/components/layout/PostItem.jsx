@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { GoogleIcon } from "../shared/GoogleIcon";
+import { getPostDescription } from "../../utils/getPostDescription";
 
 export const PostItem = ({ post, handleShowModal }) => {
   const { dispatch } = useContext(PostsContext);
@@ -39,7 +40,7 @@ export const PostItem = ({ post, handleShowModal }) => {
   const isBookmarked = currentUser?.bookmarks.includes(post.id);
   const [bookmarkAlert, setBookmarkAlert] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const content = JSON.parse(post.content);
   /**
    * Handle Add Bookmark
    */
@@ -178,11 +179,15 @@ export const PostItem = ({ post, handleShowModal }) => {
             </Link>
           </h3>
           {/* Paragraph */}
-          <p className="text-muted-foreground break-words">
-            {post.content.length > 150
-              ? `${post.content.substring(0, 150)}...`
-              : post.content}
-          </p>
+          <p
+            className="text-muted-foreground break-words"
+            dangerouslySetInnerHTML={{
+              __html:
+                getPostDescription(content.root).length > 150
+                  ? `${getPostDescription(content.root).substring(0, 150)}...`
+                  : getPostDescription(content.root),
+            }}
+          ></p>
           {/* Footer */}
           <div className="modal relative flex justify-end items-center gap-1 mt-2">
             {post.authorName && (

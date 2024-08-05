@@ -14,11 +14,9 @@ export const validateTitle = (title) => {
 
 export const validateContent = (content) => {
   // min 100 chars  max limit 1000 chars
-  const regExp = /^.{100,500}$/;
-  if (!content) {
+  // const regExp = /^.{100,500}$/;
+  if (!content.root.children.map((child) => child.children)) {
     return "Content is required";
-  } else if (!regExp.test(content)) {
-    return "Content must be between 100 and 500 characters";
   }
   return true;
 };

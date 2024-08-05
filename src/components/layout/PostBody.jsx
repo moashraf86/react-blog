@@ -1,6 +1,11 @@
 /* eslint-disable react/prop-types */
+import { convertToHtml } from "../../utils/convertToHtml";
+
 export const PostBody = ({ post }) => {
   const { image, title, content } = post;
+  // convert content to JSON object then to HTML
+  const contentObject = JSON.parse(content || "{}");
+
   return (
     <>
       {/* Post Image */}
@@ -14,9 +19,12 @@ export const PostBody = ({ post }) => {
         )}
       </div>
       {/* Post Content */}
-      <div className="flex flex-col gap-2">
-        <p className="text-muted-foreground">{content}</p>
-      </div>
+      <div
+        className="flex flex-col gap-2"
+        dangerouslySetInnerHTML={{
+          __html: convertToHtml(contentObject.root),
+        }}
+      ></div>
     </>
   );
 };
