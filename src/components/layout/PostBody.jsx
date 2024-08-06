@@ -1,3 +1,5 @@
+import MDEditor from "@uiw/react-md-editor";
+
 /* eslint-disable react/prop-types */
 export const PostBody = ({ post }) => {
   const { image, title, content } = post;
@@ -15,7 +17,12 @@ export const PostBody = ({ post }) => {
       </div>
       {/* Post Content */}
       <div className="flex flex-col gap-2">
-        <p className="text-muted-foreground">{content}</p>
+        {
+          <MDEditor.Markdown
+            source={content}
+            className="blog-content bg-background text-primary"
+          />
+        }
       </div>
     </>
   );
