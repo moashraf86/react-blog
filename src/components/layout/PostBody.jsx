@@ -20,7 +20,7 @@ export const PostBody = ({ post }) => {
         {
           <MDEditor.Markdown
             source={content}
-            className="blog-content bg-background text-primary"
+            className="blog-content bg-transparent text-primary"
           />
         }
       </div>
