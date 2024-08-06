@@ -10,6 +10,7 @@ import {
   validateTag,
 } from "../utils/validateForm";
 import { Form } from "../components/layout/Form";
+import { markdownToPlainText } from "../utils/markdownToPlainText";
 
 export const CreatePost = () => {
   const { currentUser } = useContext(AuthContext);
@@ -35,12 +36,16 @@ export const CreatePost = () => {
   let navigate = useNavigate();
 
   /**
+   * Convert Markdown to Plain Text
+   */
+  const plainTextContent = markdownToPlainText(content);
+  /**
    * Validate Form Inputs
    */
   const validateForm = () => {
     let validationErrors = {};
     validationErrors.title = validateTitle(title);
-    validationErrors.content = validateContent(content);
+    validationErrors.content = validateContent(plainTextContent);
     validationErrors.tag = validateTag(tag);
     validationErrors.image = validateImage(image, isImageRequired);
     setErrors(validationErrors);
@@ -56,7 +61,9 @@ export const CreatePost = () => {
     if (e.target.name === "title")
       validationErrors.title = validateTitle(e.target.value);
     if (e.target.name === "content")
-      validationErrors.content = validateContent(e.target.value);
+      validationErrors.content = validateContent(
+        markdownToPlainText(e.target.value)
+      );
     if (e.target.name === "tag")
       validationErrors.tag = validateTag(e.target.value);
     setErrors(validationErrors);
