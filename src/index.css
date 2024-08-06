@@ -73,8 +73,21 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-i {
-  @apply text-primary;
+  i {
+    @apply text-primary;
+  }
+  .blog-content {
+    ol {
+      @apply list-decimal;
+    }
+    ul {
+      @apply list-disc;
+    }
+    .code-line {
+      @apply text-zinc-100;
+    }
+    code {
+      @apply bg-muted text-primary;
+    }
+  }
 }
