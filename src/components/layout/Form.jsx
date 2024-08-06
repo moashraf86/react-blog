@@ -8,6 +8,7 @@ import {
   RiEditBoxLine,
   RiInformationLine,
 } from "@remixicon/react";
+import { Editor } from "./Editor";
 export const Form = ({
   heading,
   title,
@@ -54,20 +55,13 @@ export const Form = ({
                 )}
               </div>
               <div className="flex flex-col gap-1">
-                <textarea
-                  rows="6"
-                  className={`w-full p-2 text-primary border bg-transparent rounded-md ${
-                    errors.content === true && "border-input"
-                  } ${
-                    errors.content !== true &&
-                    errors.content !== "" &&
-                    "border-danger"
-                  }`}
-                  placeholder="write something here..."
+                <Editor
+                  name="title"
                   value={content}
-                  name="content"
-                  onChange={(e) => handleChange(e)}
-                ></textarea>
+                  onChange={(e) => {
+                    handleChange({ target: { name: "content", value: e } });
+                  }}
+                />
                 {errors.content && (
                   <p className="text-sm text-danger">{errors.content}</p>
                 )}
