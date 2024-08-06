@@ -172,8 +172,8 @@ export const PostItem = ({ post, handleShowModal }) => {
           {/* Title */}
           <h3 className="text-xl md:text-2xl text-primary font-bold capitalize">
             <Link to={`/post/${post.id}`}>
-              {post.title.length > 50
-                ? `${post.title.substring(0, 50)}...`
+              {post.title.length > 35
+                ? `${post.title.substring(0, 35)}...`
                 : post.title}
             </Link>
           </h3>
