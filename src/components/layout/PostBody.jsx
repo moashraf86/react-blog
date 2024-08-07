@@ -6,7 +6,7 @@ export const PostBody = ({ post }) => {
   return (
     <>
       {/* Post Image */}
-      <div className="h-[360px] bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-none mb-6">
+      <div className="aspect-video bg-gradient-to-r from-zinc-400 to-zinc-800 rounded-none mb-6">
         {image && (
           <img
             src={image}
@@ -20,7 +20,7 @@ export const PostBody = ({ post }) => {
         {
           <MDEditor.Markdown
             source={content}
-            className="blog-content bg-transparent text-primary"
+            className="blog-content bg-transparent text-primary text-lg"
           />
         }
       </div>
