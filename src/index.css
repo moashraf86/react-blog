@@ -92,6 +92,10 @@
       }
     }
 
+    /* Title modal */
+    .w-md-editor-toolbar-child {
+      @apply top-[70px] left-0;
+    }
     /* Commands buttons */
     li {
       button {
