@@ -14,19 +14,23 @@ export const validateTitle = (title) => {
 
 export const validateContent = (content) => {
   // set min 500 chars and without limit
-  const regExp = /^.{200,}$/;
+  const regExp = /^.{1500,10000}$/;
   if (!content) {
     return "Content is required";
   } else if (!regExp.test(content)) {
-    return "Content must be between 500 and 2000 characters";
+    return "Content must be between 1500 and 10000 characters";
   }
   return true;
 };
 
 export const validateTag = (tag) => {
   if (!tag) {
+    console.log("no tag");
+
     return "Tag is required";
   }
+  console.log("tag is set");
+
   return true;
 };
 
