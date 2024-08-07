@@ -1,10 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PostsContext } from "../context/PostsContext";
 import { CommentsContext } from "../context/CommentsContext";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
-import { BreadCrumbs } from "../components/shared/BreadCrumbs";
 import { Comments } from "../components/layout/Comments";
 import { SignlePost } from "../components/layout/SinglePost";
 import { Skeleton } from "../components/ui/skeleton";
@@ -43,7 +42,6 @@ export const Post = () => {
 
   return (
     <div className="max-w-[800px] mx-auto mt-8">
-      <BreadCrumbs className="px-4" />
       {loading && (
         <div className="flex flex-col gap-4 rounded-md p-4">
           <Skeleton className="w-20 h-8 rounded-full" />

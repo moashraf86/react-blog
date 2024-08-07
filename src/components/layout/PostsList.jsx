@@ -26,7 +26,6 @@ import { Pagination } from "../shared/Pagination";
 import { Filter } from "../shared/Filter";
 import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
 import { Skeleton } from "../ui/skeleton";
-import { BreadCrumbs } from "../shared/BreadCrumbs";
 import { getTargetSnapShot } from "../../utils/getTargetSnapShot";
 import { debounce } from "../../utils/debounce";
 import { RiErrorWarningLine, RiInformationLine } from "@remixicon/react";
@@ -247,7 +246,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   return (
     <div className="flex flex-col gap-8 mt-6">
       <div className="container px-5 sm:px-8">
-        <BreadCrumbs />
         <div className="flex flex-wrap items-center justify-between">
           <h2 className="text-2xl md:text-4xl font-bold">{title}</h2>
           {currentUser && !isGuest && <Filter handleFilter={handleFilter} />}
@@ -255,13 +253,13 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
       </div>
       <div className="container px-5 flex justify-start flex-wrap">
         {loading &&
-          Array.from({ length: 3 }).map((_, i) => (
+          Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="flex flex-col gap-3 sm:px-3 w-full sm:w-1/2 xl:w-1/3 "
+              className="flex flex-col gap-3 sm:px-3 w-full sm:w-1/2 xl:w-1/4 "
             >
               <div className="bg-muted/30 border border-border rounded-md mb-6">
-                <Skeleton className="w-full h-[180px] rounded-br-none rounded-bl-none" />
+                <Skeleton className="w-full aspect-video rounded-br-none rounded-bl-none" />
                 <div className="flex flex-col gap-3 p-4">
                   <Skeleton className="w-20 h-4" />
                   <Skeleton className="w-full h-6 mb-2" />
