@@ -72,11 +72,121 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow: auto !important;
   }
   i {
     @apply text-primary;
   }
-  .blog-content {
+}
+
+@layer components {
+  /* Markdown Editor */
+  .markdown-editor {
+    @apply bg-card text-card-foreground border border-border shadow-none rounded-md  border-none overflow-auto h-auto;
+
+    /* Editor Toolbar */
+    .w-md-editor-toolbar {
+      @apply p-2 bg-card border border-border shadow-sm rounded-md my-3 flex-nowrap items-center overflow-x-auto overflow-y-hidden;
+      ul {
+        @apply flex items-center;
+      }
+    }
+
+    /* Commands buttons */
+    li {
+      button {
+        @apply py-2 px-2 h-auto rounded-md text-sm text-muted-foreground hover:bg-muted hover:text-primary;
+        /* svg {
+          @apply w-4 h-4;
+        } */
+      }
+    }
+
+    /* Active commands */
+    li.active button {
+      @apply bg-muted text-primary;
+    }
+
+    /* Commands divider */
+    .w-md-editor-toolbar-divider {
+      @apply bg-muted;
+    }
+
+    /* Titles dropdown */
+    .w-md-editor-toolbar-child {
+      @apply bg-card text-card-foreground shadow-none rounded-md;
+      .w-md-editor-toolbar {
+        padding: 0.5rem;
+        border-bottom: 1px solid hsl(var(--border));
+      }
+      ul li button {
+        @apply py-1.5 px-3 h-auto text-sm text-muted-foreground hover:bg-muted hover:text-primary;
+      }
+    }
+    /* Command to hide */
+    li:has(button[data-name="table"]),
+    li:has(button[data-name="check-list"]) {
+      @apply hidden;
+    }
+
+    /* Editor content area */
+    .w-md-editor-content {
+      display: flex;
+    }
+    /* Textarea */
+    textarea {
+      field-sizing: content;
+    }
+    /* Markdown preview */
+    .w-md-editor-preview {
+      @apply shadow-none border-s border-border static;
+      .wmde-markdown {
+        @apply bg-transparent text-primary;
+      }
+      .code-line {
+        @apply text-zinc-100;
+      }
+    }
+
+    /* disabled commands */
+    .w-md-editor-toolbar li > button:disabled,
+    .w-md-editor-toolbar li > button:disabled:hover {
+      @apply text-primary/20;
+    }
+
+    /* Edit font size */
+    .w-md-editor-text,
+    .w-md-editor-text-pre > code,
+    .wmde-markdown {
+      font-size: 18px !important;
+      line-height: 28px !important;
+    }
+
+    /* Edit overflow scrollbar */
+    .w-md-editor-area::-webkit-scrollbar,
+    .w-md-editor-preview::-webkit-scrollbar {
+      width: 0.4rem;
+      background: var(--primary);
+    }
+    .w-md-editor-area::-webkit-scrollbar-track,
+    .w-md-editor-preview::-webkit-scrollbar-track {
+      background: hsl(var(--background));
+    }
+
+    .w-md-editor-area::-webkit-scrollbar-thumb,
+    .w-md-editor-preview::-webkit-scrollbar-thumb {
+      background: hsl(var(--muted));
+      border-radius: 8px;
+    }
+  }
+
+  /* Hide preview border on preview mode */
+  .markdown-editor.w-md-editor-show-preview .w-md-editor-preview {
+    border: none;
+  }
+
+  .blog-content,
+  .w-md-editor-preview {
     ol {
       @apply list-decimal;
     }
