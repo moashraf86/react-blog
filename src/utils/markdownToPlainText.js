@@ -13,5 +13,6 @@ export const markdownToPlainText = (content) => {
     .replace(/\*\s+(.*?)(\n|$)/g, "$1") // unordered list items
     .replace(/\d+\.\s+(.*?)(\n|$)/g, "$1") // ordered list items
     .replace(/\n+/g, " ") // new lines
+    .replace(/\s\s+/g, " ") // multiple spaces
     .trim();
 };
