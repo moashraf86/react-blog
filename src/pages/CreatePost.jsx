@@ -34,6 +34,7 @@ export const CreatePost = () => {
     image: "",
   });
   let navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   /**
    * Convert Markdown to Plain Text
@@ -57,16 +58,18 @@ export const CreatePost = () => {
    */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    let validationErrors = errors;
-    if (e.target.name === "title")
-      validationErrors.title = validateTitle(e.target.value);
-    if (e.target.name === "content")
-      validationErrors.content = validateContent(
-        markdownToPlainText(e.target.value)
-      );
-    if (e.target.name === "tag")
-      validationErrors.tag = validateTag(e.target.value);
-    setErrors(validationErrors);
+    if (isSubmitted) {
+      let validationErrors = errors;
+      if (e.target.name === "title")
+        validationErrors.title = validateTitle(e.target.value);
+      if (e.target.name === "content")
+        validationErrors.content = validateContent(
+          markdownToPlainText(e.target.value)
+        );
+      if (e.target.name === "tag")
+        validationErrors.tag = validateTag(e.target.value);
+      setErrors(validationErrors);
+    }
   };
 
   /**
@@ -102,6 +105,7 @@ export const CreatePost = () => {
    */
   const handleCreatePost = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
     // check if there are any errors
     if (!validateForm()) return;
     // Add post to the posts collection
@@ -112,7 +116,7 @@ export const CreatePost = () => {
         title,
         content,
         tag,
-        image: image || `https://picsum.photos/seed/${tag}/800/600`,
+        image: image || `https://picsum.photos/seed/${tag}/1280/720`,
         bookmarksCount: 0,
         authorId: authorId,
         authorName: authorName,
@@ -131,12 +135,13 @@ export const CreatePost = () => {
 
   return (
     <Form
-      heading="Add Post"
       title={title}
       content={content}
-      tag={tag}
       image={image}
+      tag={tag}
       onsubmit={handleCreatePost}
+      // onSelect={(value) => setFormData({ ...formData, tag: value })}
+      onSelect={(e) => handleChange(e)}
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
       handleChange={handleChange}
