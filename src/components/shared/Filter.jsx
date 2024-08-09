@@ -16,9 +16,11 @@ export const Filter = ({ handleFilter }) => {
       <SelectContent>
         <SelectGroup>
           <SelectItem value="all">All</SelectItem>
-          <SelectItem value="tech">Tech</SelectItem>
-          <SelectItem value="science">Science</SelectItem>
-          <SelectItem value="culture">Culture</SelectItem>
+          <SelectItem value="web-development">Web</SelectItem>
+          <SelectItem value="react">React</SelectItem>
+          <SelectItem value="javascript">JavaScript</SelectItem>
+          <SelectItem value="html">HTML</SelectItem>
+          <SelectItem value="css">CSS</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>

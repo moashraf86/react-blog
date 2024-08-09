@@ -1,22 +1,22 @@
 export const tags = [
   {
-    value: "next.js",
-    label: "Next.js",
+    value: "web",
+    label: "Web",
   },
   {
-    value: "sveltekit",
-    label: "SvelteKit",
+    value: "react",
+    label: "React",
   },
   {
-    value: "nuxt.js",
-    label: "Nuxt.js",
+    value: "javascript",
+    label: "JavaScript",
   },
   {
-    value: "remix",
-    label: "Remix",
+    value: "html",
+    label: "HTML",
   },
   {
-    value: "astro",
-    label: "Astro",
+    value: "css",
+    label: "CSS",
   },
 ];
