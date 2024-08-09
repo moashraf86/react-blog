@@ -9,7 +9,7 @@ export const Editor = ({ value, onChange }) => {
   /**
    * Handle character count
    */
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(markdownToPlainText(value).length);
   const handleCount = debounce((content) => {
     const plainText = markdownToPlainText(content);
     const count = plainText.length;
