@@ -34,12 +34,12 @@ export const EditPost = () => {
   const { data: post } = useFetchPost();
 
   let navigate = useNavigate();
-  const [image, setImage] = useState(post?.image);
+  const [image, setImage] = useState(post.image);
   const [isImageRequired, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
-    title: id ? post?.title : "",
-    content: id ? post?.content : "",
-    tag: id ? post?.tag : "",
+    title: post.title || "",
+    content: post.content || "",
+    tag: post.tag || "",
   });
   const { title, content, tag } = formData;
   const [errors, setErrors] = useState({
@@ -52,7 +52,7 @@ export const EditPost = () => {
   /**
    * Convert Markdown to Plain Text
    */
-  const plainTextContent = markdownToPlainText(content);
+  const plainTextContent = markdownToPlainText(content || "");
   /**
    * Validate Form Inputs
    */
