@@ -1,30 +1,38 @@
-import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { collection, query, where, getDoc, doc } from "@firebase/firestore";
 import { db } from "../utils/firebase";
 import { PostsList } from "../components/layout/PostsList";
+import { useQuery } from "@tanstack/react-query";
 
 export const UserProfile = () => {
-  const [userName, setUserName] = useState("");
+  // const [userName, setUserName] = useState("");
   const { id } = useParams();
 
   //Fetch User Name from firestore
-  const getUser = async () => {
+  const fetchUser = async () => {
     const userRef = doc(db, "users", id);
     const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      setUserName(userSnap.data().name);
-    } else {
-      setUserName("User Not Found");
-    }
+    const userName = userSnap.data().name;
+    return userName;
   };
 
-  useEffect(() => {
-    getUser();
-  }, [userName]);
+  const useFetchUser = () => {
+    return useQuery({
+      queryKey: ["user", id],
+      queryFn: fetchUser,
+    });
+  };
+
+  const { data: userName, isPending, isError, error } = useFetchUser();
+
+  const getTitle = () => {
+    if (isPending) return "Loading...";
+    if (isError) return <p>Error: {error}</p>;
+    return userName;
+  };
 
   // Update the URL
-  history.pushState({}, "", `/users/${userName}`);
+  // history.pushState({}, "", `/users/${userName}`);
 
   /**
    * Query Variables
@@ -36,17 +44,13 @@ export const UserProfile = () => {
     ),
   };
 
-  // memoize the posts query
-  const memoizedPosts = useMemo(
-    () => (
+  return (
+    <>
       <PostsList
-        title={userName ? userName + "'s Posts" : "Loading..."}
+        title={getTitle()}
         postsQuery={posts}
         alertMsg="No Posts Added yet."
       />
-    ),
-    [userName]
+    </>
   );
-
-  return <>{memoizedPosts}</>;
 };
