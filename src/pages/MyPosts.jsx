@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import { collection, query, where } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import { AuthContext } from "../context/AuthContext";
@@ -19,18 +19,6 @@ export const MyPosts = () => {
     ),
   };
 
-  // memoize the postsList
-  const memoizedPosts = useMemo(
-    () => (
-      <PostsList
-        title={isGuest ? "Drafts" : "My Posts"}
-        postsQuery={postsQuery}
-        alertMsg="No Posts Added yet."
-      />
-    ),
-    []
-  );
-
   // If user is not logged in, show a message to login
   if (!currentUser) {
     return (
@@ -41,5 +29,13 @@ export const MyPosts = () => {
     );
   }
 
-  return <>{memoizedPosts}</>;
+  return (
+    <>
+      <PostsList
+        title={isGuest ? "Drafts" : "My Posts"}
+        postsQuery={postsQuery}
+        alertMsg="No Posts Added yet."
+      />
+    </>
+  );
 };
