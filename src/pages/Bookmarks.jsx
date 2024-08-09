@@ -1,15 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { collection, query, where, doc, getDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import { AuthContext } from "../context/AuthContext";
 import { PostsList } from "../components/layout/PostsList";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { RiInformationLine } from "@remixicon/react";
+import { useQuery } from "@tanstack/react-query";
 
 export const Bookmarks = () => {
   const { currentUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
-  const [bookmarksQuery, setBookmarksQuery] = useState();
 
   /**
    * Get Bookmarks
@@ -19,22 +19,23 @@ export const Bookmarks = () => {
     const userRef = doc(db, "users", currentUser.id);
     const userSnap = await getDoc(userRef);
     const userBookmarks = userSnap.data()?.bookmarks || [];
-    if (userBookmarks.length === 0) {
-      setBookmarksQuery(null);
-      return;
-    }
     const bookmarksQuery = {
       collection: query(
         collection(db, "posts"),
         where("id", "in", userBookmarks)
       ),
     };
-    setBookmarksQuery(bookmarksQuery);
+    return bookmarksQuery;
   };
 
-  useEffect(() => {
-    getBookmarksQuery();
-  }, []);
+  const useFetchBookmarks = () => {
+    return useQuery({
+      queryKey: ["bookmarks", currentUser.id],
+      queryFn: getBookmarksQuery,
+    });
+  };
+
+  const { data: posts } = useFetchBookmarks();
 
   if (!currentUser || isGuest) {
     return (
@@ -49,7 +50,7 @@ export const Bookmarks = () => {
     <>
       <PostsList
         title="Bookmarks"
-        postsQuery={bookmarksQuery}
+        postsQuery={posts}
         alertMsg="No Added Bookmarks"
       />
     </>
