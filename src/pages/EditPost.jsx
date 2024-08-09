@@ -1,7 +1,6 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { PostsContext } from "../context/PostsContext";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import {
   validateTitle,
@@ -11,12 +10,30 @@ import {
 } from "../utils/validateForm";
 import { Form } from "../components/layout/Form";
 import { markdownToPlainText } from "../utils/markdownToPlainText";
+import { useQuery } from "@tanstack/react-query";
 
 export const EditPost = () => {
-  const { posts, dispatch } = useContext(PostsContext);
   const id = useParams().id;
+  // fetch single post from firebase based on the id
+  const fetchPost = async () => {
+    const postCollection = collection(db, "posts");
+    const postDoc = doc(postCollection, id);
+    const postSnap = await getDoc(postDoc);
+    const postData = postSnap.data();
+    return postData;
+  };
+  /**
+   * Custom Hook to fetch a single post
+   */
+  const useFetchPost = () => {
+    return useQuery({
+      queryKey: ["post", id],
+      queryFn: fetchPost,
+    });
+  };
+  const { data: post } = useFetchPost();
+
   let navigate = useNavigate();
-  const post = posts.find((post) => post.id === id);
   const [image, setImage] = useState(post?.image);
   const [isImageRequired, setIsImageRequired] = useState(true);
   const [formData, setFormData] = useState({
@@ -112,10 +129,6 @@ export const EditPost = () => {
         image: image || `https://picsum.photos/seed/${tag}/800/600`,
       };
       await updateDoc(postRef, data);
-      dispatch({
-        type: "EDIT_POST",
-        payload: { id, title, content, tag, image: image || post.image },
-      });
     };
     editPost();
     setTimeout(() => {
@@ -131,6 +144,7 @@ export const EditPost = () => {
       tag={tag}
       image={image}
       onsubmit={handleEditPost}
+      onSelect={(e) => handleChange(e)}
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
       handleChange={handleChange}
