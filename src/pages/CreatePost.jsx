@@ -140,7 +140,6 @@ export const CreatePost = () => {
       image={image}
       tag={tag}
       onsubmit={handleCreatePost}
-      // onSelect={(value) => setFormData({ ...formData, tag: value })}
       onSelect={(e) => handleChange(e)}
       handleImageChange={handleImageChange}
       handleRemoveImage={handleRemoveImage}
