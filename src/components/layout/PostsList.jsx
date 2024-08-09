@@ -1,14 +1,5 @@
 /* eslint-disable react/prop-types */
-import {
-  useEffect,
-  useContext,
-  useState,
-  lazy,
-  Suspense,
-  useMemo,
-  useCallback,
-} from "react";
-import { PostsContext } from "../../context/PostsContext";
+import { useContext, useState, lazy, Suspense } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import {
   getDocs,
@@ -29,6 +20,7 @@ import { Skeleton } from "../ui/skeleton";
 import { getTargetSnapShot } from "../../utils/getTargetSnapShot";
 import { debounce } from "../../utils/debounce";
 import { RiErrorWarningLine, RiInformationLine } from "@remixicon/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 /**
  * Lazy load ConfirmDeleteModal
@@ -42,9 +34,7 @@ const ConfirmDeleteModal = lazy(() =>
 export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const { currentUser } = useContext(AuthContext);
   const isGuest = currentUser?.isGuest;
-  const { posts, dispatch } = useContext(PostsContext);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+
   const [showModal, setShowModal] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
   const [totalPosts, setTotalPosts] = useState(0);
@@ -55,20 +45,9 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   /**
    * Fetch posts from the Firebase store After the component mounts
    */
-  const fetchPosts = useCallback(async () => {
-    //check for internet connection
-    if (!navigator.onLine) {
-      setError("No internet Connection!");
-      return;
-    }
-    try {
-      let postsSnapshot;
-      setLoading(true);
-      setError(null);
-      if (!postsQuery) {
-        setLoading(false);
-        return;
-      }
+  const fetchPosts = async () => {
+    let postsSnapshot;
+    if (filterKey === "all") {
       postsSnapshot = await getDocs(
         query(
           postsQuery.collection,
@@ -76,25 +55,70 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
           limit(postsPerPage)
         )
       );
-      const totalPostsSnapshot = await getDocs(postsQuery.collection);
-      setTotalPosts(totalPostsSnapshot.docs.length);
-      const postsData = postsSnapshot.docs.map((doc) => doc.data());
-      if (!postsData) throw new Error("Error fetching posts");
-      dispatch({ type: "FETCH_POSTS", payload: postsData });
-      setError(null);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    } else {
+      postsSnapshot = await getDocs(
+        query(
+          postsQuery.collection,
+          orderBy("title", "asc"),
+          where("tag", "==", filterKey),
+          limit(postsPerPage)
+        )
+      );
     }
-  }, [postsQuery]);
 
-  useEffect(() => {
-    fetchPosts();
-    return () => {
-      dispatch({ type: "RESET_POSTS" });
-    };
-  }, [postsQuery]);
+    const totalPostsSnapshot = await getDocs(
+      query(postsQuery.collection, orderBy("title", "asc"))
+    );
+    setTotalPosts(totalPostsSnapshot.docs.length);
+
+    const postsData = postsSnapshot.docs.map((doc) => doc.data());
+
+    return postsData;
+  };
+
+  /**
+   * Custom Hook to fetch posts
+   */
+  const useFetchedPosts = (postsQuery, postsPerPage, filterKey) => {
+    const queryClient = useQueryClient();
+    const postsQueryResult = useQuery({
+      queryKey: ["posts", postsQuery, postsPerPage, filterKey],
+      queryFn: fetchPosts,
+    });
+
+    const handleDeleteMutation = useMutation({
+      mutationFn: async () => {
+        const postRef = doc(db, "posts", postToDelete.id);
+        await deleteDoc(postRef);
+        setShowModal(false);
+      },
+      // Invalidate and refetch the data after the mutation
+      onSuccess: () => {
+        queryClient.invalidateQueries([
+          "posts",
+          postsQuery,
+          postsPerPage,
+          filterKey,
+        ]);
+      },
+    });
+
+    return { ...postsQueryResult, handleDeleteMutation };
+  };
+
+  /**
+   * Destructuring the data, isLoading, isError and error from the custom hook
+   */
+  const { data, isLoading, isError, error, handleDeleteMutation } =
+    useFetchedPosts(postsQuery, postsPerPage, filterKey);
+
+  /**
+   * Filter posts based on category
+   */
+  const handleFilter = (key) => {
+    setFilterKey(key);
+    setCurrentPage(1);
+  };
 
   /**
    * Handle Show Modal
@@ -108,17 +132,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
    * Handle Delete Post
    */
   const handleDeletePost = () => {
-    const deletePost = async () => {
-      const postRef = doc(db, "posts", postToDelete.id);
-      await deleteDoc(postRef);
-      dispatch({
-        type: "DELETE_POST",
-        payload: { id: postToDelete.id },
-      });
-      setShowModal(false);
-      fetchPosts();
-    };
-    deletePost();
+    handleDeleteMutation.mutate();
   };
 
   /**
@@ -127,8 +141,6 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
   const handlePaginate = debounce(async (pageNumber) => {
     if (pageNumber === currentPage) return;
     try {
-      setLoading(true);
-      setError(null);
       history.pushState({}, "", `?pages=${pageNumber}`);
       let target = await getTargetSnapShot(
         pageNumber,
@@ -175,73 +187,10 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
       setCurrentPage(pageNumber);
       const postsData = postsSnapshot.docs.map((doc) => doc.data());
       if (!postsData) throw new Error("Error fetching posts");
-      dispatch({ type: "FETCH_POSTS", payload: postsData });
-      setError(null);
     } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+      console.log(error);
     }
   }, 300);
-
-  /**
-   * Filter posts based on category
-   */
-  const handleFilter = debounce((key) => {
-    const createFilter = async (key) => {
-      let postsSnapshot;
-      switch (key) {
-        case "all":
-          fetchPosts();
-          break;
-        default:
-          if (!navigator.onLine) {
-            setError("No internet Connection!");
-            return;
-          }
-          try {
-            setLoading(true);
-            setError(null);
-            postsSnapshot = await getDocs(
-              query(
-                postsQuery.collection,
-                where("tag", "==", key),
-                limit(postsPerPage)
-              )
-            );
-            const totalPostsSnapshot = await getDocs(
-              query(postsQuery.collection, where("tag", "==", key))
-            );
-            setTotalPosts(totalPostsSnapshot.docs.length);
-            const postsData = postsSnapshot.docs.map((doc) => doc.data());
-            if (!postsData) throw new Error("Error fetching posts");
-            dispatch({ type: "FETCH_POSTS", payload: postsData });
-          } catch (error) {
-            setError(error.message);
-          } finally {
-            setLoading(false);
-          }
-          break;
-      }
-    };
-    createFilter(key);
-    setFilterKey(key);
-    setCurrentPage(1);
-  }, 300);
-
-  /**
-   * Memoize the PostItem components
-   */
-  const MemoizedPostItem = useMemo(() => {
-    return posts.map((post) => (
-      <PostItem
-        key={post.id}
-        post={post}
-        handleShowModal={() => handleShowModal(post)}
-        fetchPosts={fetchPosts}
-      />
-    ));
-  }, [posts, fetchPosts]);
 
   return (
     <div className="flex flex-col gap-8 mt-6">
@@ -252,7 +201,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
         </div>
       </div>
       <div className="container px-5 flex justify-start flex-wrap">
-        {loading &&
+        {isLoading &&
           Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
@@ -271,8 +220,16 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
               </div>
             </div>
           ))}
-        {!loading && !error && posts.length > 0 && MemoizedPostItem}
-        {!loading && !error && !posts.length && (
+        {data &&
+          data.map((post) => (
+            <PostItem
+              key={post.id}
+              post={post}
+              handleShowModal={() => handleShowModal(post)}
+              fetchPosts={data}
+            />
+          ))}
+        {!isLoading && !isError && !data.length && (
           <Alert variant="default" className="flex items-center gap-3">
             <span>
               <RiInformationLine size={24} className="fill-primary" />
@@ -280,7 +237,7 @@ export const PostsList = ({ title, postsQuery, alertMsg }) => {
             <AlertDescription>{alertMsg}</AlertDescription>
           </Alert>
         )}
-        {error && (
+        {isError && (
           <Alert variant="danger">
             <RiErrorWarningLine
               size={24}
